@@ -1,6 +1,7 @@
 #include "src/hustle~1/render.h"
 #include <malloc.h>
 #include <dos.h>
+#include <stdio.h>
 
 static int old_mode;  /* VGA mode we were in before switching to 13h */
 static Rect *dirty_rects;
@@ -85,28 +86,30 @@ static void free_all_sprites(Sprite **sprites, uint *count)
 
 static bool clip_rect(Rect *clipped, Point *offset, const Rect *orig, const Rect *clip)
 {
-    /* Check if we're completely offscreen */
-    if((orig->x <= clip->x && orig->x + orig->w <= clip->x)
-    || (orig->x >= clip->x + clip->w))
-        return false; /* horizontally offscreen */
-    if((orig->y <= clip->y && orig->y + orig->h <= clip->y)
-    || (orig->y >= clip->y + clip->h))
-        return false; /* vertically offscreen */
+    register int o_xmax = orig->x + orig->w;
+    register int o_ymax = orig->y + orig->h;
+    register int c_xmax = clip->x + clip->w;
+    register int c_ymax = clip->y + clip->h;
+
+    if(orig->x > c_xmax || orig->y > c_ymax) /* completely offscreen */
+        return false;
 
     /* Horizontal clip */
-    if(orig->x < clip->x) {
+    if(orig->x < clip->x) { /* left */
+        if(o_xmax < clip->x) return false; /* completely offscreen */
+        
         offset->x = (clip->x - orig->x);
 
         clipped->x = clip->x;
         clipped->w = orig->w - offset->x;
     }
-    else if(orig->x + orig->w > clip->x + clip->w) {
+    else if(o_xmax > c_xmax) {  /* right */
         offset->x = 0;
 
         clipped->x = orig->x;
-        clipped->w = (clip->x + clip->w) - orig->x;
+        clipped->w = c_xmax - orig->x;
     }
-    else {
+    else {                  /* not clipped */
         offset->x = 0;
 
         clipped->x = orig->x;
@@ -115,16 +118,18 @@ static bool clip_rect(Rect *clipped, Point *offset, const Rect *orig, const Rect
 
     /* Vertical clip */
     if(orig->y < clip->y) {
+        if(o_ymax < clip->y) return false; /* completely offscreen */
+
         offset->y = (clip->y - orig->y);
 
         clipped->y = clip->y;
         clipped->h = orig->h - offset->y;
     }
-    else if(orig->y + orig->h > clip->y + clip->h) {
+    else if(o_ymax > c_ymax) {
         offset->y = 0;
 
         clipped->y = orig->y;
-        clipped->h = (clip->y + clip->h) - orig->y;
+        clipped->h = c_ymax - orig->y;
     }
     else {
         offset->y = 0;
@@ -153,52 +158,58 @@ void reset_sprite(Sprite *sprite) {
 
 void refresh_sprites(RenderData *rd)
 {
-    //refresh_sprites_slow(rd);
-    uint i;
     register int y;
-    int offset;
+    register int offset;
     int y_max;
     Rect clipped;
     Point image_offset;
     Rect *r;
 
-    const Sprite *sprite;
-    for(i = 0; i < rd->sprite_count; ++i) {
-        sprite = (i + rd->sprites);
-
+    uint i = rd->sprite_count;
+    Sprite *sprite = rd->sprites + i;
+    Rect *dirt_rect = dirty_rects + i;
+    do {
         /* skip sprites that aren't active */
-        if(sprite->flags & SPRITE_REFRESH) {
-            blit_rect(rd->screen, rd->bg_layer, &dirty_rects[i]);
+        if(!(sprite->flags & SPRITE_REFRESH)) {
+            goto next;
+        }
 
-            /* check if we need to clip the sprite
-             * or let it overflow */
-            if(sprite->flags & SPRITE_CLIP) {
-                r = &clipped;
-                if(!clip_rect(&clipped, &image_offset, &sprite->rect, &rd->screen_clipping)) {
-                    dirty_rects[i] = EMPTY_RECT;
-                    continue;
-                }
-            }
-            else {
-                image_offset.x = 0;
-                image_offset.y = 0;
-                r = &sprite->rect;
-            }
+        /* copy BG over dirty rect */
+        blit_rect(rd->screen, rd->bg_layer, dirt_rect);
 
-            /* draw the sprite */
-            y_max = r->y + r->h;
-            image_offset.x += image_offset.y * r->w;
-            for(y = r->y; y < y_max; ++y) {
-                offset = CALC_OFFSET(r->x, y);
-                _fmemcpy(
-                    rd->screen + offset, 
-                    sprite->image + image_offset.x,
-                    r->w);
-                image_offset.x += sprite->rect.w;
+        /* check if we need to clip the sprite
+         * or let it overflow */
+        if(sprite->flags & SPRITE_CLIP) {
+            r = &clipped;
+            if(!clip_rect(&clipped, &image_offset, &sprite->rect, &rd->screen_clipping)) {
+                *dirt_rect = EMPTY_RECT;
+                goto next;
             }
         }
-        dirty_rects[i] = *r;
-    }
+        else {
+            image_offset.x = 0;
+            image_offset.y = 0;
+            r = &sprite->rect;
+        }
+
+        /* draw the sprite */
+        y_max = r->y + r->h;
+        image_offset.x += image_offset.y * r->w;
+        for(y = r->y; y < y_max; ++y) {
+            offset = CALC_OFFSET(r->x, y);
+            _fmemcpy(
+                rd->screen + offset, 
+                sprite->image + image_offset.x,
+                r->w);
+
+            image_offset.x += sprite->rect.w;
+        }
+        
+        *dirt_rect = *r;
+    next:
+        --sprite;
+        --dirt_rect;
+    } while(i--);
 }
 
 int init_renderer(RenderData *rd, int sprite_count)
