@@ -1,3 +1,6 @@
 *.EXE
 *.DSK
 *.OBJ
+*.exe
+*.dsl
+*.obj
