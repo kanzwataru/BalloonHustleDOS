@@ -50,6 +50,7 @@ typedef struct {
 } Sprite;
 
 typedef struct {
+    Rect screen_clipping;
     buffer_t *screen;
     buffer_t *bg_layer;
     Sprite *sprites;
@@ -57,7 +58,7 @@ typedef struct {
 } RenderData;
 
 buffer_t *create_image(uint w, uint h);
-int init_renderer(RenderData *rd);
+int init_renderer(RenderData *rd, int sprite_count);
 void quit_renderer(RenderData *rd);
 
 void refresh_sprites(RenderData *rd);
