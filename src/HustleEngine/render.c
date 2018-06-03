@@ -243,3 +243,15 @@ void quit_renderer(RenderData *rd)
     farfree(rd->bg_layer);
     leave_m13h();
 }
+
+void draw_rect(buffer_t *buf, const Rect *rect, byte colour)
+{
+    register int y;
+    register int x = rect->x;
+    register int y_max = rect->y + rect->h;
+    register int w = rect->w;
+
+    for(y = rect->y; y < y_max; ++y) {
+        _fmemset(buf + CALC_OFFSET(x, y), colour);
+    }
+}

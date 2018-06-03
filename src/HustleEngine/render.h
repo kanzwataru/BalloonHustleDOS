@@ -65,4 +65,11 @@ void refresh_sprites(RenderData *rd);
 
 void reset_sprite(Sprite *sprite);
 
+/**** Drawing functions ****/
+
+/*
+ * Draw a filled rectangle with a specific colour
+*/
+void draw_rect(buffer_t *buf, const Rect *rect, byte colour);
+
 #endif /* RENDER_H */

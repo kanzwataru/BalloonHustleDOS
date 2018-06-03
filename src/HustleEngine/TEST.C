@@ -31,6 +31,13 @@ bool input(void) {
     return true;
 }
 
+void add_border(void)
+{
+    Rect btm = {0, 170, SCREEN_WIDTH, SCREEN_HEIGHT - 170};
+    rd.screen_clipping.h = 170;
+    draw_rect(rd.screen, &btm, 6);
+}
+
 int main(int argc, char **argv)
 {
     uint i;
@@ -71,6 +78,7 @@ int main(int argc, char **argv)
 
     FILL_BUFFER(rd.screen, 3);
     FILL_BUFFER(rd.bg_layer, 3);
+    add_border();
 
     engine_start(cd);
     return 1;
