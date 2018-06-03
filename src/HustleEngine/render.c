@@ -3,6 +3,7 @@
 #include <dos.h>
 #include <stdio.h>
 
+static int anim_frame_count = 0;
 static int old_mode;  /* VGA mode we were in before switching to 13h */
 static Rect *dirty_rects;
 static const Rect EMPTY_RECT = {0,0,0,0};
@@ -156,6 +157,13 @@ void reset_sprite(Sprite *sprite) {
     memset(sprite, 0, sizeof(Sprite));
 }
 
+void refresh_screen(RenderData *rd)
+{
+    if(++anim_frame_count > rd->anim_frame_hold) {
+        anim_frame_count = 0;
+    }
+}
+
 void refresh_sprites(RenderData *rd)
 {
     register int y;
@@ -190,6 +198,15 @@ void refresh_sprites(RenderData *rd)
             image_offset.x = 0;
             image_offset.y = 0;
             r = &sprite->rect;
+        }
+
+        /* animation */
+        if(sprite->anim && anim_frame_count == 0) {
+            sprite->vis.image = sprite->anim->frames[sprite->current_frame];
+
+            if(++sprite->current_frame > sprite->anim->frame_count - 1) {
+                sprite->current_frame = 0;
+            }
         }
 
         /* draw the sprite */

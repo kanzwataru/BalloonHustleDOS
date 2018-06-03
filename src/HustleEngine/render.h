@@ -37,6 +37,8 @@ typedef struct {
 
 typedef struct {
     buffer_t    **frames;      /* owned */
+    int         w;
+    int         h;
     byte        frame_count;
 } Animation;
 
@@ -49,7 +51,7 @@ typedef struct {
     Rect        hitbox;
     Rect        *parent;      /* NULL by default, reference only */
     Animation   *anim;        /* NULL by default, reference only */
-    byte        anim_frame;
+    byte        current_frame;
     byte        flags;
 } Sprite;
 
@@ -59,7 +61,10 @@ typedef struct {
     buffer_t *bg_layer;
     Sprite *sprites;
     uint sprite_count;
+    uint anim_frame_hold;       /* how many frames to hold each frame of animation */
 } RenderData;
+
+/**** Renderer functions ****/
 
 buffer_t *create_image(uint w, uint h);
 int init_renderer(RenderData *rd, int sprite_count);
@@ -75,5 +80,10 @@ void reset_sprite(Sprite *sprite);
  * Draw a filled rectangle with a specific colour
 */
 void draw_rect(buffer_t *buf, const Rect *rect, byte colour);
+
+/**** Animation functions ****/
+void init_animation(Animation *anim, byte frame_count, uint w, uint h);
+void free_animation(Animation *anim);
+void load_animation(const char *file);
 
 #endif /* RENDER_H */
