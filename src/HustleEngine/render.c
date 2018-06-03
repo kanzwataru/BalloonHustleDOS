@@ -193,16 +193,21 @@ void refresh_sprites(RenderData *rd)
         }
 
         /* draw the sprite */
-        y_max = r->y + r->h;
-        image_offset.x += image_offset.y * r->w;
-        for(y = r->y; y < y_max; ++y) {
-            offset = CALC_OFFSET(r->x, y);
-            _fmemcpy(
-                rd->screen + offset, 
-                sprite->image + image_offset.x,
-                r->w);
+        if(sprite->flags & SPRITE_FILL) {
+            draw_rect(rd->screen, r, sprite->vis.colour);
+        }
+        else {
+            y_max = r->y + r->h;
+            image_offset.x += image_offset.y * r->w;
+            for(y = r->y; y < y_max; ++y) {
+                offset = CALC_OFFSET(r->x, y);
+                _fmemcpy(
+                    rd->screen + offset, 
+                    sprite->vis.image + image_offset.x,
+                    r->w);
 
-            image_offset.x += sprite->rect.w;
+                image_offset.x += sprite->rect.w;
+            }
         }
         
         *dirt_rect = *r;
@@ -252,6 +257,6 @@ void draw_rect(buffer_t *buf, const Rect *rect, byte colour)
     register int w = rect->w;
 
     for(y = rect->y; y < y_max; ++y) {
-        _fmemset(buf + CALC_OFFSET(x, y), colour);
+        _fmemset(buf + (CALC_OFFSET(x, y)), colour, w);
     }
 }

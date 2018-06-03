@@ -19,7 +19,8 @@
 enum SPRITEFLAGS
 {
     SPRITE_REFRESH    = 0x01, /* (0001) If the sprite should refresh */
-    SPRITE_CLIP       = 0x02  /* (0010) If should be screen-clipped to not wrap back */
+    SPRITE_CLIP       = 0x02, /* (0010) If should be screen-clipped to not wrap back */
+    SPRITE_FILL       = 0x04, /* (0100) If the sprite should be a colour and not an iamge */
 };
 
 typedef struct {
@@ -40,7 +41,10 @@ typedef struct {
 } Animation;
 
 typedef struct {
-    buffer_t    *image;       /* not freed, reference only */
+    union {
+        buffer_t    *image;       /* not freed, reference only */
+        byte        colour;
+    } vis;
     Rect        rect;
     Rect        hitbox;
     Rect        *parent;      /* NULL by default, reference only */
