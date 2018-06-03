@@ -67,7 +67,7 @@ typedef struct {
 /**** Renderer functions ****/
 
 buffer_t *create_image(uint w, uint h);
-int init_renderer(RenderData *rd, int sprite_count);
+int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette);
 void quit_renderer(RenderData *rd);
 
 void refresh_sprites(RenderData *rd);
@@ -84,6 +84,6 @@ void draw_rect(buffer_t *buf, const Rect *rect, byte colour);
 /**** Animation functions ****/
 void init_animation(Animation *anim, byte frame_count, uint w, uint h);
 void free_animation(Animation *anim);
-void load_animation(const char *file);
+void load_animation(Animation *anim, const char *file);
 
 #endif /* RENDER_H */

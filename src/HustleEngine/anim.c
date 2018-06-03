@@ -27,7 +27,7 @@ void destroy_animation(Animation *anim)
     anim->frames = NULL;
 }
 
-void load_animation(const char *file)
+void load_animation(Animation *anim, const char *file)
 {
     //TODO
 }

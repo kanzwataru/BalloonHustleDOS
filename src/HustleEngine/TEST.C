@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "src/hustle~1/render.h"
 #include "src/hustle~1/core.h"
+#include "src/hustle~1/filesys.h"
 
 #define SPRITE_COUNT 15
 
@@ -88,22 +89,29 @@ int main(int argc, char **argv)
 {
     uint i;
     CoreData cd;
+    buffer_t *balloon_img;
+    buffer_t *pal;
 
     cd.update_callback = &update;
     cd.render_callback = &render;
     cd.input_handler = &input;
 
-    if(!init_renderer(&rd, SPRITE_COUNT))
+    balloon_img = create_image(32, 32);
+    load_bmp_image(balloon_img, "RES\\BALLOON.BMP");
+    pal = load_bmp_palette("RES\\BALLOON.BMP");
+
+    if(!init_renderer(&rd, SPRITE_COUNT, pal))
         return 0;
     
     rd.anim_frame_hold = 3;
 
-    rd.sprites[0].anim = &test_anim;
+    //rd.sprites[0].anim = &test_anim;
+    rd.sprites[0].vis.colour = 4;
     rd.sprites[0].rect.w = 32;
     rd.sprites[0].rect.h = 32;
     rd.sprites[0].rect.x = 16;
     rd.sprites[0].rect.y = 64;
-    rd.sprites[0].flags = SPRITE_REFRESH;
+    rd.sprites[0].flags = SPRITE_REFRESH | SPRITE_FILL;
 
     rd.sprites[1].vis.image = create_image(32,32);
 
@@ -118,7 +126,7 @@ int main(int argc, char **argv)
     rd.sprites[1].rect.y = 128;
     rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP;
 
-    rd.sprites[2].vis.image = rd.sprites[1].vis.image;
+    rd.sprites[2].vis.image = balloon_img;
     rd.sprites[2].rect.w = 32;
     rd.sprites[2].rect.h = 32;
     rd.sprites[2].rect.x = 256;

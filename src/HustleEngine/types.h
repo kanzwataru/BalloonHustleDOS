@@ -4,6 +4,7 @@
 typedef unsigned char far buffer_t;
 typedef unsigned char byte;
 typedef unsigned int  uint;
+typedef unsigned long ulong;
 
 typedef int bool;
 #define true 1

@@ -1,10 +1,11 @@
 #include "src/hustle~1/render.h"
+#include "src/hustle~1/vga.h"
 #include <malloc.h>
 #include <dos.h>
 #include <stdio.h>
 
 static int anim_frame_count = 0;
-static int old_mode;  /* VGA mode we were in before switching to 13h */
+
 static Rect *dirty_rects;
 static const Rect EMPTY_RECT = {0,0,0,0};
 
@@ -25,40 +26,6 @@ static buffer_t *make_framebuffer() {
 
 buffer_t *create_image(uint w, uint h) {
     return farmalloc(w * h);
-}
-
-/*
- * Enters mode 13h
- *
- * (this code was lifted from: http://www3.telus.net/alexander_russell/course/chapter_1.htm)
-*/
-static void enter_m13h(void)
-{
-    union REGS in, out;
-
-    // get old video mode
-    in.h.ah = 0xf;
-    int86(0x10, &in, &out);
-    old_mode = out.h.al;
-
-    // enter mode 13h
-    in.h.ah = 0;
-    in.h.al = 0x13;
-    int86(0x10, &in, &out);
-}
-
-/*
- * Exits mode 13h
- *
- * (this code was lifted from: http://www3.telus.net/alexander_russell/course/chapter_1.htm)
-*/
-static void leave_m13h(void)
-{
-    union REGS in, out;
-
-    in.h.ah = 0;
-    in.h.al = old_mode;
-    int86(0x10, &in, &out);
 }
 
 static void init_all_sprites(Sprite **sprites, const uint count) 
@@ -234,7 +201,7 @@ void refresh_sprites(RenderData *rd)
     } while(i--);
 }
 
-int init_renderer(RenderData *rd, int sprite_count)
+int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
 {
     rd->bg_layer = make_framebuffer();
     rd->sprite_count = sprite_count;
@@ -249,6 +216,9 @@ int init_renderer(RenderData *rd, int sprite_count)
         rd->screen_clipping.y = 0;
         rd->screen_clipping.w = SCREEN_WIDTH;
         rd->screen_clipping.h = SCREEN_HEIGHT;   
+
+        if(palette)
+            set_palette(palette);
 
         return 1;
     }
