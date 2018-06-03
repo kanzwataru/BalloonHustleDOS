@@ -109,16 +109,43 @@ static bool clip_rect(Rect *clipped, Point *offset, const Rect *orig, const Rect
     return true;
 }
 
-void blit_rect(unsigned char far *dest, const unsigned char far *src, const Rect *rect)
+static void blit(buffer_t *dest, const buffer_t *src, const Rect *rect)
 {
-    int y, offset;
-    const int y_max = rect->y + rect->h;
+    register int y = rect->h;
+    register int offset = CALC_OFFSET(rect->x, rect->y);
 
-    for(y = rect->y; y < y_max; ++y) {
-        offset = CALC_OFFSET(rect->x, y);
+    for(; y > 0; --y) {
         _fmemcpy(dest + offset, src + offset, rect->w);
+
+        offset += SCREEN_WIDTH;
     }
 }
+
+static void blit_offset(buffer_t *dest, const buffer_t *src, const Rect *rect, int offset, int orig_w)
+{
+    register int y = rect->h;
+    dest += CALC_OFFSET(rect->x, rect->y);
+    src += offset;
+
+    for(; y > 0; --y) {
+        _fmemcpy(dest, src, rect->w);
+
+        dest += SCREEN_WIDTH;
+        src += orig_w;
+    }
+}
+
+void draw_rect(buffer_t *buf, const Rect *rect, byte colour)
+{
+    register int y = rect->h;
+    register buffer_t *buf_o = buf + CALC_OFFSET(rect->x,rect->y);
+    
+    for(; y > 0; --y) {
+        _fmemset(buf_o, colour, rect->w);
+        buf_o += SCREEN_WIDTH;
+    }
+}
+
 
 void reset_sprite(Sprite *sprite) {
     memset(sprite, 0, sizeof(Sprite));
@@ -150,7 +177,7 @@ void refresh_sprites(RenderData *rd)
         }
 
         /* copy BG over dirty rect */
-        blit_rect(rd->screen, rd->bg_layer, dirt_rect);
+        blit(rd->screen, rd->bg_layer, dirt_rect);
 
         /* check if we need to clip the sprite
          * or let it overflow */
@@ -181,17 +208,7 @@ void refresh_sprites(RenderData *rd)
             draw_rect(rd->screen, r, sprite->vis.colour);
         }
         else {
-            y_max = r->y + r->h;
-            image_offset.x += image_offset.y * r->w;
-            for(y = r->y; y < y_max; ++y) {
-                offset = CALC_OFFSET(r->x, y);
-                _fmemcpy(
-                    rd->screen + offset, 
-                    sprite->vis.image + image_offset.x,
-                    r->w);
-
-                image_offset.x += sprite->rect.w;
-            }
+            blit_offset(rd->screen, sprite->vis.image, r, image_offset.x + (image_offset.y * r->w), sprite->rect.w);
         }
         
         *dirt_rect = *r;
@@ -234,16 +251,4 @@ void quit_renderer(RenderData *rd)
     free_all_sprites(&rd->sprites, &rd->sprite_count);
     farfree(rd->bg_layer);
     leave_m13h();
-}
-
-void draw_rect(buffer_t *buf, const Rect *rect, byte colour)
-{
-    register int y;
-    register int x = rect->x;
-    register int y_max = rect->y + rect->h;
-    register int w = rect->w;
-
-    for(y = rect->y; y < y_max; ++y) {
-        _fmemset(buf + (CALC_OFFSET(x, y)), colour, w);
-    }
 }

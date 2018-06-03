@@ -3,7 +3,7 @@
 #include "src/hustle~1/core.h"
 #include "src/hustle~1/filesys.h"
 
-#define SPRITE_COUNT 15
+#define SPRITE_COUNT 10
 
 Point bounce_dirs[SPRITE_COUNT];
 RenderData rd;
@@ -95,6 +95,7 @@ int main(int argc, char **argv)
     cd.update_callback = &update;
     cd.render_callback = &render;
     cd.input_handler = &input;
+    cd.frame_skip = 0;
 
     balloon_img = create_image(32, 32);
     load_bmp_image(balloon_img, "RES\\BALLOON.BMP");

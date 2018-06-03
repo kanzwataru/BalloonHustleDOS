@@ -8,6 +8,7 @@ typedef struct {
     void (*render_callback)(void);
     bool (*input_handler)(void);
     void (*exit_handler)(void);
+    int frame_skip;
 } CoreData;
 
 void engine_start(CoreData cd);
