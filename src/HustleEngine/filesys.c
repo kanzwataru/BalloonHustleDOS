@@ -62,15 +62,15 @@ void load_bmp_image(buffer_t *buf, const char *file)
 
 buffer_t *load_bmp_palette(const char *file)
 {
-    long i;
+    int i;
     struct FileLoadData d = open_bmp_file(file);
 
     buffer_t *palette = farcalloc(256 * 3, sizeof(byte));
 
-    for(i = 0; i < d.col_num; i+= 3) {
-        palette[(int)(i + 2)] = fgetc(d.fp) >> 2;
-        palette[(int)(i + 1)] = fgetc(d.fp) >> 2;
-        palette[(int)(i + 0)] = fgetc(d.fp) >> 2;
+    for(i = 0; i < d.col_num * 3; i+= 3) {
+        palette[i + 2] = fgetc(d.fp) >> 2;
+        palette[i + 1] = fgetc(d.fp) >> 2;
+        palette[i + 0] = fgetc(d.fp) >> 2;
         fgetc(d.fp);
     }
 

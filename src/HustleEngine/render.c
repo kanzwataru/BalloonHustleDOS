@@ -135,6 +135,47 @@ static void blit_offset(buffer_t *dest, const buffer_t *src, const Rect *rect, i
     }
 }
 
+static void blit_offset_masked(buffer_t *dest, const buffer_t *src, const Rect *rect, int offset, int orig_w)
+{
+    register int x, y;
+
+    dest += CALC_OFFSET(rect->x, rect->y);
+    src += offset;
+
+    for(y = 0; y < rect->h; ++y) {
+        for(x = 0; x < rect->w; ++x) {
+            if(src[x] != TRANSPARENT)
+                *(dest + x) = *(src + x);
+        }
+
+        dest += SCREEN_WIDTH;
+        src += orig_w;
+    }
+}
+
+/*
+static void blit_offset_masked(buffer_t *dest, const buffer_t *src, const Rect *rect, int offset, int orig_w)
+{
+    register int y = rect->h;
+    register int x = rect->w;
+    const int adj = SCREEN_WIDTH - rect->w;
+    dest += CALC_OFFSET(rect->x, rect->y);
+    src += offset;
+
+    for(; y > 0; --y) {
+        for(; x > 0; --x) {
+            if(*src == TRANSPARENT) {
+                ++dest;
+                ++src;
+            }
+            else{
+                *dest++ = *src++;
+            }
+        }
+        dest += adj;
+    }
+}*/
+
 void draw_rect(buffer_t *buf, const Rect *rect, byte colour)
 {
     register int y = rect->h;
@@ -206,6 +247,9 @@ void refresh_sprites(RenderData *rd)
         /* draw the sprite */
         if(sprite->flags & SPRITE_FILL) {
             draw_rect(rd->screen, r, sprite->vis.colour);
+        }
+        else if(sprite->flags & SPRITE_MASKED) {
+            blit_offset_masked(rd->screen, sprite->vis.image, r, image_offset.x + (image_offset.y * r->w), sprite->rect.w);
         }
         else {
             blit_offset(rd->screen, sprite->vis.image, r, image_offset.x + (image_offset.y * r->w), sprite->rect.w);

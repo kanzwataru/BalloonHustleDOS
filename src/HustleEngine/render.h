@@ -10,6 +10,7 @@
 #define SCREEN_WIDTH 320   /* Mode 13h uses 320 x 200 res */
 #define SCREEN_HEIGHT 200
 #define SCREEN_SIZE 64000u /* Amount of pixels (320 x 200) */
+#define TRANSPARENT 0
 #define FILL_BUFFER(buf, col) _fmemset((buf), (col), (SCREEN_SIZE));
 
 /*
@@ -21,6 +22,7 @@ enum SPRITEFLAGS
     SPRITE_REFRESH    = 0x01, /* (0001) If the sprite should refresh */
     SPRITE_CLIP       = 0x02, /* (0010) If should be screen-clipped to not wrap back */
     SPRITE_FILL       = 0x04, /* (0100) If the sprite should be a colour and not an iamge */
+    SPRITE_MASKED     = 0x08, /* (1000) If colour id 0 should be treated as transparent */
 };
 
 typedef struct {

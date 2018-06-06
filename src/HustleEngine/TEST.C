@@ -3,7 +3,7 @@
 #include "src/hustle~1/core.h"
 #include "src/hustle~1/filesys.h"
 
-#define SPRITE_COUNT 10
+#define SPRITE_COUNT 8
 
 Point bounce_dirs[SPRITE_COUNT];
 RenderData rd;
@@ -125,14 +125,14 @@ int main(int argc, char **argv)
     rd.sprites[1].rect.h = 32;
     rd.sprites[1].rect.x = 128;
     rd.sprites[1].rect.y = 128;
-    rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP;
+    rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
 
     rd.sprites[2].vis.image = balloon_img;
     rd.sprites[2].rect.w = 32;
     rd.sprites[2].rect.h = 32;
     rd.sprites[2].rect.x = 256;
     rd.sprites[2].rect.y = 128;
-    rd.sprites[2].flags = SPRITE_REFRESH | SPRITE_CLIP;
+    rd.sprites[2].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
 
     animation_frames_init();
     bouncing_sprites_init();
