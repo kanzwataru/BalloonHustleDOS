@@ -4,9 +4,14 @@
 #include <dos.h>
 #include <stdio.h>
 
+struct SimpleSprite {
+    buffer_t *image;
+    Rect rect;
+};
+
 static int anim_frame_count = 0;
 
-static Rect *dirty_rects;
+static struct SimpleSprite *dirty_tiles;
 static const Rect EMPTY_RECT = {0,0,0,0};
 
 /*
@@ -30,9 +35,14 @@ buffer_t *create_image(uint w, uint h) {
 
 static void init_all_sprites(Sprite **sprites, const uint count) 
 {
+    int i;
+
     if(count > 0) {
         *sprites = calloc(count, sizeof(Sprite));
-        dirty_rects = calloc(count, sizeof(Rect));
+        dirty_tiles = calloc(count, sizeof(struct SimpleSprite *));
+        for(i = 0; i < count; ++i) {
+            dirty_tiles[i].image = farmalloc(MAX_SPRITE_SIZE);
+        }
     }
     else {
         *sprites = NULL;
@@ -41,12 +51,13 @@ static void init_all_sprites(Sprite **sprites, const uint count)
 
 static void free_all_sprites(Sprite **sprites, uint *count)
 {
+    int i;
     if(*sprites) {
         free(*sprites);
         *sprites = NULL;
 
-        free(dirty_rects);
-        dirty_rects = NULL;
+        free(dirty_tiles);
+        dirty_tiles = NULL;
     }
 
     *count = 0;
@@ -194,9 +205,13 @@ void reset_sprite(Sprite *sprite) {
 
 void refresh_screen(RenderData *rd)
 {
+    int i;
+
     if(++anim_frame_count > rd->anim_frame_hold) {
         anim_frame_count = 0;
     }
+
+    
 }
 
 void refresh_sprites(RenderData *rd)
@@ -204,35 +219,27 @@ void refresh_sprites(RenderData *rd)
     register int y;
     register int offset;
     int y_max;
-    Rect clipped;
     Point image_offset;
-    Rect *r;
+    Rect r = EMPTY_RECT;
 
-    uint i = rd->sprite_count;
-    Sprite *sprite = rd->sprites + i;
-    Rect *dirt_rect = dirty_rects + i;
-    do {
+    size_t i;
+    Sprite *sprite;
+    struct SimpleSprite *d_tile;
+    for(i = 0; i < rd->sprite_count; ++i) {
+        sprite = rd->sprites + i;
+        d_tile = dirty_tiles + i;
+
         /* skip sprites that aren't active */
         if(!(sprite->flags & SPRITE_REFRESH)) {
-            goto next;
+            d_tile->rect = EMPTY_RECT;
+            continue;
         }
-
-        /* copy BG over dirty rect */
-        blit(rd->screen, rd->bg_layer, dirt_rect);
 
         /* check if we need to clip the sprite
          * or let it overflow */
-        if(sprite->flags & SPRITE_CLIP) {
-            r = &clipped;
-            if(!clip_rect(&clipped, &image_offset, &sprite->rect, &rd->screen_clipping)) {
-                *dirt_rect = EMPTY_RECT;
-                goto next;
-            }
-        }
-        else {
-            image_offset.x = 0;
-            image_offset.y = 0;
-            r = &sprite->rect;
+        if(!clip_rect(&r, &image_offset, &sprite->rect, &rd->screen_clipping)) {
+            d_tile->rect = EMPTY_RECT;
+            continue;
         }
 
         /* animation */
@@ -246,20 +253,15 @@ void refresh_sprites(RenderData *rd)
 
         /* draw the sprite */
         if(sprite->flags & SPRITE_FILL) {
-            draw_rect(rd->screen, r, sprite->vis.colour);
+            draw_rect(rd->screen, &r, sprite->vis.colour);
         }
         else if(sprite->flags & SPRITE_MASKED) {
-            blit_offset_masked(rd->screen, sprite->vis.image, r, image_offset.x + (image_offset.y * r->w), sprite->rect.w);
+            blit_offset_masked(rd->screen, sprite->vis.image, &r, image_offset.x + (image_offset.y * r.w), sprite->rect.w);
         }
         else {
-            blit_offset(rd->screen, sprite->vis.image, r, image_offset.x + (image_offset.y * r->w), sprite->rect.w);
+            blit_offset(rd->screen, sprite->vis.image, &r, image_offset.x + (image_offset.y * r.w), sprite->rect.w);
         }
-        
-        *dirt_rect = *r;
-    next:
-        --sprite;
-        --dirt_rect;
-    } while(i--);
+    };
 }
 
 int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
