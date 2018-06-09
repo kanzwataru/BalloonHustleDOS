@@ -3,13 +3,30 @@
 #include "src/hustle~1/core.h"
 #include "src/hustle~1/filesys.h"
 
-#define SPRITE_COUNT 8
+#define SPRITE_COUNT   8
+#define BG_BRICK_SIZE 10
+#define BG_BRICK_COL  4
 
 Point bounce_dirs[SPRITE_COUNT];
 RenderData rd;
 byte col = 0;
 
 Animation test_anim;
+
+void add_bricks(void)
+{
+    int col = 0;
+    Rect r = {0,0,BG_BRICK_SIZE, BG_BRICK_SIZE};
+    
+    while(r.y < (SCREEN_HEIGHT - BG_BRICK_SIZE)) {
+        while(r.x < (SCREEN_WIDTH - BG_BRICK_SIZE)) {
+            draw_rect(rd.screen, &r, ++col);
+            r.x += BG_BRICK_SIZE * 2;
+        }
+        r.x = 0;
+        r.y += BG_BRICK_SIZE * 2;
+    }
+}
 
 void animation_frames_init(void)
 {
@@ -138,6 +155,7 @@ int main(int argc, char **argv)
     bouncing_sprites_init();
     FILL_BUFFER(rd.screen, 3);
     FILL_BUFFER(rd.bg_layer, 3);
+    add_bricks();
     add_border();
 
     engine_start(cd);
