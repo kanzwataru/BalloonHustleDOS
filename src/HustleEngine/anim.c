@@ -1,5 +1,5 @@
 #include "src/hustle~1/render.h"
-#include <malloc.h>
+#include "src/hustle~1/platform.h"
 #include <dos.h>
 
 void init_animation(Animation *anim, byte frame_count, uint w, uint h)

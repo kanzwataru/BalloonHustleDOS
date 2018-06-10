@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "src/hustle~1/render.h"
 #include "src/hustle~1/core.h"
 #include "src/hustle~1/filesys.h"
+#include "src/hustle~1/platform.h"
 
 #define SPRITE_COUNT   8
 #define BG_BRICK_SIZE 10

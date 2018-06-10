@@ -1,6 +1,6 @@
 #include "src/hustle~1/render.h"
 #include "src/hustle~1/vga.h"
-#include <malloc.h>
+#include "src/hustle~1/platform.h"
 #include <dos.h>
 #include <stdio.h>
 

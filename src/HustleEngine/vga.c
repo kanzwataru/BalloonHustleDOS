@@ -1,11 +1,10 @@
 #include "src/hustle~1/vga.h"
+#include "src/hustle~1/platform.h"
 #include <dos.h>
 
 #define PALETTE_INDEX       0x03c8
 #define PALETTE_DATA        0x03c9
 #define INPUT_STATUS        0x03da
-
-static int old_mode;  /* VGA mode we were in before switching to 13h */
 
 /*
  * Enters mode 13h

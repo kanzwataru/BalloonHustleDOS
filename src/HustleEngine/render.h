@@ -73,6 +73,7 @@ buffer_t *create_image(uint w, uint h);
 int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette);
 void quit_renderer(RenderData *rd);
 
+void refresh_screen(RenderData *rd);
 void refresh_sprites(RenderData *rd);
 
 void reset_sprite(Sprite *sprite);
