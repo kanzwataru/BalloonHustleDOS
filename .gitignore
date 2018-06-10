@@ -1,6 +1,12 @@
 *.EXE
 *.DSK
 *.OBJ
+*.ERR
+*.MAP
+*.LK1
 *.exe
 *.dsl
 *.obj
+*.err
+*.map
+*.lk1

@@ -7,7 +7,17 @@ run:
 buildnrun:
 	dosbox -c "cd C:\DEV\BALLOON" -c "tc balloon.prj /m" -c "balloon.exe"
 
+watcom:
+	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f balloon.mk"
+
+buildnrun_watcom:
+	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f balloon.mk" -c "balloon.exe"
+
 clean:
-	rm *.EXE
-	rm *.OBJ
-	rm *.DSK
+	rm -f *.EXE
+	rm -f *.OBJ
+	rm -f *.DSK
+	rm -f *.ERR
+	rm -f *.MAP
+	rm -f *.LK1
+

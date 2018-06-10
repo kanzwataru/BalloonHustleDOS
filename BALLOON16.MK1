@@ -1,0 +1,23 @@
+!define BLANK ""
+anim.obj : src\hustle~1\anim.c .AUTODEPEND
+ *wcc src\hustle~1\anim.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
+
+core.obj : src\hustle~1\core.c .AUTODEPEND
+ *wcc src\hustle~1\core.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
+
+filesys.obj : src\hustle~1\filesys.c .AUTODEPEND
+ *wcc src\hustle~1\filesys.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
+
+render.obj : src\hustle~1\render.c .AUTODEPEND
+ *wcc src\hustle~1\render.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
+
+TEST.obj : src\hustle~1\TEST.C .AUTODEPEND
+ *wcc src\hustle~1\TEST.C -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
+
+vga.obj : src\hustle~1\vga.c .AUTODEPEND
+ *wcc src\hustle~1\vga.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
+
+balloon.exe : anim.obj core.obj filesys.obj render.obj TEST.obj vga.obj .AUTODEPEND
+ @%write balloon.lk1 FIL anim.obj,core.obj,filesys.obj,render.obj,TEST.obj,vga.obj
+ @%append balloon.lk1 
+ *wlink name balloon sys dos op m op maxe=25 op q op symf @balloon.lk1
