@@ -39,9 +39,13 @@ static void init_all_sprites(Sprite **sprites, const uint count)
 
     if(count > 0) {
         *sprites = calloc(count, sizeof(Sprite));
-        dirty_tiles = calloc(count, sizeof(struct SimpleSprite *));
+        dirty_tiles = calloc(count, sizeof(struct SimpleSprite));
+        if(!dirty_tiles)
+            while(1) printf("OUT OF MEM: dirty_tiles\n");
         for(i = 0; i < count; ++i) {
-            dirty_tiles[i].image = farmalloc(MAX_SPRITE_SIZE);
+            dirty_tiles[i].image = farcalloc(MAX_SPRITE_SIZE * MAX_SPRITE_SIZE, sizeof(byte));
+            if(!dirty_tiles[i].image)
+                while(1) printf("OUT OF MEM: dirty_tiles (%d)\n", i);
         }
     }
     else {
@@ -146,6 +150,34 @@ static void blit_offset(buffer_t *dest, const buffer_t *src, const Rect *rect, i
     }
 }
 
+static void tile_to_screen(buffer_t *dest, const buffer_t *src, const Rect *rect)
+{
+    register int y = rect->h;
+
+    dest += CALC_OFFSET(rect->x, rect->y);
+
+    for(; y > 0; --y) {
+        _fmemcpy(dest, src, rect->w);
+
+        dest += SCREEN_WIDTH;
+        src += rect->w;
+    }
+}
+
+static void screen_to_tile(buffer_t *dest, const buffer_t *src, const Rect *rect)
+{
+    register int y = rect->h;
+
+    dest += CALC_OFFSET(rect->x, rect->y);
+
+    for(; y > 0; --y) {
+        _fmemcpy(dest, src, rect->w);
+
+        dest += rect->w;
+        src += SCREEN_WIDTH;
+    }
+}
+
 static void blit_offset_masked(buffer_t *dest, const buffer_t *src, const Rect *rect, int offset, int orig_w)
 {
     register int x, y;
@@ -163,29 +195,6 @@ static void blit_offset_masked(buffer_t *dest, const buffer_t *src, const Rect *
         src += orig_w;
     }
 }
-
-/*
-static void blit_offset_masked(buffer_t *dest, const buffer_t *src, const Rect *rect, int offset, int orig_w)
-{
-    register int y = rect->h;
-    register int x = rect->w;
-    const int adj = SCREEN_WIDTH - rect->w;
-    dest += CALC_OFFSET(rect->x, rect->y);
-    src += offset;
-
-    for(; y > 0; --y) {
-        for(; x > 0; --x) {
-            if(*src == TRANSPARENT) {
-                ++dest;
-                ++src;
-            }
-            else{
-                *dest++ = *src++;
-            }
-        }
-        dest += adj;
-    }
-}*/
 
 void draw_rect(buffer_t *buf, const Rect *rect, byte colour)
 {
@@ -210,8 +219,17 @@ void refresh_screen(RenderData *rd)
     if(++anim_frame_count > rd->anim_frame_hold) {
         anim_frame_count = 0;
     }
+/*
+    for(i = rd->sprite_count - 1; i >= 0; --i) {
+        //printf("(%d) {%d, %d, %d, %d}\n", i, dirty_tiles[i].rect.x, dirty_tiles[i].rect.y, dirty_tiles[i].rect.w, dirty_tiles[i].rect.h);
+        tile_to_screen(rd->screen, dirty_tiles[i].image, &dirty_tiles[i].rect);
 
-    
+        //blit_offset(rd->screen, dirty_tiles[i].image, &dirty_tiles[i].rect, 0, dirty_tiles[i].rect.w);
+    }
+    */
+    printf("[0] {%d %d %d %d} refresh_screen()\n", rd->sprites[0].rect.x, rd->sprites[0].rect.y, rd->sprites[0].rect.w, rd->sprites[0].rect.h);
+
+    //tile_to_screen(rd->screen, dirty_tiles[2].image, &dirty_tiles[2].rect);
 }
 
 void refresh_sprites(RenderData *rd)
@@ -229,18 +247,24 @@ void refresh_sprites(RenderData *rd)
         sprite = rd->sprites + i;
         d_tile = dirty_tiles + i;
 
+        printf("(%d) {%d %d %d %d}\n", i, sprite->rect.x, sprite->rect.y, sprite->rect.w, sprite->rect.h);
+
         /* skip sprites that aren't active */
         if(!(sprite->flags & SPRITE_REFRESH)) {
             d_tile->rect = EMPTY_RECT;
-            continue;
+            goto end;
         }
+
+        printf("(%d) {%d %d %d %d}\n", i, sprite->rect.x, sprite->rect.y, sprite->rect.w, sprite->rect.h);
 
         /* check if we need to clip the sprite
          * or let it overflow */
         if(!clip_rect(&r, &image_offset, &sprite->rect, &rd->screen_clipping)) {
             d_tile->rect = EMPTY_RECT;
-            continue;
+            goto end;
         }
+
+        printf("(%d) {%d %d %d %d}\n", i, sprite->rect.x, sprite->rect.y, sprite->rect.w, sprite->rect.h);
 
         /* animation */
         if(sprite->anim && anim_frame_count == 0) {
@@ -250,6 +274,15 @@ void refresh_sprites(RenderData *rd)
                 sprite->current_frame = 0;
             }
         }
+
+        printf("(%d) {%d %d %d %d}\n", i, sprite->rect.x, sprite->rect.y, sprite->rect.w, sprite->rect.h);
+
+        screen_to_tile(d_tile->image, rd->screen, &r);
+        //_fmemcpy(d_tile->image, sprite->vis.image, r.w * r.h);
+        //_fmemset(d_tile->image, ++col, &r);
+        d_tile->rect = r;
+
+        printf("(%d) {%d %d %d %d}\n", i, sprite->rect.x, sprite->rect.y, sprite->rect.w, sprite->rect.h);
 
         /* draw the sprite */
         if(sprite->flags & SPRITE_FILL) {
@@ -261,6 +294,13 @@ void refresh_sprites(RenderData *rd)
         else {
             blit_offset(rd->screen, sprite->vis.image, &r, image_offset.x + (image_offset.y * r.w), sprite->rect.w);
         }
+
+        printf("(%d) {%d %d %d %d}\n", i, sprite->rect.x, sprite->rect.y, sprite->rect.w, sprite->rect.h);
+
+        end:
+        printf("[0] {%d %d %d %d} refresh end\n", rd->sprites[0].rect.x, rd->sprites[0].rect.y, rd->sprites[0].rect.w, rd->sprites[0].rect.h);
+
+        while(!getch()) {}
     };
 }
 
