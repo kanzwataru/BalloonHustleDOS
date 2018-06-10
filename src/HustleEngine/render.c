@@ -221,13 +221,8 @@ void refresh_screen(RenderData *rd)
     }
 
     for(i = rd->sprite_count - 1; i >= 0; --i) {
-        //printf("(%d) {%d, %d, %d, %d}\n", i, dirty_tiles[i].rect.x, dirty_tiles[i].rect.y, dirty_tiles[i].rect.w, dirty_tiles[i].rect.h);
         tile_to_screen(rd->screen, dirty_tiles[i].image, &dirty_tiles[i].rect);
-
-        //blit_offset(rd->screen, dirty_tiles[i].image, &dirty_tiles[i].rect, 0, dirty_tiles[i].rect.w);
     }
-
-    //tile_to_screen(rd->screen, dirty_tiles[2].image, &dirty_tiles[2].rect);
 }
 
 void refresh_sprites(RenderData *rd)
@@ -269,8 +264,6 @@ void refresh_sprites(RenderData *rd)
         }
 
         screen_to_tile(d_tile->image, rd->screen, &r);
-        //_fmemcpy(d_tile->image, sprite->vis.image, r.w * r.h);
-        //_fmemset(d_tile->image, ++col, r.w * r.h);
         d_tile->rect = r;
 
         /* draw the sprite */
