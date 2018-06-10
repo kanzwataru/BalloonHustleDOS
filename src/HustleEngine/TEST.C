@@ -51,7 +51,7 @@ void bouncing_sprites_init(void)
 {
     Rect rect = {0,0,16,16};
     int i;
-    for(i = 2; i < SPRITE_COUNT - 1; ++i) {
+    for(i = 3; i < SPRITE_COUNT - 1; ++i) {
         rect.x = rand() % 320;
         rect.y = rand() % 200;
         rd.sprites[i].rect = rect;
@@ -65,7 +65,7 @@ void bouncing_sprites_init(void)
 void bouncing_sprites_update(void)
 {
     int i;
-    for(i = 2; i < SPRITE_COUNT - 1; ++i) {
+    for(i = 3; i < SPRITE_COUNT - 1; ++i) {
         rd.sprites[i].rect.x += bounce_dirs[i].x;
         rd.sprites[i].rect.y += bounce_dirs[i].y;
 
@@ -144,6 +144,14 @@ int main(int argc, char **argv)
     rd.sprites[1].rect.x = 128;
     rd.sprites[1].rect.y = 128;
     rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
+
+    rd.sprites[2].vis.colour = 4;
+    rd.sprites[2].rect.w = 8;
+    rd.sprites[2].rect.h = 16;
+    rd.sprites[2].rect.x = 24;
+    rd.sprites[2].rect.y = -8;
+    rd.sprites[2].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_FILL;
+    rd.sprites[2].parent = &rd.sprites[1].rect;
 
     rd.sprites[SPRITE_COUNT - 1].vis.image = balloon_img;
     rd.sprites[SPRITE_COUNT - 1].rect.w = 32;

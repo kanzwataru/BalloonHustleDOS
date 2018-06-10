@@ -232,7 +232,8 @@ void refresh_sprites(RenderData *rd)
     static byte col;
     int y_max;
     Point image_offset;
-    Rect r = EMPTY_RECT;
+    Rect orig;
+    Rect r;
 
     size_t i;
     Sprite *sprite;
@@ -247,9 +248,15 @@ void refresh_sprites(RenderData *rd)
             continue;
         }
 
+        orig = sprite->rect;
+        if(sprite->parent) {
+            orig.x += sprite->parent->x;
+            orig.y += sprite->parent->y;
+        }
+
         /* check if we need to clip the sprite
          * or let it overflow */
-        if(!clip_rect(&r, &image_offset, &sprite->rect, &rd->screen_clipping)) {
+        if(!clip_rect(&r, &image_offset, &orig, &rd->screen_clipping)) {
             d_tile->rect = EMPTY_RECT;
             continue;
         }
