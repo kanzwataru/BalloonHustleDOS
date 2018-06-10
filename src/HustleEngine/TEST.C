@@ -3,7 +3,7 @@
 #include "src/hustle~1/core.h"
 #include "src/hustle~1/filesys.h"
 
-#define SPRITE_COUNT   5
+#define SPRITE_COUNT   8
 #define BG_BRICK_SIZE 10
 #define BG_BRICK_COL  4
 
@@ -49,7 +49,7 @@ void bouncing_sprites_init(void)
 {
     Rect rect = {0,0,16,16};
     int i;
-    for(i = 3; i < SPRITE_COUNT; ++i) {
+    for(i = 2; i < SPRITE_COUNT - 1; ++i) {
         rect.x = rand() % 320;
         rect.y = rand() % 200;
         rd.sprites[i].rect = rect;
@@ -63,7 +63,7 @@ void bouncing_sprites_init(void)
 void bouncing_sprites_update(void)
 {
     int i;
-    for(i = 3; i < SPRITE_COUNT; ++i) {
+    for(i = 2; i < SPRITE_COUNT - 1; ++i) {
         rd.sprites[i].rect.x += bounce_dirs[i].x;
         rd.sprites[i].rect.y += bounce_dirs[i].y;
 
@@ -80,35 +80,24 @@ void bouncing_sprites_update(void)
 }
 
 void update(void) {
-    //bouncing_sprites_update();
-    printf("[ ] {%d %d %d %d} update start\n", rd.sprites[0].rect.x, rd.sprites[0].rect.y, rd.sprites[0].rect.w, rd.sprites[0].rect.h);
-
-
+    bouncing_sprites_update();
     rd.sprites[1].rect.x += 1;
     if(rd.sprites[1].rect.x > SCREEN_WIDTH + 100)
         rd.sprites[1].rect.x = -100;
 
-    rd.sprites[2].rect.y += 1;
-    if(rd.sprites[2].rect.y > SCREEN_HEIGHT + 32)
-        rd.sprites[2].rect.y = -32;
-
-    printf("[ ] {%d %d %d %d} update end\n", rd.sprites[0].rect.x, rd.sprites[0].rect.y, rd.sprites[0].rect.w, rd.sprites[0].rect.h);
-
+    rd.sprites[SPRITE_COUNT - 1].rect.y += 1;
+    if(rd.sprites[SPRITE_COUNT - 1].rect.y > SCREEN_HEIGHT + 32)
+        rd.sprites[SPRITE_COUNT - 1].rect.y = -32;
 }
 
 void render(void) {
     /*FILL_BUFFER(rd.screen, col++);
     */
-    printf("[ ] {%d %d %d %d} render start\n", rd.sprites[0].rect.x, rd.sprites[0].rect.y, rd.sprites[0].rect.w, rd.sprites[0].rect.h);
     refresh_screen(&rd);
     refresh_sprites(&rd);
-    printf("[ ] {%d %d %d %d} render end\n", rd.sprites[0].rect.x, rd.sprites[0].rect.y, rd.sprites[0].rect.w, rd.sprites[0].rect.h);
-
 }
 
 bool input(void) {
-    while(!getch()) {}
-
     return true;
 }
 
@@ -154,15 +143,15 @@ int main(int argc, char **argv)
     rd.sprites[1].rect.y = 128;
     rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
 
-    rd.sprites[2].vis.image = balloon_img;
-    rd.sprites[2].rect.w = 32;
-    rd.sprites[2].rect.h = 32;
-    rd.sprites[2].rect.x = 256;
-    rd.sprites[2].rect.y = 128;
-    rd.sprites[2].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
+    rd.sprites[SPRITE_COUNT - 1].vis.image = balloon_img;
+    rd.sprites[SPRITE_COUNT - 1].rect.w = 32;
+    rd.sprites[SPRITE_COUNT - 1].rect.h = 32;
+    rd.sprites[SPRITE_COUNT - 1].rect.x = 256;
+    rd.sprites[SPRITE_COUNT - 1].rect.y = 128;
+    rd.sprites[SPRITE_COUNT - 1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
 
     //animation_frames_init();
-    //bouncing_sprites_init();
+    bouncing_sprites_init();
     FILL_BUFFER(rd.screen, 3);
     FILL_BUFFER(rd.bg_layer, 3);
     add_bricks();
