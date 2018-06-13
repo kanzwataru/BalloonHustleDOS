@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "src/hustle~1/render.h"
 #include "src/hustle~1/core.h"
 #include "src/hustle~1/filesys.h"
@@ -14,6 +15,48 @@ RenderData rd;
 byte col = 0;
 
 Animation test_anim;
+
+void engine_benchmark(CoreData cd, int times)
+{
+    clock_t start;
+    double update_time;
+    double render_time;
+    double overall_time;
+    int counter;
+
+    start = clock();
+    counter = times;
+    while(--counter) {
+        cd.update_callback();
+    }
+    update_time = (double)(clock() - start) / CLOCKS_PER_SEC;
+
+    start = clock();
+    counter = times;
+    while(--counter) {
+        cd.render_callback();
+    }
+    render_time = (double)(clock() - start) / CLOCKS_PER_SEC;
+
+
+    start = clock();
+    counter = times;
+    while(--counter) {
+        cd.update_callback();
+
+        cd.render_callback();
+    }
+    overall_time = (double)(clock() - start) / CLOCKS_PER_SEC;
+
+    quit_renderer(&rd);
+
+    printf("engine benchmark: %d frames\n", times);
+    printf("update %g seconds\n", update_time);
+    printf("render %g seconds\n", render_time);
+    printf("OVERALL: %g seconds\n", overall_time);
+
+    exit(1);
+}
 
 void add_bricks(void)
 {
@@ -103,16 +146,32 @@ bool input(void) {
     return true;
 }
 
+void quit(void) {
+    quit_renderer(&rd);
+
+    exit(1);
+}
+
 int main(int argc, char **argv)
 {
     uint i;
     CoreData cd;
     buffer_t *balloon_img;
     buffer_t *pal;
+    bool do_benchmark = false;
+    int benchmark_times;
+
+    if(argc > 2) {
+        if(0 == strcmp(argv[1], "benchmark")) {
+            do_benchmark = true;
+            benchmark_times = atoi(argv[2]);
+        }
+    }
 
     cd.update_callback = &update;
     cd.render_callback = &render;
     cd.input_handler = &input;
+    cd.exit_handler = &quit;
     cd.frame_skip = 0;
 
     balloon_img = create_image(32, 32);
@@ -170,6 +229,10 @@ int main(int argc, char **argv)
     add_border();
 
     refresh_sprites(&rd);
-    engine_start(cd);
+    
+    if(do_benchmark)
+        engine_benchmark(cd, benchmark_times);
+    else
+        engine_start(cd);
     return 1;
 }
