@@ -11,6 +11,7 @@ struct SimpleSprite {
 
 static int anim_frame_count = 0;
 
+static buffer_t *vga;
 static struct SimpleSprite *dirty_tiles;
 static const Rect EMPTY_RECT = {0,0,0,0};
 
@@ -284,6 +285,10 @@ void refresh_sprites(RenderData *rd)
             blit_offset(rd->screen, sprite->vis.image, &r, image_offset.x + (image_offset.y * r.w), sprite->rect.w);
         }
     };
+
+    /* swap buffers if we're doing double buffering */
+    if(rd->flags & RENDER_DOUBLE_BUFFER)
+        _fmemcpy(vga, rd->screen, SCREEN_SIZE);
 }
 
 int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
@@ -292,7 +297,15 @@ int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
     rd->sprite_count = sprite_count;
 
     if(rd->bg_layer) {
-        rd->screen = MK_FP(0xa000, 0);         /* this gets the screen framebuffer */
+        vga = MK_FP(0xa000, 0);   /* this gets the screen framebuffer */
+        
+        /* double buffering means screen is a buffer */
+        if(rd->flags & RENDER_DOUBLE_BUFFER)
+            rd->screen = make_framebuffer();
+        else /* otherwise just directly to the vga mem */
+            rd->screen = vga;
+
+
         enter_m13h();
         _fmemset(rd->bg_layer, 0, SCREEN_SIZE);
         init_all_sprites(&rd->sprites, sprite_count);

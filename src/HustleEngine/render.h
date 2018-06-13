@@ -26,6 +26,15 @@ enum SPRITEFLAGS
     SPRITE_MASKED     = 0x08, /* (1000) If colour id 0 should be treated as transparent */
 };
 
+/*
+ * Renderer Configuration flags
+ * 
+*/
+enum RENDERFLAGS
+{
+    RENDER_DOUBLE_BUFFER = 0x01 /* (0000 0001) */
+};
+
 typedef struct {
     int x;
     int y;
@@ -47,7 +56,7 @@ typedef struct {
 
 typedef struct {
     union {
-        buffer_t    *image;       /* not freed, reference only */
+        buffer_t    *image;   /* not freed, reference only */
         byte        colour;
     } vis;
     Rect        rect;
@@ -59,12 +68,13 @@ typedef struct {
 } Sprite;
 
 typedef struct {
-    Rect screen_clipping;
-    buffer_t *screen;
-    buffer_t *bg_layer;
-    Sprite *sprites;
-    uint sprite_count;
-    uint anim_frame_hold;       /* how many frames to hold each frame of animation */
+    Rect        screen_clipping;
+    buffer_t    *screen;
+    buffer_t    *bg_layer;
+    Sprite      *sprites;
+    uint        sprite_count;
+    uint        anim_frame_hold;  /* how many frames to hold each frame of animation */
+    byte        flags;
 } RenderData;
 
 /**** Renderer functions ****/

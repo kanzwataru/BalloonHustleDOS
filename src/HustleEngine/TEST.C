@@ -119,10 +119,12 @@ int main(int argc, char **argv)
     load_bmp_image(balloon_img, "RES\\BALLOON.BMP");
     pal = load_bmp_palette("RES\\BALLOON.BMP");
 
+    rd.anim_frame_hold = 3;
+    rd.flags |= RENDER_DOUBLE_BUFFER;
+
     if(!init_renderer(&rd, SPRITE_COUNT, pal))
         return 0;
-    
-    rd.anim_frame_hold = 3;
+
 
     //rd.sprites[0].anim = &test_anim;
     rd.sprites[0].vis.colour = 4;
