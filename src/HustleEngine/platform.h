@@ -3,6 +3,9 @@
 
 #include <malloc.h>
 
+/***                      ***
+ ***    COMPILER CHECK    ***
+ ***                      ***/
 #ifdef __WATCOMC__ /* watcom support */
     #include <mem.h>
     #include <conio.h>
@@ -16,18 +19,31 @@
     #define outport(a, b)     outpw(a, b)
     #define outportb(a, b)    outp(a, b)
 #endif /* compiler */
+/******************************************************/
 
-#ifdef __GNUC__ /* modern 32-bit OS support (future) */
+
+/***                      ***
+ ***    PLATFORM CHECK    ***
+ ***                      ***/
+#ifdef __GNUC__ 
+    /* Modern 32-bit OS support (future) 
+     *
+     * DJGPP may also define this, so not guaranteed
+     * to not be DOS, but DJGPP is not supported anyway
+     */
     #include <stdint.h>
     #include <stdbool.h>
-    #define far         /* no more far pointers */
+    #define far /* no more far pointers */
 
     typedef uint8_t buffer_t;
     typedef uint8_t byte;
     typedef uint16_t uint;
     typedef uint32_t ulong;
-
-#else           /* 16-bit DOS */
+#else           
+    /* 16-bit DOS
+     *
+     * This is for both Borland and Watcom
+     */
     typedef int bool;
     #define true 1
     #define false 0
@@ -37,6 +53,6 @@
     typedef unsigned int uint;
     typedef unsigned long ulong;
 #endif /* platform */
-/* */
+/******************************************************/
 
 #endif /* PLATFORM_H */
