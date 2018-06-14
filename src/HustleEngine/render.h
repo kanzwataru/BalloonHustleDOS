@@ -5,7 +5,7 @@
  *
 */
 
-#include "src/hustle~1/types.h"
+#include "src/hustle~1/platform.h"
 
 #define SCREEN_WIDTH 320   /* Mode 13h uses 320 x 200 res */
 #define SCREEN_HEIGHT 200
