@@ -31,6 +31,7 @@ void wrecking_balloon_start(void)
     CoreData cd;
     buffer_t *test_balloon;
     buffer_t *test_cactus;
+    buffer_t *pal;
 
     cd.update_callback = &update;
     cd.render_callback = &render;
@@ -44,7 +45,9 @@ void wrecking_balloon_start(void)
     test_cactus = create_image(48, 48);
     load_bmp_image(test_cactus, "RES\\CACTUS-A.BMP");
 
-    init_renderer(&rd, 2, DEFAULT_VGA_PALETTE);
+    pal = load_bmp_palette("RES\\BOON-A.BMP");
+
+    init_renderer(&rd, 2, pal);
     rd.anim_frame_hold = 3;
     rd.flags = RENDER_DOUBLE_BUFFER;
 
@@ -62,8 +65,8 @@ void wrecking_balloon_start(void)
     rd.sprites[1].rect.h = 48;
     rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
 
-    FILL_BUFFER(rd.screen, 3);
-    FILL_BUFFER(rd.bg_layer, 3);
+    FILL_BUFFER(rd.screen, 1);
+    FILL_BUFFER(rd.bg_layer, 1);
     refresh_sprites(&rd);
     engine_start(cd);
 }
