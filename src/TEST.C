@@ -7,6 +7,7 @@
 #include "src/hustle~1/core.h"
 #include "src/hustle~1/filesys.h"
 #include "src/hustle~1/platform.h"
+#include "src/hustle~1/kb.h"
 
 #define SPRITE_COUNT   8
 #define BG_BRICK_SIZE 10
@@ -152,6 +153,22 @@ static void quit(void) {
     quit_renderer(&rd);
 
     exit(1);
+}
+
+void test_keyboard(void)
+{
+    byte key;
+    while(1) {
+        key = keyboard_read();
+        printf("%d", key);
+        if(RELEASED(key))
+            printf(" (released)\n");
+        else
+            printf("\n");
+/*
+        if(key == 0x01)
+            exit(1);*/
+    }
 }
 
 void test_start(bool do_benchmark, int benchmark_times)
