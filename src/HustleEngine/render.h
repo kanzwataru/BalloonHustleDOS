@@ -12,6 +12,7 @@
 #define SCREEN_SIZE 64000u /* Amount of pixels (320 x 200) */
 #define MAX_SPRITE_SIZE 128
 #define TRANSPARENT 0
+#define DEFAULT_VGA_PALETTE 0
 #define FILL_BUFFER(buf, col) _fmemset((buf), (col), (SCREEN_SIZE));
 
 /*

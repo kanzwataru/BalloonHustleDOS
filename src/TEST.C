@@ -1,3 +1,5 @@
+#include "src/TEST.H"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -10,13 +12,13 @@
 #define BG_BRICK_SIZE 10
 #define BG_BRICK_COL  4
 
-Point bounce_dirs[SPRITE_COUNT];
-RenderData rd;
-byte col = 0;
+static Point bounce_dirs[SPRITE_COUNT];
+static RenderData rd;
+static byte col = 0;
 
-Animation test_anim;
+static Animation test_anim;
 
-void engine_benchmark(CoreData cd, int times)
+static void engine_benchmark(CoreData cd, int times)
 {
     clock_t start;
     double update_time;
@@ -73,7 +75,7 @@ void add_bricks(void)
     }
 }
 
-void animation_frames_init(void)
+static void animation_frames_init(void)
 {
     int i;
     init_animation(&test_anim, 48, 32, 32);
@@ -83,14 +85,14 @@ void animation_frames_init(void)
     }
 }
 
-void add_border(void)
+static void add_border(void)
 {
     Rect btm = {0, 170, SCREEN_WIDTH, SCREEN_HEIGHT - 170};
     rd.screen_clipping.h = 170;
     draw_rect(rd.screen, &btm, 6);
 }
 
-void bouncing_sprites_init(void)
+static void bouncing_sprites_init(void)
 {
     Rect rect = {0,0,16,16};
     int i;
@@ -105,7 +107,7 @@ void bouncing_sprites_init(void)
     }
 }
 
-void bouncing_sprites_update(void)
+static void bouncing_sprites_update(void)
 {
     int i;
     for(i = 3; i < SPRITE_COUNT - 1; ++i) {
@@ -124,7 +126,7 @@ void bouncing_sprites_update(void)
     }
 }
 
-void update(void) {
+static void update(void) {
     bouncing_sprites_update();
     rd.sprites[1].rect.x += 1;
     if(rd.sprites[1].rect.x > SCREEN_WIDTH + 100)
@@ -135,38 +137,29 @@ void update(void) {
         rd.sprites[SPRITE_COUNT - 1].rect.y = -32;
 }
 
-void render(void) {
+static void render(void) {
     /*FILL_BUFFER(rd.screen, col++);
     */
     refresh_screen(&rd);
     refresh_sprites(&rd);
 }
 
-bool input(void) {
+static bool input(void) {
     return true;
 }
 
-void quit(void) {
+static void quit(void) {
     quit_renderer(&rd);
 
     exit(1);
 }
 
-int main(int argc, char **argv)
+void test_start(bool do_benchmark, int benchmark_times)
 {
     uint i;
     CoreData cd;
     buffer_t *balloon_img;
     buffer_t *pal;
-    bool do_benchmark = false;
-    int benchmark_times;
-
-    if(argc > 2) {
-        if(0 == strcmp(argv[1], "benchmark")) {
-            do_benchmark = true;
-            benchmark_times = atoi(argv[2]);
-        }
-    }
 
     cd.update_callback = &update;
     cd.render_callback = &render;
@@ -182,7 +175,7 @@ int main(int argc, char **argv)
     rd.flags |= RENDER_DOUBLE_BUFFER;
 
     if(!init_renderer(&rd, SPRITE_COUNT, pal))
-        return 0;
+        return;
 
 
     //rd.sprites[0].anim = &test_anim;
@@ -234,5 +227,4 @@ int main(int argc, char **argv)
         engine_benchmark(cd, benchmark_times);
     else
         engine_start(cd);
-    return 1;
 }
