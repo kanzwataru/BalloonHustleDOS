@@ -81,6 +81,7 @@ typedef struct {
 /**** Renderer functions ****/
 
 buffer_t *create_image(uint w, uint h);
+void destroy_image(buffer_t **image);
 int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette);
 void quit_renderer(RenderData *rd);
 

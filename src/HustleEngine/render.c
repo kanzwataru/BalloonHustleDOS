@@ -34,6 +34,11 @@ buffer_t *create_image(uint w, uint h) {
     return farmalloc(w * h);
 }
 
+void destroy_image(buffer_t **image) {
+    farfree(*image);
+    *image = NULL;
+}
+
 static void init_all_sprites(Sprite **sprites, const uint count) 
 {
     int i;

@@ -3,7 +3,7 @@
 
 #include "src/hustle~1/platform.h"
 
-#define RELEASED(x) ((x) & 0x80)
+#define RELEASED(x) ((x) | 0x80)
 byte keyboard_read(void);
 
 /* Keycodes (lifted from libdgl) */
