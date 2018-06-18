@@ -7,16 +7,12 @@
 
 #include "src/wrecki~1/consts.h"
 #include "src/wrecki~1/cactoon.h"
+#include "src/wrecki~1/resource.h"
 
 #include <dos.h>
 
 static RenderData    rd;
 static CactusBalloon player;
-
-/******* SPRITE RESOURCES *********/
-static Animation balloon_idle;
-static Animation cactus_idle;
-/**********************************/
 
 static byte dir_input = 0;
 
@@ -70,6 +66,7 @@ static void render(void)
 
 static void quit(void)
 {
+    free_all_resources();
     quit_renderer(&rd);
 }
 
@@ -83,21 +80,13 @@ void wrecking_balloon_start(void)
     CoreData cd;
     buffer_t *pal;
 
+    init_all_resources();
+
     cd.update_callback = &update;
     cd.render_callback = &render;
     cd.input_handler = &input;
     cd.exit_handler = &quit;
     cd.frame_skip = 0;
-
-    balloon_idle.frames = load_bmp_image("RES\\BOON-A.BMP");
-    balloon_idle.frame_size = 48 * 48;
-    balloon_idle.count = 4;
-    balloon_idle.skip = 6;
-
-    cactus_idle.frames = load_bmp_image("RES\\CACTUS-A.BMP");
-    cactus_idle.frame_size = 48 * 48;
-    cactus_idle.count = 6;
-    cactus_idle.skip = 6;
 
     pal = load_bmp_palette("RES\\BOON-A.BMP");
 
@@ -106,14 +95,14 @@ void wrecking_balloon_start(void)
 
     rd.flags = RENDER_DOUBLE_BUFFER;
 
-    rd.sprites[0].anim = &balloon_idle;
+    rd.sprites[0].anim = &player_balloon_idle;
     rd.sprites[0].rect.x = 128;
     rd.sprites[0].rect.y = 32;
     rd.sprites[0].rect.w = 48;
     rd.sprites[0].rect.h = 48;
     rd.sprites[0].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
 
-    rd.sprites[1].anim = &cactus_idle;
+    rd.sprites[1].anim = &player_cactus_idle;
     rd.sprites[1].rect.x = 128;
     rd.sprites[1].rect.y = 96;
     rd.sprites[1].rect.w = 48;

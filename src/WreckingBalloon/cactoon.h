@@ -5,10 +5,13 @@
 
 typedef struct
 {
-    Sprite *balloon;
-    Sprite *cactus;
-    Point   balloon_vel;
-    Point   cactus_vel;
+    Sprite    *balloon;
+    Sprite    *cactus;
+    Point      balloon_vel;
+    Point      cactus_vel;
+    Animation *idle;
+    Animation *shoot;
+    Animation *fall;
 } CactusBalloon;
 
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus);
