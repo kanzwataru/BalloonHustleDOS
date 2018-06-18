@@ -3,7 +3,7 @@
 
 #include "src/hustle~1/platform.h"
 
-void load_bmp_image(buffer_t *buf, const char *file);
+buffer_t *load_bmp_image(const char *file);
 buffer_t *load_bmp_palette(const char *file);
 
 #endif

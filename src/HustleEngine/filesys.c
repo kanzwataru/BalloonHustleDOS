@@ -44,11 +44,13 @@ static struct FileLoadData open_bmp_file(const char *file)
 /* 
  * http://www.brackeen.com/vga/source/djgpp20/palette.c.html
 */
-void load_bmp_image(buffer_t *buf, const char *file)
+buffer_t *load_bmp_image(const char *file)
 {
     long i;
     int x;
     struct FileLoadData d = open_bmp_file(file);
+
+    buffer_t *buf = farcalloc(d.width * d.height, sizeof(byte));
 
     /* ignore palette */
     fskip(d.fp,d.col_num * 4);
@@ -58,6 +60,8 @@ void load_bmp_image(buffer_t *buf, const char *file)
             buf[(uint)(i + x)] = (byte)fgetc(d.fp);
     
     fclose(d.fp);
+
+    return buf;
 }
 
 buffer_t *load_bmp_palette(const char *file)

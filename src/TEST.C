@@ -76,6 +76,7 @@ void add_bricks(void)
     }
 }
 
+/*
 static void animation_frames_init(void)
 {
     int i;
@@ -84,7 +85,7 @@ static void animation_frames_init(void)
     for(i = 0; i < test_anim.frame_count; ++i) {
         FILL_BUFFER(test_anim.frames[i], 18 + i);
     }
-}
+}*/
 
 static void add_border(void)
 {
@@ -184,11 +185,9 @@ void test_start(bool do_benchmark, int benchmark_times)
     cd.exit_handler = &quit;
     cd.frame_skip = 0;
 
-    balloon_img = create_image(32, 32);
-    load_bmp_image(balloon_img, "RES\\BALLOON.BMP");
+    balloon_img = load_bmp_image("RES\\BALLOON.BMP");
     pal = load_bmp_palette("RES\\BALLOON.BMP");
 
-    rd.anim_frame_hold = 3;
     rd.flags |= RENDER_DOUBLE_BUFFER;
 
     if(!init_renderer(&rd, SPRITE_COUNT, pal))

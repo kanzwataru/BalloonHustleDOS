@@ -9,8 +9,6 @@ struct SimpleSprite {
     Rect rect;
 };
 
-static int anim_frame_count = 0;
-
 static buffer_t *vga;
 static struct SimpleSprite *dirty_tiles;
 static const Rect EMPTY_RECT = {0,0,0,0};
@@ -222,10 +220,6 @@ void refresh_screen(RenderData *rd)
 {
     int i;
 
-    if(++anim_frame_count > rd->anim_frame_hold) {
-        anim_frame_count = 0;
-    }
-
     for(i = rd->sprite_count - 1; i >= 0; --i) {
         tile_to_screen(rd->screen, dirty_tiles[i].image, &dirty_tiles[i].rect);
     }
@@ -268,11 +262,14 @@ void refresh_sprites(RenderData *rd)
         }
 
         /* animation */
-        if(sprite->anim && anim_frame_count == 0) {
-            sprite->vis.image = sprite->anim->frames[sprite->current_frame];
+        if(sprite->anim) {
+            sprite->vis.image = sprite->anim->frames + (sprite->anim->frame_size * sprite->current_frame);
+            
+            if(!(sprite->frame_skip_counter --> 0)) {
+                if(++sprite->current_frame == sprite->anim->count)
+                    sprite->current_frame = 0;
 
-            if(++sprite->current_frame > sprite->anim->frame_count - 1) {
-                sprite->current_frame = 0;
+                sprite->frame_skip_counter = sprite->anim->skip;
             }
         }
 

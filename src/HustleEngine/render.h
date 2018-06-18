@@ -37,22 +37,18 @@ enum RENDERFLAGS
 };
 
 typedef struct {
-    int x;
-    int y;
+    int x, y;
 } Point;
 
 typedef struct {
-    int x;
-    int y;
-    int w;
-    int h;
+    int x, y, w, h;
 } Rect;
 
 typedef struct {
-    buffer_t    **frames;      /* owned */
-    int         w;
-    int         h;
-    byte        frame_count;
+    buffer_t    *frames;      /* sprite sheet, not owned */
+    size_t      frame_size;
+    byte        count;
+    byte        skip;
 } Animation;
 
 typedef struct {
@@ -65,6 +61,7 @@ typedef struct {
     Rect        *parent;      /* NULL by default, reference only */
     Animation   *anim;        /* NULL by default, reference only */
     byte        current_frame;
+    byte        frame_skip_counter;
     byte        flags;
 } Sprite;
 
@@ -74,7 +71,6 @@ typedef struct {
     buffer_t    *bg_layer;
     Sprite      *sprites;
     uint        sprite_count;
-    uint        anim_frame_hold;  /* how many frames to hold each frame of animation */
     byte        flags;
 } RenderData;
 
@@ -96,10 +92,5 @@ void reset_sprite(Sprite *sprite);
  * Draw a filled rectangle with a specific colour
 */
 void draw_rect(buffer_t *buf, const Rect *rect, byte colour);
-
-/**** Animation functions ****/
-void init_animation(Animation *anim, byte frame_count, uint w, uint h);
-void free_animation(Animation *anim);
-void load_animation(Animation *anim, const char *file);
 
 #endif /* RENDER_H */
