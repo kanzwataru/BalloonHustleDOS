@@ -3,7 +3,7 @@
 
 #define MAX_CACTOONS        4
 #define MAX_BALLOONS        4
-#define ROPE_LENGTH         70
+#define ROPE_LENGTH         1200
 
 #define FIXED_POINT_SHIFT   4
 

@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <dos.h>
 
-#define TRAILING_SIDE_OFFSET_X      45
-#define TRAILING_SIDE_OFFSET_Y      15
-#define TRAILING_VERTICAL_OFFSET    38
-#define TRAILING_DECAY              1
-#define TRAILING_ACCEL              5
+#define TRAILING_SIDE_OFFSET_X      800
+#define TRAILING_SIDE_OFFSET_Y      300
+#define TRAILING_VERTICAL_OFFSET    750
+#define TRAILING_DECAY              15
+#define TRAILING_ACCEL              45
 
 #define TOWARDS_ZERO(a, amnt)  (a) = ((a) > (amnt)) ? ((a) - (amnt)) : ((a) < -(amnt)) ? ((a) + (amnt)) : 0
 #define INCREASE(a, max, amnt) (a) = ((a) >= (max)) ? (max) : ((a) + (amnt))
@@ -78,8 +78,8 @@ static void simple_physics(Rect *cact_rect, const byte dir)
         DECREASE(counters.y, -TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
     }
 
-    cact_rect->x = counters.x;
-    cact_rect->y = ROPE_LENGTH + counters.y;
+    cact_rect->x = (counters.x) >> FIXED_POINT_SHIFT;
+    cact_rect->y = (ROPE_LENGTH + counters.y) >> FIXED_POINT_SHIFT;
 }
 
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus)
