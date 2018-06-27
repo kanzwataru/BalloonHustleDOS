@@ -220,6 +220,49 @@ void draw_dot(buffer_t *buf, Point p, byte colour)
     buf[CALC_OFFSET(p.x,p.y)] = colour;
 }
 
+/* Bresenham routine copied from: http://www.brackeen.com/vga/source/bc31/lines.c.html */
+void draw_line(buffer_t *buf, const Point *p1, const Point *p2, const byte colour)
+{
+    int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, px, py;
+
+    dx = p2->x - p1->x;
+    dy = p2->y - p1->y;
+    dxabs = abs(dx);
+    dyabs = abs(dy);
+    sdx = SGN(dx);
+    sdy = SGN(dy);
+    x = dyabs >> 1;
+    y = dxabs >> 1;
+    px = p1->x;
+    py = p1->y;
+
+    buf[CALC_OFFSET(px, py)] = colour;
+
+    if(dxabs >= dyabs) {                /* more horizontal */
+        for(i = 0; i < dxabs; ++i) {
+            y += dyabs;
+            if(y >= dxabs) {
+                y  -= dxabs;
+                py += sdy;
+            }
+
+            px += sdx;
+            buf[CALC_OFFSET(px, py)] = colour;
+        }
+    }
+    else {                              /* more vertical */
+        for(i = 0; i < dyabs; ++i) {
+            x += dxabs;
+            if(x >= dyabs) {
+                x  -= dyabs;
+                px += sdx;
+            }
+
+            py += sdy;
+            buf[CALC_OFFSET(px, py)] = colour;
+        }
+    }
+}
 
 void reset_sprite(Sprite *sprite) {
     memset(sprite, 0, sizeof(Sprite));

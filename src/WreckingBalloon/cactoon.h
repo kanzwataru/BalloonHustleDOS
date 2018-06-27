@@ -4,8 +4,6 @@
 #include "src/wrecki~1/consts.h"
 #include "src/hustle~1/render.h"
 
-
-
 typedef struct
 {
     Sprite      *balloon;

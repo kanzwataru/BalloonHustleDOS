@@ -59,8 +59,17 @@ static void update(void)
 
 static void render(void)
 {
+    Point a = {0, 0};
+    Point b = {SCREEN_WIDTH, SCREEN_HEIGHT};
+
+    a.x = 128;
+    a.y = 32;
+
+    draw_line(rd.screen, &a, &b, 23);
     refresh_screen(&rd);
     refresh_sprites(&rd);
+
+    //draw_line(rd.screen, (Point *)&player.balloon->rect, (Point *)&player.cactus->rect, STRING_COL);
 }
 
 static void quit(void)

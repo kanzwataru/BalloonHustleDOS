@@ -22,4 +22,8 @@ enum WB_DIR {
     WB_DOWN =  0x08
 };
 
+/* Colour palette defines */
+#define STRING_COL          23
+/* */
+
 #endif

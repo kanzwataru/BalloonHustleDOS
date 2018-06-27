@@ -86,5 +86,6 @@ void reset_sprite(Sprite *sprite);
 */
 void draw_rect(buffer_t *buf, const Rect *rect, byte colour);
 void draw_dot(buffer_t *buf, Point p, byte colour);
+void draw_line(buffer_t *buf, const Point *p1, const Point *p2, const byte colour);
 
 #endif /* RENDER_H */
