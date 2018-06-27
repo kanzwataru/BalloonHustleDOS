@@ -6,6 +6,7 @@
 */
 
 #include "src/hustle~1/platform.h"
+#include "src/hustle~1/prim.h"
 
 #define SCREEN_WIDTH 320   /* Mode 13h uses 320 x 200 res */
 #define SCREEN_HEIGHT 200
@@ -35,14 +36,6 @@ enum RENDERFLAGS
 {
     RENDER_DOUBLE_BUFFER = 0x01 /* (0000 0001) */
 };
-
-typedef struct {
-    int x, y;
-} Point;
-
-typedef struct {
-    int x, y, w, h;
-} Rect;
 
 typedef struct {
     buffer_t    *frames;      /* sprite sheet, not owned */
@@ -92,5 +85,6 @@ void reset_sprite(Sprite *sprite);
  * Draw a filled rectangle with a specific colour
 */
 void draw_rect(buffer_t *buf, const Rect *rect, byte colour);
+void draw_dot(buffer_t *buf, const Point p, const byte colour);
 
 #endif /* RENDER_H */

@@ -58,10 +58,9 @@ static void update(void)
 
 static void render(void)
 {
+    int i;
     refresh_screen(&rd);
     refresh_sprites(&rd);
-
-//    getch();
 }
 
 static void quit(void)
@@ -103,8 +102,6 @@ void wrecking_balloon_start(void)
     rd.sprites[0].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
 
     rd.sprites[1].anim = &player_cactus_idle;
-    rd.sprites[1].rect.x = 128;
-    rd.sprites[1].rect.y = 96;
     rd.sprites[1].rect.w = 48;
     rd.sprites[1].rect.h = 48;
     rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;

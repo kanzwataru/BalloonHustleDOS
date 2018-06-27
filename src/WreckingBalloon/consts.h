@@ -3,6 +3,9 @@
 
 #define MAX_CACTOONS        4
 #define MAX_BALLOONS        4
+#define ROPE_SEGMENTS       8
+#define ROPE_SEG_LENGTH     8
+#define ROPE_ITER_TIMES     1
 
 #define FIXED_POINT_SHIFT   4
 
