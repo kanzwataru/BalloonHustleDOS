@@ -4,11 +4,7 @@
 #include "src/wrecki~1/consts.h"
 #include "src/hustle~1/render.h"
 
-typedef struct
-{
-    Vector2D pos;
-    Vector2D oldpos;
-} RopeSegment;
+
 
 typedef struct
 {
@@ -19,7 +15,6 @@ typedef struct
     Animation   *fall;
     Point        balloon_vel;
     Point        cactus_vel;
-    RopeSegment  segs[ROPE_SEGMENTS];
 } CactusBalloon;
 
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus);

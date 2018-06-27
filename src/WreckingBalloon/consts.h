@@ -3,9 +3,7 @@
 
 #define MAX_CACTOONS        4
 #define MAX_BALLOONS        4
-#define ROPE_SEGMENTS       8
-#define ROPE_SEG_LENGTH     8
-#define ROPE_ITER_TIMES     1
+#define ROPE_LENGTH         60
 
 #define FIXED_POINT_SHIFT   4
 
@@ -24,9 +22,5 @@ enum WB_DIR {
     WB_UP =    0x04,
     WB_DOWN =  0x08
 };
-
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define CLAMP(val, min, max) (((val) > (max)) ? (max) : ((val < min)) ? (min) : (val))
 
 #endif

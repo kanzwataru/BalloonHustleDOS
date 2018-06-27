@@ -1,6 +1,7 @@
 #include "src/hustle~1/render.h"
 #include "src/hustle~1/vga.h"
 #include "src/hustle~1/platform.h"
+#include "src/hustle~1/math.h"
 #include <dos.h>
 #include <stdio.h>
 
@@ -211,8 +212,11 @@ void draw_rect(buffer_t *buf, const Rect *rect, byte colour)
     }
 }
 
-void draw_dot(buffer_t *buf, const Point p, const byte colour)
+void draw_dot(buffer_t *buf, Point p, byte colour)
 {
+    p.x = CLAMP(p.x, 0, SCREEN_WIDTH);
+    p.y = CLAMP(p.y, 0, SCREEN_HEIGHT);
+
     buf[CALC_OFFSET(p.x,p.y)] = colour;
 }
 

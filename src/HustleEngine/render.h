@@ -85,6 +85,6 @@ void reset_sprite(Sprite *sprite);
  * Draw a filled rectangle with a specific colour
 */
 void draw_rect(buffer_t *buf, const Rect *rect, byte colour);
-void draw_dot(buffer_t *buf, const Point p, const byte colour);
+void draw_dot(buffer_t *buf, Point p, byte colour);
 
 #endif /* RENDER_H */

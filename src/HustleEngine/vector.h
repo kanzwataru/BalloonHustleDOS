@@ -4,7 +4,23 @@
 #include "src/hustle~1/prim.h"
 #include <math.h>
 
-static Vector2D create_vec(int x, int y) {
+static Vector2D point_to_vec(Point p) {
+    Vector2D v;
+    v.x = (float)p.x;
+    v.y = (float)p.y;
+
+    return v;
+}
+
+static Point vec_to_point(Vector2D v) {
+    Point p;
+    p.x = (int)v.x;
+    p.y = (int)v.y;
+
+    return p;
+}
+
+static Vector2D create_vec(float x, float y) {
     Vector2D v;
     v.x = x;
     v.y = y;
@@ -40,28 +56,28 @@ static Vector2D vdivv(Vector2D a, Vector2D b) {
     return v;
 }
 
-static Vector2D vaddi(Vector2D a, int val) {
+static Vector2D vaddi(Vector2D a, float val) {
     Vector2D v;
     v.x = a.x + val;
     v.y = a.y + val;
     return v;
 }
 
-static Vector2D vsubi(Vector2D a, int val) {
+static Vector2D vsubi(Vector2D a, float val) {
     Vector2D v;
     v.x = a.x - val;
     v.y = a.y - val;
     return v;
 }
 
-static Vector2D vmuli(Vector2D a, int val) {
+static Vector2D vmuli(Vector2D a, float val) {
     Vector2D v;
     v.x = a.x * val;
     v.y = a.y * val;
     return v;
 }
 
-static Vector2D vdivi(Vector2D a, int val) {
+static Vector2D vdivi(Vector2D a, float val) {
     Vector2D v;
     v.x = a.x / val;
     v.y = a.y / val;
@@ -80,12 +96,12 @@ static float vmagnitude(Vector2D p) {
                 (p.y * p.y));
 }
 
-static int vmagnitude_sqr(Vector2D p) {
+static float vmagnitude_sqr(Vector2D p) {
     return ((p.x * p.x) +
             (p.y * p.y));
 }
 
-static int vdistance(Vector2D a, Vector2D b) {
+static float vdistance(Vector2D a, Vector2D b) {
     return sqrt(((b.x - a.x) * (b.x - a.x)) +
                 ((b.y - a.y) * (b.y - a.y)));
 }

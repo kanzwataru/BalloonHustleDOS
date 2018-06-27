@@ -1,11 +1,12 @@
 #include "src/wrecki~1/cactoon.h"
-#include "src/hustle~1/vector.h"
+#include "src/hustle~1/math.h"
 
 #include <stdio.h>
 #include <dos.h>
 
-#define top segs[i]
-#define btm segs[i + 1]
+#define TRAILING_SIDE_OFFSET_X      35
+#define TRAILING_SIDE_OFFSET_Y      10
+#define TRAILING_VERTICAL_OFFSET    35
 
 static Point calc_velocity(Point vel, const byte dir)
 {
@@ -46,109 +47,42 @@ static Point calc_velocity(Point vel, const byte dir)
     return vel;
 }
 
-static void fancy_constraint(RopeSegment *segs)
+static void simple_physics(Rect *cact_rect, const byte dir)
 {
-    int i, _;
-    float dist, dist_error;
-    Vector2D change_dir, change, velocity;
+    cact_rect->y = ROPE_LENGTH;
 
-    /* rope length constraint */
-    for(_ = 0; _ < ROPE_ITER_TIMES; ++_) {
-                            //printf("   CONSTRAINT\n", _);
-    for(i = 0; i < ROPE_SEGMENTS - 1; ++i) {
-
-        //printf("(%.2f) {%.2f %.2f}, {%.2f %.2f}\n", i, top.pos.x, top.pos.y, btm.pos.x, btm.pos.y);
-
-        dist = vmagnitude(vsubv(btm.pos, top.pos));
-        dist_error = abs(dist - ROPE_SEG_LENGTH);
-
-        if(dist > ROPE_SEG_LENGTH)
-            change_dir = vnormalize(vsubv(top.pos, btm.pos));
-        else if(dist < ROPE_SEG_LENGTH)
-            change_dir = vnormalize(vsubv(btm.pos, top.pos));
-        else
-            continue;
-
-        change = vmuli(change_dir, dist_error);
-
-        if(i != 0) {
-            btm.pos = vaddv(btm.pos, vdivi(change, 2));
-            top.pos = vaddv(top.pos, vdivi(change, 2));
-        }
-        else {
-            btm.pos = vaddv(btm.pos, change);
-        }
-
-        //printf("     {%.2f %.2f}, {%.2f %.2f}\n", top.pos.x, top.pos.y, btm.pos.x, btm.pos.y);
-    }
-        //getch();
-    }
-}
-
-static void simple_constraint(RopeSegment *segs)
-{
-    int i;
-    int dist;
-    int dist_error;
-    for(i = 0; i < ROPE_SEGMENTS - 1; ++i) {
-        dist = (btm.pos.y - top.pos.y) + (btm.pos.x - top.pos.x);
-        dist_error = abs(dist - ROPE_SEG_LENGTH);
-
-        //printf("dist: %d", dist);
-        //printf("dist_error: %d\n", dist_error);
-
-        if(dist > ROPE_SEG_LENGTH) { /* too long */
-            btm.pos.y -= dist_error / 2;
-            btm.pos.x += dist_error / 2;
-        }
-        else if(dist < ROPE_SEG_LENGTH) {/* too short */
-            btm.pos.y += dist_error / 2;
-            btm.pos.x -= dist_error / 2;
-        }
-        else /* ok */
-            continue;
+    if(dir == 0) {
+        cact_rect->x = 0;
+        cact_rect->y = ROPE_LENGTH;
     }
 
-            //getch();
-}
-
-static void swing_physics(RopeSegment *segs)
-{
-    int i, _;
-    Vector2D velocity;
-
-    /* Verlet */
-    //printf("    VERLET\n");
-    for(i = 0; i < ROPE_SEGMENTS; ++i) {
-        //printf("(%.2f) {%.2f %.2f}", i, segs[i].pos.x, segs[i].pos.y);
-        velocity = vsubv(segs[i].pos, segs[i].oldpos);
-        segs[i].oldpos = segs[i].pos;
-        segs[i].pos = vaddv(segs[i].pos, velocity);
-        segs[i].pos.y += GRAVITY;
-        //printf(" ==> {%.2f %.2f}\n", segs[i].pos.x, segs[i].pos.y);
+    if(dir & WB_LEFT) {
+        cact_rect->x = TRAILING_SIDE_OFFSET_X;
+        cact_rect->y -= TRAILING_SIDE_OFFSET_Y;
+    }
+    else if(dir & WB_RIGHT) {
+        cact_rect->x = -TRAILING_SIDE_OFFSET_X;
+        cact_rect->y -= TRAILING_SIDE_OFFSET_Y;
     }
 
-    //simple_constraint(segs);
-    fancy_constraint(segs);
+    if(dir & WB_UP) {
+        cact_rect->y += TRAILING_VERTICAL_OFFSET;
+    }
+    else if(dir & WB_DOWN) {
+        cact_rect->y -= TRAILING_VERTICAL_OFFSET;
+    }
 }
 
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus)
 {
     int i;
-    Vector2D pos;
-    pos.x = balloon->rect.x;
-    pos.y = balloon->rect.y;
 
     memset(ct, 0, sizeof(CactusBalloon));
     ct->balloon = balloon;
     ct->cactus = cactus;
 
-    for(i = 0; i < ROPE_SEGMENTS; ++i) {
-        ct->segs[i].pos = pos;
-        ct->segs[i].oldpos = pos;
-
-        pos.y += ROPE_SEG_LENGTH;
-    }
+    cactus->rect.x = 0;
+    cactus->rect.y = ROPE_LENGTH;
 }
 
 void cactoon_move(CactusBalloon *ct, const byte dir)
@@ -162,11 +96,5 @@ void cactoon_move(CactusBalloon *ct, const byte dir)
     ct->balloon->rect.y += ct->balloon_vel.y >> FIXED_POINT_SHIFT;
     
     /* Cactus swing physics */
-    ct->segs[0].pos.x = ct->balloon->rect.x;
-    ct->segs[0].pos.y = ct->balloon->rect.y;
-
-    swing_physics(ct->segs);
-
-    ct->cactus->rect.x = ct->segs[ROPE_SEGMENTS - 1].pos.x;
-    ct->cactus->rect.y = ct->segs[ROPE_SEGMENTS - 1].pos.y;
+    simple_physics(&ct->cactus->rect, dir);
 }

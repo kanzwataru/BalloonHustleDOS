@@ -4,6 +4,7 @@
 #include "src/hustle~1/kb.h"
 #include "src/hustle~1/filesys.h"
 #include "src/hustle~1/platform.h"
+#include "src/hustle~1/vector.h"
 
 #include "src/wrecki~1/consts.h"
 #include "src/wrecki~1/cactoon.h"
@@ -58,7 +59,6 @@ static void update(void)
 
 static void render(void)
 {
-    int i;
     refresh_screen(&rd);
     refresh_sprites(&rd);
 }
@@ -105,6 +105,7 @@ void wrecking_balloon_start(void)
     rd.sprites[1].rect.w = 48;
     rd.sprites[1].rect.h = 48;
     rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
+    rd.sprites[1].parent = &rd.sprites[0].rect;
 
     cactoon_init(&player, &rd.sprites[0], &rd.sprites[1]);
 
