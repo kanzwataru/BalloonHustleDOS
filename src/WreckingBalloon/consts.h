@@ -13,8 +13,8 @@
 
 #define CACTUS_SPEED        50
 #define CACTOON_SPEED       100
-#define CACTOON_ACCEL       40
-#define CACTOON_DECEL       15
+#define CACTOON_ACCEL       10
+#define CACTOON_DECEL       5
 
 enum WB_DIR {
     WB_LEFT =  0x01,
