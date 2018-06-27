@@ -5,12 +5,12 @@
 #include <dos.h>
 
 #define TRAILING_SIDE_OFFSET_X      45
-#define TRAILING_SIDE_OFFSET_Y      25
-#define TRAILING_VERTICAL_OFFSET    35
+#define TRAILING_SIDE_OFFSET_Y      15
+#define TRAILING_VERTICAL_OFFSET    38
 #define TRAILING_DECAY              1
 #define TRAILING_ACCEL              5
 
-#define TOWARDS_ZERO(a, amnt)  (a) = ((a) <= 0) ? 0 : ((a) - (amnt))
+#define TOWARDS_ZERO(a, amnt)  (a) = ((a) > (amnt)) ? ((a) - (amnt)) : ((a) < -(amnt)) ? ((a) + (amnt)) : 0
 #define INCREASE(a, max, amnt) (a) = ((a) >= (max)) ? (max) : ((a) + (amnt))
 #define DECREASE(a, min, amnt) (a) = ((a) <= (min)) ? (min) : ((a) - (amnt))
 
@@ -64,11 +64,11 @@ static void simple_physics(Rect *cact_rect, const byte dir)
 
     if(dir & WB_LEFT) {
         INCREASE(counters.x, TRAILING_SIDE_OFFSET_X, TRAILING_ACCEL);
-        DECREASE(counters.y, -TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
+        DECREASE(counters.y, -TRAILING_SIDE_OFFSET_Y, TRAILING_ACCEL);
     }
     else if(dir & WB_RIGHT) {
         DECREASE(counters.x, -TRAILING_SIDE_OFFSET_X, TRAILING_ACCEL);
-        DECREASE(counters.y, -TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
+        DECREASE(counters.y, -TRAILING_SIDE_OFFSET_Y, TRAILING_ACCEL);
     }
 
     if(dir & WB_UP) {
