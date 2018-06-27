@@ -10,8 +10,9 @@
 #define TRAILING_DECAY              1
 #define TRAILING_ACCEL              5
 
-#define TOWARDS_ZERO(a, amnt)     (a) = ((a) <= 0) ? 0 : ((a) - (amnt))
-#define TOWARDS_MAX(a, max, amnt) (a) = ((a) >= (max)) ? (max) : ((a) + (amnt))
+#define TOWARDS_ZERO(a, amnt)  (a) = ((a) <= 0) ? 0 : ((a) - (amnt))
+#define INCREASE(a, max, amnt) (a) = ((a) >= (max)) ? (max) : ((a) + (amnt))
+#define DECREASE(a, min, amnt) (a) = ((a) <= (min)) ? (min) : ((a) - (amnt))
 
 static Point calc_velocity(Point vel, const byte dir)
 {
@@ -52,50 +53,33 @@ static Point calc_velocity(Point vel, const byte dir)
     return vel;
 }
 
-typedef struct {
-    int left;
-    int right;
-    int up;
-    int down;
-} Counters;
-
 static void simple_physics(Rect *cact_rect, const byte dir)
 {
-    static Counters counters;
+    static Point counters;
 
     if(dir == 0) {
-        TOWARDS_ZERO(counters.left,  TRAILING_DECAY);
-        TOWARDS_ZERO(counters.right, TRAILING_DECAY);
-        TOWARDS_ZERO(counters.up,    TRAILING_DECAY);
-        TOWARDS_ZERO(counters.down,  TRAILING_DECAY);
+        TOWARDS_ZERO(counters.x, TRAILING_DECAY);
+        TOWARDS_ZERO(counters.y, TRAILING_DECAY);
     }
 
     if(dir & WB_LEFT) {
-        TOWARDS_ZERO(counters.left, TRAILING_ACCEL);
-
-        TOWARDS_MAX(counters.right, TRAILING_SIDE_OFFSET_X, TRAILING_ACCEL);
-        TOWARDS_MAX(counters.up,    TRAILING_SIDE_OFFSET_Y, TRAILING_ACCEL);
+        INCREASE(counters.x, TRAILING_SIDE_OFFSET_X, TRAILING_ACCEL);
+        DECREASE(counters.y, -TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
     }
     else if(dir & WB_RIGHT) {
-        TOWARDS_ZERO(counters.right, TRAILING_ACCEL);
-
-        TOWARDS_MAX(counters.left,  TRAILING_SIDE_OFFSET_X, TRAILING_ACCEL);
-        TOWARDS_MAX(counters.up,    TRAILING_SIDE_OFFSET_Y, TRAILING_ACCEL);
+        DECREASE(counters.x, -TRAILING_SIDE_OFFSET_X, TRAILING_ACCEL);
+        DECREASE(counters.y, -TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
     }
 
     if(dir & WB_UP) {
-        TOWARDS_ZERO(counters.up, TRAILING_ACCEL);
-
-        TOWARDS_MAX(counters.down,  TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
+        INCREASE(counters.y, TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
     }
     else if(dir & WB_DOWN) {
-        TOWARDS_ZERO(counters.down, TRAILING_ACCEL);
-
-        TOWARDS_MAX(counters.up,    TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
+        DECREASE(counters.y, -TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
     }
 
-    cact_rect->x = counters.right - counters.left;
-    cact_rect->y = ROPE_LENGTH + (counters.down - counters.up);
+    cact_rect->x = counters.x;
+    cact_rect->y = ROPE_LENGTH + counters.y;
 }
 
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus)
