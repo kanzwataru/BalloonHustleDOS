@@ -38,7 +38,7 @@ void init_all_resources(void)
     player_balloon_pop.frames = load_bmp_image("RES\\BLOOA-PO.BMP");
     player_balloon_pop.frame_size = BALLOON_SIZE;
     player_balloon_pop.count = 8;
-    player_balloon_pop.skip = 4;
+    player_balloon_pop.skip = 2;
     player_balloon_pop.playback_type = ANIM_DISAPPEAR;
 
     anims[i++] = &point_balloon_idle;

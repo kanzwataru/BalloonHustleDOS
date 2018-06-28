@@ -19,4 +19,13 @@ typedef struct {
      ((a).y + (ao).y) >= ((b).y + (bo).y) &&          \
      ((a).y + (ao).y) <= ((b).y + (bo).y) + (b).h)     
 
+static inline Rect calc_hitbox(Rect *hitbox, Rect *orig) {
+    Rect r;
+    r.x = hitbox->x + orig->x;
+    r.y = hitbox->y + orig->y;
+    r.w = hitbox->w;
+    r.h = hitbox->h;
+    return r;
+}
+
 #endif

@@ -424,25 +424,17 @@ void refresh_sprites(RenderData *rd)
 
 void finish_frame(RenderData *rd)
 {
-    /* swap buffers if we're doing double buffering */
-    if(rd->flags & RENDER_DOUBLE_BUFFER)
-        _fmemcpy(vga, rd->screen, SCREEN_SIZE);
+    _fmemcpy(vga, rd->screen, SCREEN_SIZE);
 }
 
 int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
 {
     rd->bg_layer = make_framebuffer();
+    rd->screen = make_framebuffer();
     rd->sprite_count = sprite_count;
 
     if(rd->bg_layer) {
         vga = MK_FP(0xa000, 0);   /* this gets the screen framebuffer */
-        
-        /* double buffering means screen is a buffer */
-        if(rd->flags & RENDER_DOUBLE_BUFFER)
-            rd->screen = make_framebuffer();
-        else /* otherwise just directly to the vga mem */
-            rd->screen = vga;
-
 
         enter_m13h();
         _fmemset(rd->bg_layer, 0, SCREEN_SIZE);

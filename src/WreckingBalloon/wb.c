@@ -59,9 +59,16 @@ static bool input(void)
 static void update(void)
 {
     int i;
+    Rect cactus_hbox;
+
     cactoon_update(&player, dir_input);
-    for(i = 0; i < MAX_BALLOONS; ++i)
+    cactus_hbox = calc_hitbox(&player.cactus->hitbox, &player.cactus->rect);
+    for(i = 0; i < MAX_BALLOONS; ++i) {
         balloon_update(&balloons[i]);
+
+        if(rect_collision(cactus_hbox, balloons[i].sprite->rect))
+            balloon_pop(&balloons[i]);
+    }
 }
 
 static void debug_render_hitboxes(void)
@@ -98,8 +105,6 @@ static void render(void)
         draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
     }
     refresh_sprites(&rd);
-
-    //debug_render_hitboxes();
 
     finish_frame(&rd);
 }
@@ -142,8 +147,6 @@ void wrecking_balloon_start(void)
     for(i = 0; i < MAX_CACTOONS; ++i) {
         cactoon_strings[i] = create_line_undo_list();
     }
-
-    rd.flags = RENDER_DOUBLE_BUFFER;
 
     cactoon_init(&player, &rd.sprites[0], &rd.sprites[1], 128, 32, 0);
 
