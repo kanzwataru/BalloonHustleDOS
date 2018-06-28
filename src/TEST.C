@@ -8,6 +8,7 @@
 #include "src/hustle~1/filesys.h"
 #include "src/hustle~1/platform.h"
 #include "src/hustle~1/kb.h"
+#include "src/hustle~1/event.h"
 
 #define SPRITE_COUNT   8
 #define BG_BRICK_SIZE 10
@@ -16,6 +17,7 @@
 static Point bounce_dirs[SPRITE_COUNT];
 static RenderData rd;
 static byte col = 0;
+static bool paused = false;
 
 static Animation test_anim;
 
@@ -129,22 +131,26 @@ static void bouncing_sprites_update(void)
 }
 
 static void update(void) {
-    bouncing_sprites_update();
-    rd.sprites[1].rect.x += 1;
-    if(rd.sprites[1].rect.x > SCREEN_WIDTH + 100)
-        rd.sprites[1].rect.x = -100;
+    if(!paused) {
+        bouncing_sprites_update();
+        rd.sprites[1].rect.x += 1;
+        if(rd.sprites[1].rect.x > SCREEN_WIDTH + 100)
+            rd.sprites[1].rect.x = -100;
 
-    rd.sprites[SPRITE_COUNT - 1].rect.y += 1;
-    if(rd.sprites[SPRITE_COUNT - 1].rect.y > SCREEN_HEIGHT + 32)
-        rd.sprites[SPRITE_COUNT - 1].rect.y = -32;
+        rd.sprites[SPRITE_COUNT - 1].rect.y += 1;
+        if(rd.sprites[SPRITE_COUNT - 1].rect.y > SCREEN_HEIGHT + 32)
+            rd.sprites[SPRITE_COUNT - 1].rect.y = -32;
+    }
 }
 
 static void render(void) {
     /*FILL_BUFFER(rd.screen, col++);
     */
-    start_frame(&rd);
-    refresh_sprites(&rd);
-    finish_frame(&rd);
+    if(!paused) {
+        start_frame(&rd);
+        refresh_sprites(&rd);
+        finish_frame(&rd);
+    }
 }
 
 static bool input(void) {
@@ -173,10 +179,29 @@ void test_keyboard(void)
     }
 }
 
+void unpause_callback(void *self)
+{
+    paused = false;
+}
+
+void done_eventing(void *self)
+{
+    paused = true;
+    printf("Event fired\n");
+    event_add(unpause_callback, self, 20);
+    event_add(done_eventing, self, 200);
+}
+
+void should_not_fire(void *self)
+{
+    printf("This should not happen\n");
+}
+
 void test_start(bool do_benchmark, int benchmark_times)
 {
     uint i;
     CoreData cd;
+    EventID e;
     buffer_t *balloon_img;
     buffer_t *pal;
 
@@ -237,6 +262,10 @@ void test_start(bool do_benchmark, int benchmark_times)
     FILL_BUFFER(rd.bg_layer, 3);
     add_bricks();
     add_border();
+
+    e = event_add(should_not_fire, NULL, 700);
+    event_add(done_eventing, NULL, 400);
+    event_remove(e);
 
     refresh_sprites(&rd);
     

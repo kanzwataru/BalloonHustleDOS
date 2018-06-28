@@ -3,11 +3,10 @@
 
 #define MAX_CACTOONS        4
 #define MAX_BALLOONS        4
-#define ROPE_LENGTH         1200
 
 #define FIXED_POINT_SHIFT   4
+#define ROPE_LENGTH         1200
 
-#define GRAVITY             10
 #define POINT_BALLOON_SPEED 75
 #define PROJECTILE_SPEED    200
 

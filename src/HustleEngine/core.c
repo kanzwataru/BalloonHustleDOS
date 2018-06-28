@@ -1,5 +1,6 @@
 #include "src/hustle~1/core.h"
 #include "src/hustle~1/platform.h"
+#include "src/hustle~1/event.h"
 #include <dos.h>
 
 #define INPUT_STATUS_0 0x3da  /* Used for querying Vblank */
@@ -15,6 +16,7 @@ void engine_start(CoreData cd)
     while(cd.input_handler()) 
     {
         cd.update_callback();
+        event_update();
 
         VSync:
         while(inportb(INPUT_STATUS_0) & 8) {;}
