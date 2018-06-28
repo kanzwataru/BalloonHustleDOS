@@ -53,10 +53,8 @@ static Point calc_velocity(Point vel, const byte dir)
     return vel;
 }
 
-static void simple_physics(Rect *cact_rect, const byte dir)
+static Point simple_physics(Point counters, const byte dir)
 {
-    static Point counters;
-
     if(dir == 0) {
         TOWARDS_ZERO(counters.x, TRAILING_DECAY);
         TOWARDS_ZERO(counters.y, TRAILING_DECAY);
@@ -78,8 +76,7 @@ static void simple_physics(Rect *cact_rect, const byte dir)
         DECREASE(counters.y, -TRAILING_VERTICAL_OFFSET, TRAILING_ACCEL);
     }
 
-    cact_rect->x = (counters.x) >> FIXED_POINT_SHIFT;
-    cact_rect->y = (ROPE_LENGTH + counters.y) >> FIXED_POINT_SHIFT;
+    return counters;
 }
 
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus)
@@ -105,5 +102,7 @@ void cactoon_move(CactusBalloon *ct, const byte dir)
     ct->balloon->rect.y += ct->balloon_vel.y >> FIXED_POINT_SHIFT;
     
     /* Cactus swing physics */
-    simple_physics(&ct->cactus->rect, dir);
+    ct->counters = simple_physics(ct->counters, dir);
+    ct->cactus->rect.x = ct->balloon->rect.x + (ct->counters.x >> FIXED_POINT_SHIFT);
+    ct->cactus->rect.y = ct->balloon->rect.y + ((ROPE_LENGTH + ct->counters.y) >> FIXED_POINT_SHIFT);
 }

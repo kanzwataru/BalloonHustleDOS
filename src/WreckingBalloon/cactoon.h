@@ -4,6 +4,9 @@
 #include "src/wrecki~1/consts.h"
 #include "src/hustle~1/render.h"
 
+#define BALLOON_STRING_OFFSET 38
+#define CACTUS_STRING_OFFSET  16
+
 typedef struct
 {
     Sprite      *balloon;
@@ -12,7 +15,7 @@ typedef struct
     Animation   *shoot;
     Animation   *fall;
     Point        balloon_vel;
-    Point        cactus_vel;
+    Point        counters;
 } CactusBalloon;
 
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus);

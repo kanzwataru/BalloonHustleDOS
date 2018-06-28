@@ -4,6 +4,6 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define CLAMP(val, min, max) (((val) > (max)) ? (max) : ((val < min)) ? (min) : (val))
-#define SGN(a) (x > 0) - (x < 0)
+#define SGN(a) ((a) > 0) - ((a) < 0)
 
 #endif

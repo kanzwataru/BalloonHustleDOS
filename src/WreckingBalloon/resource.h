@@ -6,6 +6,9 @@
 void init_all_resources(void);
 void free_all_resources(void);
 
+#define CACTOON_SPRITE_SIZE 48
+#define CACTOON_SPRITE_HALF 24 /* 48 / 2 */
+
 extern Animation player_balloon_idle;
 extern Animation player_balloon_pop;
 extern Animation player_cactus_idle;

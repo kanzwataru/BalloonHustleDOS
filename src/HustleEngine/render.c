@@ -7,7 +7,18 @@
 
 struct SimpleSprite {
     buffer_t *image;
-    Rect rect;
+    Rect      rect;
+};
+
+struct Pixel {
+    int  x;
+    int  y;
+    byte col;
+};
+
+struct LineUndo {
+    uint         count;
+    struct Pixel segs[MAX_LINE_LENGTH];
 };
 
 static buffer_t *vga;
@@ -36,6 +47,15 @@ buffer_t *create_image(uint w, uint h) {
 void destroy_image(buffer_t **image) {
     farfree(*image);
     *image = NULL;
+}
+
+LineUndoList create_line_undo_list() {
+    return farcalloc(1, sizeof(struct LineUndo));
+}
+
+void destroy_line_undo_list(LineUndoList *lul) {
+    farfree(*lul);
+    *lul = NULL;
 }
 
 static void init_all_sprites(Sprite **sprites, const uint count) 
@@ -217,29 +237,35 @@ void draw_dot(buffer_t *buf, Point p, byte colour)
     p.x = CLAMP(p.x, 0, SCREEN_WIDTH);
     p.y = CLAMP(p.y, 0, SCREEN_HEIGHT);
 
-    buf[CALC_OFFSET(p.x,p.y)] = colour;
+    buf[CALC_OFFSET(p.x, p.y)] = colour;
 }
 
 /* Bresenham routine copied from: http://www.brackeen.com/vga/source/bc31/lines.c.html */
-void draw_line(buffer_t *buf, const Point *p1, const Point *p2, const byte colour)
+void draw_line(buffer_t *buf, LineUndoList undo, const Point *p1, const Point *p2, const byte colour)
 {
-    int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, px, py;
+    int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, px, py, offset, count;
+    struct Pixel *undopix = (*(struct LineUndo *)undo).segs;
 
-    dx = p2->x - p1->x;
-    dy = p2->y - p1->y;
+    dx = CLAMP(p2->x, 0, SCREEN_WIDTH)  - CLAMP(p1->x, 0, SCREEN_WIDTH);
+    dy = CLAMP(p2->y, 0, SCREEN_HEIGHT) - CLAMP(p1->y, 0, SCREEN_HEIGHT);
     dxabs = abs(dx);
     dyabs = abs(dy);
     sdx = SGN(dx);
     sdy = SGN(dy);
     x = dyabs >> 1;
     y = dxabs >> 1;
-    px = p1->x;
-    py = p1->y;
+    px = CLAMP(p1->x, 0, SCREEN_WIDTH);
+    py = CLAMP(p1->y, 0, SCREEN_HEIGHT);
 
-    buf[CALC_OFFSET(px, py)] = colour;
+    offset = CALC_OFFSET(px, py);
+    undopix[0].x = px;
+    undopix[0].y = py;
+    undopix[0].col = buf[offset];
+    buf[offset] = colour;
+    count = 1;
 
     if(dxabs >= dyabs) {                /* more horizontal */
-        for(i = 0; i < dxabs; ++i) {
+        for(i = 0; i < dxabs; ++i, ++count) {
             y += dyabs;
             if(y >= dxabs) {
                 y  -= dxabs;
@@ -247,11 +273,16 @@ void draw_line(buffer_t *buf, const Point *p1, const Point *p2, const byte colou
             }
 
             px += sdx;
-            buf[CALC_OFFSET(px, py)] = colour;
+            offset = CALC_OFFSET(px, py);
+
+            undopix[count].x = px;
+            undopix[count].y = py;
+            undopix[count].col = buf[offset];
+            buf[offset] = colour;
         }
     }
     else {                              /* more vertical */
-        for(i = 0; i < dyabs; ++i) {
+        for(i = 0; i < dyabs; ++i, ++count) {
             x += dxabs;
             if(x >= dyabs) {
                 x  -= dyabs;
@@ -259,16 +290,37 @@ void draw_line(buffer_t *buf, const Point *p1, const Point *p2, const byte colou
             }
 
             py += sdy;
-            buf[CALC_OFFSET(px, py)] = colour;
+            offset = CALC_OFFSET(px, py);
+            
+            undopix[count].x = px;
+            undopix[count].y = py;
+            undopix[count].col = buf[offset];
+            buf[offset] = colour;
         }
     }
+
+    (*(struct LineUndo *)undo).count = count;
+}
+
+void erase_line(buffer_t *buf, LineUndoList undo)
+{
+    uint count = (*(struct LineUndo *)undo).count;
+    struct Pixel *p = (*(struct LineUndo *)undo).segs;
+
+    if(!count)
+        return;
+
+    do {
+        buf[CALC_OFFSET(p->x, p->y)] = p->col;
+        p++;
+    } while(--count);
 }
 
 void reset_sprite(Sprite *sprite) {
     memset(sprite, 0, sizeof(Sprite));
 }
 
-void refresh_screen(RenderData *rd)
+void start_frame(RenderData *rd)
 {
     int i;
 
@@ -339,7 +391,10 @@ void refresh_sprites(RenderData *rd)
             blit_offset(rd->screen, sprite->vis.image, &r, image_offset.x + (image_offset.y * r.w), sprite->rect.w);
         }
     };
+}
 
+void finish_frame(RenderData *rd)
+{
     /* swap buffers if we're doing double buffering */
     if(rd->flags & RENDER_DOUBLE_BUFFER)
         _fmemcpy(vga, rd->screen, SCREEN_SIZE);

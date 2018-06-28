@@ -15,6 +15,7 @@
 static RenderData    rd;
 static CactusBalloon player;
 
+static LineUndoList  cactoon_strings[MAX_CACTOONS];
 static byte dir_input = 0;
 
 static bool input(void)
@@ -59,21 +60,28 @@ static void update(void)
 
 static void render(void)
 {
-    Point a = {0, 0};
-    Point b = {SCREEN_WIDTH, SCREEN_HEIGHT};
+    Point a, b;
 
-    a.x = 128;
-    a.y = 32;
+    start_frame(&rd);
+    erase_line(rd.screen, cactoon_strings[0]);
 
-    draw_line(rd.screen, &a, &b, 23);
-    refresh_screen(&rd);
+    a.x = player.balloon->rect.x + CACTOON_SPRITE_HALF;
+    a.y = player.balloon->rect.y + BALLOON_STRING_OFFSET;
+    b.x = player.cactus->rect.x + CACTOON_SPRITE_HALF;
+    b.y = player.cactus->rect.y + CACTUS_STRING_OFFSET;
+    draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
+
     refresh_sprites(&rd);
-
-    //draw_line(rd.screen, (Point *)&player.balloon->rect, (Point *)&player.cactus->rect, STRING_COL);
+    finish_frame(&rd);
 }
 
 static void quit(void)
 {
+    int i;
+    for(i = 0; i < MAX_CACTOONS; ++i) {
+        destroy_line_undo_list(&cactoon_strings[i]);
+    }
+
     free_all_resources();
     quit_renderer(&rd);
 }
@@ -85,6 +93,7 @@ static int num_of_sprites(void)
 
 void wrecking_balloon_start(void) 
 {
+    int i;
     CoreData cd;
     buffer_t *pal;
 
@@ -101,20 +110,23 @@ void wrecking_balloon_start(void)
     init_renderer(&rd, num_of_sprites(), pal);
     destroy_image(&pal);
 
+    for(i = 0; i < MAX_CACTOONS; ++i) {
+        cactoon_strings[i] = create_line_undo_list();
+    }
+
     rd.flags = RENDER_DOUBLE_BUFFER;
 
     rd.sprites[0].anim = &player_balloon_idle;
     rd.sprites[0].rect.x = 128;
     rd.sprites[0].rect.y = 32;
-    rd.sprites[0].rect.w = 48;
-    rd.sprites[0].rect.h = 48;
+    rd.sprites[0].rect.w = CACTOON_SPRITE_SIZE;
+    rd.sprites[0].rect.h = CACTOON_SPRITE_SIZE;
     rd.sprites[0].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
 
     rd.sprites[1].anim = &player_cactus_idle;
-    rd.sprites[1].rect.w = 48;
-    rd.sprites[1].rect.h = 48;
+    rd.sprites[1].rect.w = CACTOON_SPRITE_SIZE;
+    rd.sprites[1].rect.h = CACTOON_SPRITE_SIZE;
     rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
-    rd.sprites[1].parent = &rd.sprites[0].rect;
 
     cactoon_init(&player, &rd.sprites[0], &rd.sprites[1]);
 

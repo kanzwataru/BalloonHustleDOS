@@ -142,8 +142,9 @@ static void update(void) {
 static void render(void) {
     /*FILL_BUFFER(rd.screen, col++);
     */
-    refresh_screen(&rd);
+    start_frame(&rd);
     refresh_sprites(&rd);
+    finish_frame(&rd);
 }
 
 static bool input(void) {
