@@ -30,10 +30,13 @@ wb.obj : src\wrecki~1\wb.c .AUTODEPEND
 cactoon.obj : src\wrecki~1\cactoon.c .AUTODEPEND
  *wcc src\wrecki~1\cactoon.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
 
+balloon.obj : src\wrecki~1\balloon.c .AUTODEPEND
+ *wcc src\wrecki~1\balloon.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
+
 resource.obj : src\wrecki~1\resource.c .AUTODEPEND
  *wcc src\wrecki~1\resource.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
 
-balloon.exe : core.obj filesys.obj render.obj TEST.obj MAIN.obj vga.obj kb.obj wb.obj cactoon.obj event.obj resource.obj .AUTODEPEND
- @%write balloon.lk1 FIL core.obj,filesys.obj,render.obj,TEST.obj,MAIN.obj,vga.obj,kb.obj,wb.obj,cactoon.obj,event.obj,resource.obj
+balloon.exe : core.obj filesys.obj render.obj TEST.obj MAIN.obj vga.obj kb.obj wb.obj cactoon.obj balloon.obj event.obj resource.obj .AUTODEPEND
+ @%write balloon.lk1 FIL core.obj,filesys.obj,render.obj,TEST.obj,MAIN.obj,vga.obj,kb.obj,wb.obj,cactoon.obj,balloon.obj,event.obj,resource.obj
  @%append balloon.lk1 
  *wlink name balloon sys dos op m op maxe=25 op q op symf @balloon.lk1

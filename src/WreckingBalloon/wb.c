@@ -7,6 +7,7 @@
 
 #include "src/wrecki~1/consts.h"
 #include "src/wrecki~1/cactoon.h"
+#include "src/wrecki~1/balloon.h"
 #include "src/wrecki~1/resource.h"
 
 #include <dos.h>
@@ -15,6 +16,7 @@
 static RenderData    rd;
 static CactusBalloon player;
 
+static PointBalloon  balloons[MAX_BALLOONS];
 static LineUndoList  cactoon_strings[MAX_CACTOONS];
 static byte dir_input = 0;
 
@@ -56,7 +58,10 @@ static bool input(void)
 
 static void update(void)
 {
+    int i;
     cactoon_update(&player, dir_input);
+    for(i = 0; i < MAX_BALLOONS; ++i)
+        balloon_update(&balloons[i]);
 }
 
 static void debug_render_hitboxes(void)
@@ -112,7 +117,7 @@ static void quit(void)
 
 static int num_of_sprites(void)
 {
-    return (MAX_CACTOONS * 2) + (MAX_BALLOONS * 2);
+    return (MAX_CACTOONS * 2) + (MAX_BALLOONS);
 }
 
 void wrecking_balloon_start(void) 
@@ -141,6 +146,10 @@ void wrecking_balloon_start(void)
     rd.flags = RENDER_DOUBLE_BUFFER;
 
     cactoon_init(&player, &rd.sprites[0], &rd.sprites[1], 128, 32, 0);
+
+    for(i = 0; i < MAX_BALLOONS; ++i) {
+        balloon_init(&balloons[i], &rd.sprites[2 + i], POINT_BALLOON_POINTS);
+    }
 
     FILL_BUFFER(rd.screen, 1);
     FILL_BUFFER(rd.bg_layer, 1);

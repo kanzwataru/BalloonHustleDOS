@@ -3,7 +3,7 @@
 
 #define BALLOON_SIZE        48 * 48
 #define CACTUS_SIZE         48 * 48
-#define TOTAL_ANIMATIONS    4
+#define TOTAL_ANIMATIONS    6
 
 static Animation *anims[TOTAL_ANIMATIONS];
 
@@ -40,6 +40,19 @@ void init_all_resources(void)
     player_balloon_pop.count = 8;
     player_balloon_pop.skip = 4;
     player_balloon_pop.playback_type = ANIM_DISAPPEAR;
+
+    anims[i++] = &point_balloon_idle;
+    point_balloon_idle.frames = load_bmp_image("RES\\BLOOE.BMP");
+    point_balloon_idle.frame_size = BALLOON_SIZE;
+    point_balloon_idle.count = player_balloon_idle.count;
+    point_balloon_idle.skip = player_balloon_idle.skip;
+
+    anims[i++] = &point_balloon_pop;
+    point_balloon_pop.frames = load_bmp_image("RES\\BLOOE-PO.BMP");
+    point_balloon_pop.frame_size = BALLOON_SIZE;
+    point_balloon_pop.count = player_balloon_pop.count;
+    point_balloon_pop.skip = player_balloon_pop.skip;
+    point_balloon_pop.playback_type = ANIM_DISAPPEAR;
 
     anims[i++] = &player_cactus_idle;
     player_cactus_idle.frames = load_bmp_image("RES\\CACP.BMP");

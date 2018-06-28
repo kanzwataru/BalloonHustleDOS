@@ -1,19 +1,27 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#define FIXED_POINT_SHIFT   4
+#define FP /* unit should be fixed point */
+
 #define MAX_CACTOONS        4
 #define MAX_BALLOONS        4
 
-#define FIXED_POINT_SHIFT   4
-#define ROPE_LENGTH         1200
+#define ROPE_LENGTH         1200 FP
 
-#define POINT_BALLOON_SPEED 75
-#define PROJECTILE_SPEED    200
+#define POINT_BALLOON_SPEED 1
+#define PROJECTILE_SPEED    200 FP
 
 #define CACTUS_FALL_SPEED   3
-#define CACTOON_SPEED       80
-#define CACTOON_ACCEL       10
-#define CACTOON_DECEL       5
+#define CACTOON_SPEED       80 FP
+#define CACTOON_ACCEL       10 FP
+#define CACTOON_DECEL       5 FP
+
+#define BALLOON_HITBOX      {10,10,28,28}
+#define CACTUS_HITBOX       {10,10,28,28}
+
+#define POINT_BALLOON_POINTS  50
+#define CACTOON_POINTS        150
 
 enum WB_DIR {
     WB_LEFT =  0x01,

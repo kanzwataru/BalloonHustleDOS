@@ -82,7 +82,7 @@ static Point simple_physics(Point counters, const byte dir)
 
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus, int x, int y, byte flags)
 {
-    Rect hitbox = {10,10,28,28};
+    Rect hitbox = BALLOON_HITBOX;
 
     memset(ct, 0, sizeof(CactusBalloon));
     ct->balloon = balloon;
@@ -134,12 +134,13 @@ void cactoon_update(CactusBalloon *ct, const byte dir)
 
     if(hitbox_collision(ct->cactus->hitbox, ct->cactus->rect, ct->balloon->hitbox, ct->balloon->rect))
         cactoon_die(ct);
-    //if(rect_collision(ct->cactus->rect, ct->balloon->rect))
-    //    cactoon_die(ct);
 }
 
 void cactoon_die(CactusBalloon *ct)
 {
+    if(ct->flags & CT_DEAD)
+        return;
+
     ct->flags |= CT_DEAD;
 
     if(ct->flags & CT_ENEMY) {
