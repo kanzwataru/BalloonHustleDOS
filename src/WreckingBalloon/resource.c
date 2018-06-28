@@ -3,7 +3,7 @@
 
 #define BALLOON_SIZE        48 * 48
 #define CACTUS_SIZE         48 * 48
-#define TOTAL_ANIMATIONS    2
+#define TOTAL_ANIMATIONS    4
 
 static Animation *anims[TOTAL_ANIMATIONS];
 
@@ -29,16 +29,29 @@ void init_all_resources(void)
     int i = 0;
 
     anims[i++] = &player_balloon_idle;
-    player_balloon_idle.frames = load_bmp_image("RES\\BOON-A.BMP");
+    player_balloon_idle.frames = load_bmp_image("RES\\BLOOA.BMP");
     player_balloon_idle.frame_size = BALLOON_SIZE;
     player_balloon_idle.count = 4;
     player_balloon_idle.skip = 6;
 
+    anims[i++] = &player_balloon_pop;
+    player_balloon_pop.frames = load_bmp_image("RES\\BLOOA-PO.BMP");
+    player_balloon_pop.frame_size = BALLOON_SIZE;
+    player_balloon_pop.count = 8;
+    player_balloon_pop.skip = 5;
+    player_balloon_pop.playback_type = ANIM_DISAPPEAR;
+
     anims[i++] = &player_cactus_idle;
-    player_cactus_idle.frames = load_bmp_image("RES\\CACTUS-A.BMP");
+    player_cactus_idle.frames = load_bmp_image("RES\\CACP.BMP");
     player_cactus_idle.frame_size = CACTUS_SIZE;
     player_cactus_idle.count = 6;
     player_cactus_idle.skip = 6;
+
+    anims[i++] = &player_cactus_fall;
+    player_cactus_fall.frames = load_bmp_image("RES\\CACP-FA.BMP");
+    player_cactus_fall.frame_size = CACTUS_SIZE;
+    player_cactus_fall.count = 11;
+    player_cactus_fall.skip = 4;
 }
 
 void free_all_resources(void)

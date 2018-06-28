@@ -4,6 +4,7 @@
 #include "src/hustle~1/math.h"
 #include <dos.h>
 #include <stdio.h>
+#include <limits.h>
 
 struct SimpleSprite {
     buffer_t *image;
@@ -71,6 +72,8 @@ static void init_all_sprites(Sprite **sprites, const uint count)
             dirty_tiles[i].image = farcalloc(MAX_SPRITE_SIZE * MAX_SPRITE_SIZE, sizeof(byte));
             if(!dirty_tiles[i].image)
                 while(1) printf("OUT OF MEM: dirty_tiles (%d)\n", i);
+
+            (*(*sprites + i)).anim.playback_direction = 1;
         }
     }
     else {
@@ -329,11 +332,41 @@ void start_frame(RenderData *rd)
     }
 }
 
+static void anim_update(AnimInstance *anim, byte *sprite_flags)
+{
+    if(!(anim->frame_skip_counter --> 0)) {
+        anim->frame += anim->playback_direction;
+
+        if(anim->frame == anim->animation->count || anim->frame == UCHAR_MAX) /* Can get overflowed by ANIM_FLIPFLOP */
+        {
+            switch(anim->animation->playback_type) 
+            {
+            case ANIM_LOOP:
+                anim->frame = 0;
+                anim->playback_direction = 1;
+                break;
+            case ANIM_DISAPPEAR:
+                *sprite_flags &= ~SPRITE_REFRESH;
+                anim->playback_direction = 0;
+                break;
+            case ANIM_ONCE:
+                --anim->frame;
+                anim->playback_direction = 0;
+                break;
+            case ANIM_FLIPFLOP:
+                anim->playback_direction = -anim->playback_direction;
+                break;
+            }
+        }
+
+        anim->frame_skip_counter = anim->animation->skip;
+    }
+}
+
 void refresh_sprites(RenderData *rd)
 {
     register int y;
     register int offset;
-    static byte col;
     int y_max;
     Point image_offset;
     Rect orig;
@@ -366,15 +399,10 @@ void refresh_sprites(RenderData *rd)
         }
 
         /* animation */
-        if(sprite->anim) {
-            sprite->vis.image = sprite->anim->frames + (sprite->anim->frame_size * sprite->current_frame);
-            
-            if(!(sprite->frame_skip_counter --> 0)) {
-                if(++sprite->current_frame == sprite->anim->count)
-                    sprite->current_frame = 0;
+        if(sprite->anim.animation) {
+            sprite->vis.image = sprite->anim.animation->frames + (sprite->anim.animation->frame_size * sprite->anim.frame);
 
-                sprite->frame_skip_counter = sprite->anim->skip;
-            }
+            anim_update(&sprite->anim, &sprite->flags);
         }
 
         screen_to_tile(d_tile->image, rd->screen, &r);

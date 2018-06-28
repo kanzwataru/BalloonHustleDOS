@@ -21,53 +21,67 @@
  * Only using low nibble for engine
  * flags, rest is for game use
  * */
-enum SPRITEFLAGS
-{
-    SPRITE_REFRESH    = 0x01, /* (0001) If the sprite should refresh */
-    SPRITE_CLIP       = 0x02, /* (0010) If should be screen-clipped to not wrap back */
-    SPRITE_FILL       = 0x04, /* (0100) If the sprite should be a colour and not an iamge */
-    SPRITE_MASKED     = 0x08, /* (1000) If colour id 0 should be treated as transparent */
+enum SPRITEFLAGS {
+     SPRITE_REFRESH    = 0x01, /* (0001) If the sprite should refresh */
+     SPRITE_CLIP       = 0x02, /* (0010) If should be screen-clipped to not wrap back */
+     SPRITE_FILL       = 0x04, /* (0100) If the sprite should be a colour and not an iamge */
+     SPRITE_MASKED     = 0x08, /* (1000) If colour id 0 should be treated as transparent */
 };
 
 /*
  * Renderer Configuration flags
  * 
 */
-enum RENDERFLAGS
-{
-    RENDER_DOUBLE_BUFFER = 0x01 /* (0000 0001) */
+enum RENDERFLAG {
+     RENDER_DOUBLE_BUFFER = 0x01 /* (0000 0001) */
+};
+
+/*
+ * Animation playback type
+*/
+enum ANIMTYPE {
+     ANIM_LOOP       = 0,  /* play animation on loop */
+     ANIM_ONCE       = 1,  /* play animation once then stop on the last frame */
+     ANIM_DISAPPEAR  = 2,  /* play animation once then hide the sprite */
+     ANIM_FLIPFLOP   = 3   /* play from beginning to end then end to beginning */
 };
 
 typedef void far* LineUndoList;
 
 typedef struct {
     buffer_t    *frames;      /* sprite sheet, not owned */
-    size_t      frame_size;
-    byte        count;
-    byte        skip;
+    size_t       frame_size;
+    byte         count;
+    byte         skip;
+    byte         playback_type;
 } Animation;
+
+typedef struct {
+    Animation   *animation;
+    byte         frame;
+    byte         frame_skip_counter;
+    char         playback_direction;
+} AnimInstance;
 
 typedef struct {
     union {
         buffer_t    *image;   /* not freed, reference only */
-        byte        colour;
+        byte         colour;
     } vis;
-    Rect        rect;
-    Rect        hitbox;
+    Rect         rect;
+    Rect         hitbox;
     Rect        *parent;      /* NULL by default, reference only */
-    Animation   *anim;        /* NULL by default, reference only */
-    byte        current_frame;
-    byte        frame_skip_counter;
-    byte        flags;
+    byte         flags;
+    AnimInstance anim;        /* NULL by default, reference only */
 } Sprite;
 
 typedef struct {
-    Rect        screen_clipping;
+    Rect         screen_clipping;
     buffer_t    *screen;
     buffer_t    *bg_layer;
     Sprite      *sprites;
-    uint        sprite_count;
-    byte        flags;
+    uint         sprite_count;
+    byte         flags;
 } RenderData;
 
 /**** Renderer functions ****/

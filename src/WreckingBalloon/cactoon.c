@@ -1,4 +1,5 @@
 #include "src/wrecki~1/cactoon.h"
+#include "src/wrecki~1/resource.h"
 #include "src/hustle~1/math.h"
 
 #include <stdio.h>
@@ -6,7 +7,7 @@
 
 #define TRAILING_SIDE_OFFSET_X      800
 #define TRAILING_SIDE_OFFSET_Y      300
-#define TRAILING_VERTICAL_OFFSET    750
+#define TRAILING_VERTICAL_OFFSET    850
 #define TRAILING_DECAY              15
 #define TRAILING_ACCEL              45
 
@@ -105,4 +106,18 @@ void cactoon_move(CactusBalloon *ct, const byte dir)
     ct->counters = simple_physics(ct->counters, dir);
     ct->cactus->rect.x = ct->balloon->rect.x + (ct->counters.x >> FIXED_POINT_SHIFT);
     ct->cactus->rect.y = ct->balloon->rect.y + ((ROPE_LENGTH + ct->counters.y) >> FIXED_POINT_SHIFT);
+}
+
+void cactoon_die(CactusBalloon *ct)
+{
+    ct->flags |= CT_DEAD;
+
+    if(ct->flags & CT_ENEMY) {
+        ct->balloon->anim.animation = &enemy_balloon_pop;
+        ct->cactus->anim.animation = &enemy_cactus_fall;
+    }
+    else {
+        ct->balloon->anim.animation = &player_balloon_pop;
+        ct->cactus->anim.animation = &player_cactus_fall;
+    }
 }

@@ -34,6 +34,9 @@ static bool input(void)
     case KEY_D:
         dir_input |= WB_RIGHT;
         break;
+    case KEY_SPACE:
+        cactoon_die(&player);
+        break;
     case RELEASED(KEY_W):
         dir_input &= ~WB_UP;
         break;
@@ -60,16 +63,21 @@ static void update(void)
 
 static void render(void)
 {
+    int i;
     Point a, b;
 
     start_frame(&rd);
-    erase_line(rd.screen, cactoon_strings[0]);
 
-    a.x = player.balloon->rect.x + CACTOON_SPRITE_HALF;
-    a.y = player.balloon->rect.y + BALLOON_STRING_OFFSET;
-    b.x = player.cactus->rect.x + CACTOON_SPRITE_HALF;
-    b.y = player.cactus->rect.y + CACTUS_STRING_OFFSET;
-    draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
+    for(i = 0; i < MAX_CACTOONS; ++i)
+        erase_line(rd.screen, cactoon_strings[0]);
+
+    if(!(player.flags & CT_DEAD)) {
+        a.x = player.balloon->rect.x + CACTOON_SPRITE_HALF;
+        a.y = player.balloon->rect.y + BALLOON_STRING_OFFSET;
+        b.x = player.cactus->rect.x + CACTOON_SPRITE_HALF;
+        b.y = player.cactus->rect.y + CACTUS_STRING_OFFSET;
+        draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
+    }
 
     refresh_sprites(&rd);
     finish_frame(&rd);
@@ -105,7 +113,7 @@ void wrecking_balloon_start(void)
     cd.exit_handler = &quit;
     cd.frame_skip = 0;
 
-    pal = load_bmp_palette("RES\\BOON-A.BMP");
+    pal = load_bmp_palette("RES\\CACP.BMP");
 
     init_renderer(&rd, num_of_sprites(), pal);
     destroy_image(&pal);
@@ -116,14 +124,14 @@ void wrecking_balloon_start(void)
 
     rd.flags = RENDER_DOUBLE_BUFFER;
 
-    rd.sprites[0].anim = &player_balloon_idle;
+    rd.sprites[0].anim.animation = &player_balloon_idle;
     rd.sprites[0].rect.x = 128;
     rd.sprites[0].rect.y = 32;
     rd.sprites[0].rect.w = CACTOON_SPRITE_SIZE;
     rd.sprites[0].rect.h = CACTOON_SPRITE_SIZE;
     rd.sprites[0].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
 
-    rd.sprites[1].anim = &player_cactus_idle;
+    rd.sprites[1].anim.animation = &player_cactus_idle;
     rd.sprites[1].rect.w = CACTOON_SPRITE_SIZE;
     rd.sprites[1].rect.h = CACTOON_SPRITE_SIZE;
     rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;

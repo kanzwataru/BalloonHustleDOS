@@ -22,7 +22,7 @@ static struct FileLoadData open_bmp_file(const char *file)
 
     /* open the file */
     if ((d.fp = fopen(file,"rb")) == NULL) {
-        printf("Error opening file %s\n", file);
+        while(1) printf("Error opening file %s\n", file);
     }
 
     /* read in the width and height of the image, and the
@@ -51,13 +51,15 @@ buffer_t *load_bmp_image(const char *file)
     struct FileLoadData d = open_bmp_file(file);
 
     buffer_t *buf = farcalloc(d.width * d.height, sizeof(byte));
+    if(!buf)
+        while(1) printf("Out of mem: load_bmp_image %s\n", file);
 
     /* ignore palette */
     fskip(d.fp,d.col_num * 4);
 
     for(i = (d.height - 1) * d.width; i >= 0; i -= d.width)
         for(x = 0; x < d.width; ++x)
-            buf[(uint)(i + x)] = (byte)fgetc(d.fp);
+            buf[(size_t)(i + x)] = (byte)fgetc(d.fp);
     
     fclose(d.fp);
 
@@ -70,6 +72,8 @@ buffer_t *load_bmp_palette(const char *file)
     struct FileLoadData d = open_bmp_file(file);
 
     buffer_t *palette = farcalloc(256 * 3, sizeof(byte));
+    if(!palette)
+        while(1) printf("Out of mem: load_bmp_palette %s\n", file);
 
     for(i = 0; i < d.col_num * 3; i+= 3) {
         palette[i + 2] = fgetc(d.fp) >> 2;
