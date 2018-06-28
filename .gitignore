@@ -1,3 +1,4 @@
+defines.h
 *.DS_Store
 *.EXE
 *.DSK
@@ -5,9 +6,11 @@
 *.ERR
 *.MAP
 *.LK1
+*.SWP
 *.exe
 *.dsl
 *.obj
 *.err
 *.map
 *.lk1
+*.swp

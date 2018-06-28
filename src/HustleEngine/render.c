@@ -5,6 +5,7 @@
 #include <dos.h>
 #include <stdio.h>
 #include <limits.h>
+#include <math.h>
 
 struct SimpleSprite {
     buffer_t *image;

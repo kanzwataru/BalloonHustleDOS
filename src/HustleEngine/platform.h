@@ -2,6 +2,8 @@
 #define PLATFORM_H
 
 #include <malloc.h>
+#include <stdio.h>
+#include "defines.h" /* Work around Borland's buggy compiler defines */
 
 /***                      ***
  ***    COMPILER CHECK    ***
@@ -54,5 +56,16 @@
     typedef unsigned long ulong;
 #endif /* platform */
 /******************************************************/
+
+#ifdef DEBUG
+    static void assertion_failed(const char *file, int line) {
+        while(1) printf("Assert fail %s, %d\n", file, line);
+    }
+
+    #define ASSERT(expr) \
+        if(expr) {} else assertion_failed(__FILE__, __LINE__)
+#else
+    #define ASSERT(expr) 
+#endif
 
 #endif /* PLATFORM_H */

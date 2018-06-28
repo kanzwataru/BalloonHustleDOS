@@ -267,6 +267,8 @@ void test_start(bool do_benchmark, int benchmark_times)
     event_add(done_eventing, NULL, 400);
     event_remove(e);
 
+    //ASSERT(0);
+
     refresh_sprites(&rd);
     
     if(do_benchmark)

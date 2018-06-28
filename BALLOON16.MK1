@@ -1,6 +1,4 @@
 !define BLANK ""
-anim.obj : src\hustle~1\anim.c .AUTODEPEND
- *wcc src\hustle~1\anim.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
 
 core.obj : src\hustle~1\core.c .AUTODEPEND
  *wcc src\hustle~1\core.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
@@ -23,13 +21,19 @@ vga.obj : src\hustle~1\vga.c .AUTODEPEND
 kb.obj : src\hustle~1\kb.c .AUTODEPEND
  *wcc src\hustle~1\kb.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
 
+event.obj : src\hustle~1\event.c .AUTODEPEND
+ *wcc src\hustle~1\event.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
+
 wb.obj : src\wrecki~1\wb.c .AUTODEPEND
  *wcc src\wrecki~1\wb.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
 
 cactoon.obj : src\wrecki~1\cactoon.c .AUTODEPEND
  *wcc src\wrecki~1\cactoon.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
 
-balloon.exe : anim.obj core.obj filesys.obj render.obj TEST.obj MAIN.obj vga.obj kb.obj wb.obj cactoon.obj .AUTODEPEND
- @%write balloon.lk1 FIL anim.obj,core.obj,filesys.obj,render.obj,TEST.obj,MAIN.obj,vga.obj,kb.obj,wb.obj,cactoon.obj
+resource.obj : src\wrecki~1\resource.c .AUTODEPEND
+ *wcc src\wrecki~1\resource.c -i="$(%watcom)/h" -w4 -e25 -zq -otexan -d1 -bt=dos -fo=.obj -ml
+
+balloon.exe : core.obj filesys.obj render.obj TEST.obj MAIN.obj vga.obj kb.obj wb.obj cactoon.obj event.obj resource.obj .AUTODEPEND
+ @%write balloon.lk1 FIL core.obj,filesys.obj,render.obj,TEST.obj,MAIN.obj,vga.obj,kb.obj,wb.obj,cactoon.obj,event.obj,resource.obj
  @%append balloon.lk1 
  *wlink name balloon sys dos op m op maxe=25 op q op symf @balloon.lk1

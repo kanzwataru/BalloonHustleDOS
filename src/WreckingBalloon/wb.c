@@ -11,6 +11,7 @@
 #include "src/wrecki~1/resource.h"
 
 #include <dos.h>
+#include <stdio.h>
 
 static RenderData    rd;
 static CactusBalloon player;
@@ -21,6 +22,7 @@ static byte dir_input = 0;
 static bool input(void)
 {
     byte key = keyboard_read();
+
     switch(key) {
     case KEY_W:
         dir_input |= WB_UP;
@@ -64,10 +66,8 @@ static void render(void)
     Point a, b;
 
     start_frame(&rd);
-
     for(i = 0; i < MAX_CACTOONS; ++i)
         erase_line(rd.screen, cactoon_strings[0]);
-
     if(!(player.flags & CT_DEAD)) {
         a.x = player.balloon->rect.x + CACTOON_SPRITE_HALF;
         a.y = player.balloon->rect.y + BALLOON_STRING_OFFSET;
@@ -75,8 +75,7 @@ static void render(void)
         b.y = player.cactus->rect.y + CACTUS_STRING_OFFSET;
         draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
     }
-
-    refresh_sprites(&rd);
+    refresh_sprites(&rd);   
     finish_frame(&rd);
 }
 
