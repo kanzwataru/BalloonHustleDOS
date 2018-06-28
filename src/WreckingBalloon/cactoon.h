@@ -21,7 +21,7 @@ typedef struct
     byte         flags;
 } CactusBalloon;
 
-void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus);
+void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus, int x, int y, byte flags);
 void cactoon_update(CactusBalloon *ct, byte dir);
 void cactoon_die(CactusBalloon *ct);
 

@@ -7,7 +7,7 @@
 
 #define TRAILING_SIDE_OFFSET_X      800
 #define TRAILING_SIDE_OFFSET_Y      300
-#define TRAILING_VERTICAL_OFFSET    850
+#define TRAILING_VERTICAL_OFFSET    1000 //850
 #define TRAILING_DECAY              15
 #define TRAILING_ACCEL              45
 
@@ -80,16 +80,36 @@ static Point simple_physics(Point counters, const byte dir)
     return counters;
 }
 
-void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus)
+void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus, int x, int y, byte flags)
 {
-    int i;
+    Rect hitbox = {10,10,28,28};
 
     memset(ct, 0, sizeof(CactusBalloon));
     ct->balloon = balloon;
     ct->cactus = cactus;
+    ct->flags = flags;
+
+    if(flags & CT_ENEMY) {
+        balloon->anim.animation = &enemy_balloon_idle;
+        cactus->anim.animation = &enemy_cactus_idle;
+    } else {
+        balloon->anim.animation = &player_balloon_idle;
+        cactus->anim.animation = &player_cactus_idle;
+    }
+
+    balloon->rect.x = x;
+    balloon->rect.y = y;
+    balloon->rect.w = CACTOON_SPRITE_SIZE;
+    balloon->rect.h = CACTOON_SPRITE_SIZE;
+    balloon->flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
+    balloon->hitbox = hitbox;
 
     cactus->rect.x = 0;
     cactus->rect.y = ROPE_LENGTH;
+    cactus->rect.w = CACTOON_SPRITE_SIZE;
+    cactus->rect.h = CACTOON_SPRITE_SIZE;
+    cactus->flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
+    cactus->hitbox = hitbox;
 }
 
 void cactoon_update(CactusBalloon *ct, const byte dir)
@@ -111,6 +131,11 @@ void cactoon_update(CactusBalloon *ct, const byte dir)
     ct->counters = simple_physics(ct->counters, dir);
     ct->cactus->rect.x = ct->balloon->rect.x + (ct->counters.x >> FIXED_POINT_SHIFT);
     ct->cactus->rect.y = ct->balloon->rect.y + ((ROPE_LENGTH + ct->counters.y) >> FIXED_POINT_SHIFT);
+
+    if(hitbox_collision(ct->cactus->hitbox, ct->cactus->rect, ct->balloon->hitbox, ct->balloon->rect))
+        cactoon_die(ct);
+    //if(rect_collision(ct->cactus->rect, ct->balloon->rect))
+    //    cactoon_die(ct);
 }
 
 void cactoon_die(CactusBalloon *ct)

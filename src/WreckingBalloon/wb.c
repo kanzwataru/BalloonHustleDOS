@@ -4,7 +4,6 @@
 #include "src/hustle~1/kb.h"
 #include "src/hustle~1/filesys.h"
 #include "src/hustle~1/platform.h"
-#include "src/hustle~1/vector.h"
 
 #include "src/wrecki~1/consts.h"
 #include "src/wrecki~1/cactoon.h"
@@ -60,6 +59,24 @@ static void update(void)
     cactoon_update(&player, dir_input);
 }
 
+static void debug_render_hitboxes(void)
+{
+    Rect hbox_a, hbox_b;
+
+    hbox_a.x = player.balloon->rect.x + player.balloon->hitbox.x;
+    hbox_a.y = player.balloon->rect.y + player.balloon->hitbox.y;
+    hbox_a.w = player.balloon->hitbox.w;
+    hbox_a.h = player.balloon->hitbox.h;
+
+    hbox_b.x = player.cactus->rect.x + player.cactus->hitbox.x;
+    hbox_b.y = player.cactus->rect.y + player.cactus->hitbox.y;
+    hbox_b.w = player.cactus->hitbox.w;
+    hbox_b.h = player.cactus->hitbox.h;
+
+    draw_rect(rd.screen, &hbox_a, 7);
+    draw_rect(rd.screen, &hbox_b, 8);
+}
+
 static void render(void)
 {
     int i;
@@ -75,7 +92,10 @@ static void render(void)
         b.y = player.cactus->rect.y + CACTUS_STRING_OFFSET;
         draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
     }
-    refresh_sprites(&rd);   
+    refresh_sprites(&rd);
+
+    //debug_render_hitboxes();
+
     finish_frame(&rd);
 }
 
@@ -120,19 +140,7 @@ void wrecking_balloon_start(void)
 
     rd.flags = RENDER_DOUBLE_BUFFER;
 
-    rd.sprites[0].anim.animation = &player_balloon_idle;
-    rd.sprites[0].rect.x = 128;
-    rd.sprites[0].rect.y = 32;
-    rd.sprites[0].rect.w = CACTOON_SPRITE_SIZE;
-    rd.sprites[0].rect.h = CACTOON_SPRITE_SIZE;
-    rd.sprites[0].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
-
-    rd.sprites[1].anim.animation = &player_cactus_idle;
-    rd.sprites[1].rect.w = CACTOON_SPRITE_SIZE;
-    rd.sprites[1].rect.h = CACTOON_SPRITE_SIZE;
-    rd.sprites[1].flags = SPRITE_REFRESH | SPRITE_CLIP | SPRITE_MASKED;
-
-    cactoon_init(&player, &rd.sprites[0], &rd.sprites[1]);
+    cactoon_init(&player, &rd.sprites[0], &rd.sprites[1], 128, 32, 0);
 
     FILL_BUFFER(rd.screen, 1);
     FILL_BUFFER(rd.bg_layer, 1);

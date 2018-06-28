@@ -46,6 +46,7 @@
      *
      * This is for both Borland and Watcom
      */
+    #define inline /* no inline on C89 */
     typedef int bool;
     #define true 1
     #define false 0
