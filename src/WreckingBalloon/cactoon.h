@@ -22,7 +22,7 @@ typedef struct
 } CactusBalloon;
 
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus);
-void cactoon_move(CactusBalloon *ct, byte dir);
+void cactoon_update(CactusBalloon *ct, byte dir);
 void cactoon_die(CactusBalloon *ct);
 
 #endif

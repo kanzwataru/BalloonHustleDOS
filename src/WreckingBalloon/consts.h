@@ -11,7 +11,7 @@
 #define POINT_BALLOON_SPEED 75
 #define PROJECTILE_SPEED    200
 
-#define CACTUS_FALL_SPEED   10
+#define CACTUS_FALL_SPEED   3
 #define CACTOON_SPEED       80
 #define CACTOON_ACCEL       10
 #define CACTOON_DECEL       5

@@ -92,8 +92,13 @@ void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus)
     cactus->rect.y = ROPE_LENGTH;
 }
 
-void cactoon_move(CactusBalloon *ct, const byte dir)
+void cactoon_update(CactusBalloon *ct, const byte dir)
 {
+    if(ct->flags & CT_DEAD) {
+        ct->cactus->rect.y += CACTUS_FALL_SPEED;
+        return;
+    }
+
     ct->balloon_vel = calc_velocity(ct->balloon_vel, dir);
 
     ct->balloon_vel.x = CLAMP(ct->balloon_vel.x, -CACTOON_SPEED, CACTOON_SPEED);

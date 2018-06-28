@@ -34,9 +34,6 @@ static bool input(void)
     case KEY_D:
         dir_input |= WB_RIGHT;
         break;
-    case KEY_SPACE:
-        cactoon_die(&player);
-        break;
     case RELEASED(KEY_W):
         dir_input &= ~WB_UP;
         break;
@@ -58,7 +55,7 @@ static bool input(void)
 
 static void update(void)
 {
-    cactoon_move(&player, dir_input);
+    cactoon_update(&player, dir_input);
 }
 
 static void render(void)
