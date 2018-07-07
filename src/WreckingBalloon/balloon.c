@@ -41,7 +41,11 @@ void balloon_pop(PointBalloon *pb)
 
 void balloon_update(PointBalloon *pb) 
 {
-    pb->sprite->rect.y -= POINT_BALLOON_SPEED;
+    if(pb->popped)
+        pb->sprite->rect.y -= 1;
+    else
+        pb->sprite->rect.y -= POINT_BALLOON_SPEED;
+    
     if(pb->sprite->rect.y < -300)
         reset_pos(pb);
 }

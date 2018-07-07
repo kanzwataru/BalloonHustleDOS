@@ -15,6 +15,9 @@
 #define INCREASE(a, max, amnt) (a) = ((a) >= (max)) ? (max) : ((a) + (amnt))
 #define DECREASE(a, min, amnt) (a) = ((a) <= (min)) ? (min) : ((a) - (amnt))
 
+static const int RIGHT_BOUNDS = SCREEN_WIDTH - CACTOON_SPRITE_SIZE;
+static const int LOW_BOUNDS   = SCREEN_HEIGHT - CACTOON_SPRITE_SIZE;
+
 static Point calc_velocity(Point vel, const byte dir)
 {
     if(dir == 0) {
@@ -56,7 +59,7 @@ static Point calc_velocity(Point vel, const byte dir)
 
 static Point simple_physics(Point counters, const byte dir)
 {
-    if(dir == 0) {
+    if(dir == WB_STILL) {
         TOWARDS_ZERO(counters.x, TRAILING_DECAY);
         TOWARDS_ZERO(counters.y, TRAILING_DECAY);
     }
@@ -113,7 +116,7 @@ void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus, int x, int
     cactus->hitbox = hitbox;
 }
 
-void cactoon_update(CactusBalloon *ct, const byte dir)
+void cactoon_update(CactusBalloon *ct, byte dir)
 {
     if(ct->flags & CT_DEAD) {
         ct->cactus->rect.y += CACTUS_FALL_SPEED;
@@ -128,6 +131,29 @@ void cactoon_update(CactusBalloon *ct, const byte dir)
     ct->balloon->rect.x += ct->balloon_vel.x >> FIXED_POINT_SHIFT;
     ct->balloon->rect.y += ct->balloon_vel.y >> FIXED_POINT_SHIFT;
     
+    /*
+     * Make sure we stay on screen as 
+     * the player
+     */
+    if(ct->flags & CT_PLAYER) {
+        if(ct->balloon->rect.x < 0) {
+            ct->balloon->rect.x = 0;
+            dir &= ~WB_LEFT;
+        }
+        else if(ct->balloon->rect.x > RIGHT_BOUNDS) {
+            ct->balloon->rect.x = RIGHT_BOUNDS;
+            dir &= ~WB_RIGHT;
+        }
+        if(ct->balloon->rect.y < 0) {
+            ct->balloon->rect.y = 0;
+            dir &= ~WB_UP;
+        }
+        else if(ct->balloon->rect.y > LOW_BOUNDS) {
+            ct->balloon->rect.y = LOW_BOUNDS;
+            dir &= ~WB_DOWN;
+        }
+    }
+
     /* Cactus swing physics */
     ct->counters = simple_physics(ct->counters, dir);
     ct->cactus->rect.x = ct->balloon->rect.x + (ct->counters.x >> FIXED_POINT_SHIFT);

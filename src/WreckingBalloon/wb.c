@@ -61,7 +61,8 @@ static void update(void)
     int i;
     Rect cactus_hbox;
 
-    cactoon_update(&player, dir_input);
+    cactoon_update(&player, dir_input);    
+
     cactus_hbox = calc_hitbox(&player.cactus->hitbox, &player.cactus->rect);
     for(i = 0; i < MAX_BALLOONS; ++i) {
         balloon_update(&balloons[i]);
@@ -149,6 +150,7 @@ void wrecking_balloon_start(void)
     }
 
     cactoon_init(&player, &rd.sprites[spr_id++], &rd.sprites[spr_id++], 128, 32, 0);
+    player.flags |= CT_PLAYER;
 
     assert(spr_id <= MAX_SPRITES);
 

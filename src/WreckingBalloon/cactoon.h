@@ -8,8 +8,9 @@
 #define CACTUS_STRING_OFFSET  16
 
 enum CACTOON_FLAGS {
-    CT_ENEMY = 0x01,
-    CT_DEAD  = 0x02
+    CT_ENEMY  = 0x01,
+    CT_PLAYER = 0x02,
+    CT_DEAD   = 0x04
 };
 
 typedef struct

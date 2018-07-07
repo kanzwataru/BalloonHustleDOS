@@ -24,10 +24,11 @@
 #define CACTOON_POINTS        150
 
 enum WB_DIR {
-    WB_LEFT =  0x01,
+    WB_STILL = 0x00,
+    WB_LEFT  = 0x01,
     WB_RIGHT = 0x02,
-    WB_UP =    0x04,
-    WB_DOWN =  0x08
+    WB_UP    = 0x04,
+    WB_DOWN  = 0x08
 };
 
 /* Colour palette defines */
