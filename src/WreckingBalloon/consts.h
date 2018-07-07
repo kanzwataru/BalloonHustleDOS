@@ -6,7 +6,9 @@
 
 #define MAX_CACTOONS        4
 #define MAX_BALLOONS        4
+#define MAX_CLOUDS          3
 
+#define CLOUDS_FRAME_SKIP   512
 #define ROPE_LENGTH         1200 FP
 
 #define POINT_BALLOON_SPEED 3
@@ -33,8 +35,9 @@ enum WB_DIR {
 
 /* Colour palette defines */
 #define STRING_COL          23
+#define SKY_COL             1
 /* */
 
-#define MAX_SPRITES         (MAX_CACTOONS * 2) + (MAX_BALLOONS)
+#define MAX_SPRITES (MAX_CACTOONS * 2) + (MAX_BALLOONS) + (MAX_CLOUDS)
 
 #endif

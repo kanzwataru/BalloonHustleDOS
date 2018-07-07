@@ -3,9 +3,12 @@
 
 #define BALLOON_SIZE        48 * 48
 #define CACTUS_SIZE         48 * 48
+
 #define TOTAL_ANIMATIONS    6
+#define TOTAL_STILL_SPRITES 1
 
 static Animation *anims[TOTAL_ANIMATIONS];
+static buffer_t **images[TOTAL_STILL_SPRITES];
 
 Animation player_balloon_idle;
 Animation player_balloon_pop;
@@ -24,10 +27,14 @@ Animation point_balloon_pop;
 Animation bomb_balloon_idle;
 Animation bomb_balloon_pop;
 
+buffer_t *cloud_image;
+
 void init_all_resources(void)
 {
     int i = 0;
 
+                            /* ANIMATION */
+    /* ****************************************************************** */
     anims[i++] = &player_balloon_idle;
     player_balloon_idle.frames = load_bmp_image("RES\\BLOOA.BMP");
     player_balloon_idle.frame_size = BALLOON_SIZE;
@@ -65,6 +72,18 @@ void init_all_resources(void)
     player_cactus_fall.frame_size = CACTUS_SIZE;
     player_cactus_fall.count = 11;
     player_cactus_fall.skip = 4;
+    /* ****************************************************************** */
+    /* ****************************************************************** */
+
+                            /* STILL SPRITES */
+    /* ****************************************************************** */
+    /* ****************************************************************** */
+    i = 0;
+
+    cloud_image = load_bmp_image("RES\\CLOUD.BMP");
+    images[i++] = &cloud_image;
+    /* ****************************************************************** */
+    /* ****************************************************************** */
 }
 
 void free_all_resources(void)
@@ -72,4 +91,7 @@ void free_all_resources(void)
     int i;
     for(i = 0; i < TOTAL_ANIMATIONS; ++i)
         destroy_image(&anims[i]->frames);
+
+    for(i = 0; i < TOTAL_STILL_SPRITES; ++i)
+        destroy_image(images + i);
 }

@@ -10,6 +10,8 @@
 #include "src/wrecki~1/balloon.h"
 #include "src/wrecki~1/resource.h"
 
+#include "src/wrecki~1/clouds.h" /* same compilation unit */
+
 #include <dos.h>
 #include <stdio.h>
 
@@ -96,6 +98,9 @@ static void render(void)
     Point a, b;
 
     start_frame(&rd);
+
+    CLOUDS_ERASE_DRAW
+
     for(i = 0; i < MAX_CACTOONS; ++i)
         erase_line(rd.screen, cactoon_strings[0]);
     if(!(player.flags & CT_DEAD)) {
@@ -105,8 +110,8 @@ static void render(void)
         b.y = player.cactus->rect.y + CACTUS_STRING_OFFSET;
         draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
     }
-    refresh_sprites(&rd);
 
+    refresh_sprites(&rd);
     finish_frame(&rd);
 }
 
@@ -145,6 +150,10 @@ void wrecking_balloon_start(void)
         cactoon_strings[i] = create_line_undo_list();
     }
 
+    /* INIT SPRITES */
+    /* ****************************************************************** */
+    clouds_init(); /* clouds are not actual sprites, they draw themselves */
+
     for(i = 0; i < MAX_BALLOONS; ++i) {
         balloon_init(&balloons[i], &rd.sprites[spr_id++], POINT_BALLOON_POINTS);
     }
@@ -153,9 +162,10 @@ void wrecking_balloon_start(void)
     player.flags |= CT_PLAYER;
 
     assert(spr_id <= MAX_SPRITES);
+    /* ****************************************************************** */
 
-    FILL_BUFFER(rd.screen, 1);
-    FILL_BUFFER(rd.bg_layer, 1);
+    FILL_BUFFER(rd.screen, SKY_COL);
+    FILL_BUFFER(rd.bg_layer, SKY_COL);
     refresh_sprites(&rd);
     engine_start(cd);
 }

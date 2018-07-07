@@ -306,6 +306,19 @@ void draw_line(buffer_t *buf, LineUndoList undo, const Point *p1, const Point *p
     (*(struct LineUndo *)undo).count = count;
 }
 
+Rect draw_sprite_explicit(buffer_t *buf, buffer_t * const image, const Rect rect, const Rect global_clip)
+{
+    Rect clipped;
+    Point offset;
+
+    if(!clip_rect(&clipped, &offset, &rect, &global_clip))
+        return EMPTY_RECT;
+
+    blit_offset(buf, image, &clipped, offset.x + (offset.y * clipped.w), rect.w);
+
+    return clipped;
+}
+
 void erase_line(buffer_t *buf, LineUndoList undo)
 {
     uint count = (*(struct LineUndo *)undo).count;
@@ -419,7 +432,7 @@ void refresh_sprites(RenderData *rd)
         else {
             blit_offset(rd->screen, sprite->vis.image, &r, image_offset.x + (image_offset.y * r.w), sprite->rect.w);
         }
-    };
+    }
 }
 
 void finish_frame(RenderData *rd)
