@@ -63,10 +63,10 @@
         while(1) printf("Assert fail %s, %d\n", file, line);
     }
 
-    #define ASSERT(expr) \
+    #define assert(expr) \
         if(expr) {} else assertion_failed(__FILE__, __LINE__)
 #else
-    #define ASSERT(expr) 
+    #define assert(expr) 
 #endif
 
 #endif /* PLATFORM_H */

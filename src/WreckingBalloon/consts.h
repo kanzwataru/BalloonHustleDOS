@@ -9,7 +9,7 @@
 
 #define ROPE_LENGTH         1200 FP
 
-#define POINT_BALLOON_SPEED 1
+#define POINT_BALLOON_SPEED 3
 #define PROJECTILE_SPEED    200 FP
 
 #define CACTUS_FALL_SPEED   3
@@ -18,7 +18,7 @@
 #define CACTOON_DECEL       5 FP
 
 #define BALLOON_HITBOX      {10,10,28,28}
-#define CACTUS_HITBOX       {10,10,28,28}
+#define CACTUS_HITBOX       {10,10,24,24}
 
 #define POINT_BALLOON_POINTS  50
 #define CACTOON_POINTS        150
@@ -33,5 +33,7 @@ enum WB_DIR {
 /* Colour palette defines */
 #define STRING_COL          23
 /* */
+
+#define MAX_SPRITES         (MAX_CACTOONS * 2) + (MAX_BALLOONS)
 
 #endif

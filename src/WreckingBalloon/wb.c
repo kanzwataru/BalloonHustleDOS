@@ -120,14 +120,10 @@ static void quit(void)
     quit_renderer(&rd);
 }
 
-static int num_of_sprites(void)
-{
-    return (MAX_CACTOONS * 2) + (MAX_BALLOONS);
-}
-
 void wrecking_balloon_start(void) 
 {
     int i;
+    int spr_id = 0;
     CoreData cd;
     buffer_t *pal;
 
@@ -141,18 +137,20 @@ void wrecking_balloon_start(void)
 
     pal = load_bmp_palette("RES\\CACP.BMP");
 
-    init_renderer(&rd, num_of_sprites(), pal);
+    init_renderer(&rd, MAX_SPRITES, pal);
     destroy_image(&pal);
 
     for(i = 0; i < MAX_CACTOONS; ++i) {
         cactoon_strings[i] = create_line_undo_list();
     }
 
-    cactoon_init(&player, &rd.sprites[0], &rd.sprites[1], 128, 32, 0);
-
     for(i = 0; i < MAX_BALLOONS; ++i) {
-        balloon_init(&balloons[i], &rd.sprites[2 + i], POINT_BALLOON_POINTS);
+        balloon_init(&balloons[i], &rd.sprites[spr_id++], POINT_BALLOON_POINTS);
     }
+
+    cactoon_init(&player, &rd.sprites[spr_id++], &rd.sprites[spr_id++], 128, 32, 0);
+
+    assert(spr_id <= MAX_SPRITES);
 
     FILL_BUFFER(rd.screen, 1);
     FILL_BUFFER(rd.bg_layer, 1);

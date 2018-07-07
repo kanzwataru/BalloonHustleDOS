@@ -26,7 +26,7 @@ EventID event_add(EventCallback callback, void *arg, uint time_amount)
     }
     else {
         event_stack[++top] = e;
-        ASSERT(top < MAX_EVENTS);
+        assert(top < MAX_EVENTS);
 
         ret_id = top;
     }
@@ -36,7 +36,7 @@ EventID event_add(EventCallback callback, void *arg, uint time_amount)
 
 void event_remove(EventID id)
 {
-    ASSERT(id < top);
+    assert(id < top);
     memset(event_stack + id, 0, sizeof(struct Event));
 
     if(id == top - 1)
