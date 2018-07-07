@@ -6,6 +6,7 @@
 typedef struct {
     Sprite *sprite;
     uint    points;
+    bool    popped;
 } PointBalloon;
 
 void balloon_init(PointBalloon *pb, Sprite *sprite, uint points);
