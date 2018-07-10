@@ -72,6 +72,8 @@ static void update(void)
         if(rect_collision(cactus_hbox, balloons[i].sprite->rect))
             balloon_pop(&balloons[i]);
     }
+
+    clouds_update(NULL);
 }
 
 static void debug_render_hitboxes(void)
@@ -99,7 +101,7 @@ static void render(void)
 
     start_frame(&rd);
 
-    CLOUDS_RENDER
+    clouds_render();
 /*
     for(i = 0; i < MAX_CACTOONS; ++i)
         erase_line(rd.screen, cactoon_strings[0]);

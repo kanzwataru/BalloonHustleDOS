@@ -13,11 +13,6 @@ static Rect clouds[MAX_CLOUDS];
 static Rect clouds_undo_rects[MAX_CLOUDS];
 static bool clouds_pending = true;
 
-#define CLOUDS_RENDER \
-    for(i = 0; i < MAX_CLOUDS; ++i) { \
-        clouds_render(clouds[i]); \
-    }
-
 static void clouds_rle(buffer_t *image)
 {
     uint offset = 0, line = 0;
@@ -54,27 +49,37 @@ static void clouds_rle(buffer_t *image)
     }
 }
 
-static void clouds_render(Rect cloud)
+static void clouds_render(void)
 {
-    uint j = 0;
-    byte lines = 0;
-    buffer_t *p = rd.screen + (((cloud.y << 8) + (cloud.y << 6)) + cloud.x);
-    struct RLEBlob far *r = rle;
-    
+    uint j;
+    byte i, lines;
+    buffer_t *p;
+    struct RLEBlob far *r;
+
+    /* erase */
+    for(i = 0; i < MAX_CLOUDS; ++i) {
+        draw_rect(rd.screen, &clouds[i], SKY_COL);
+    }
+
     /* draw */
-    
-    while(lines < CLOUD_SPRITE_H) {
-        j = 0;
-        while(j < CLOUD_SPRITE_W) {
-            j += r->bg_len;
-            _fmemset(p + j, CLOUD_COL, r->fg_len);
-            j += r->fg_len;
+    for(i = 0; i < MAX_CLOUDS; ++i) {
+        lines = 0;
+        r = rle;
+        p = rd.screen + (((clouds[i].y << 8) + (clouds[i].y << 6)) + clouds[i].x);
 
-            ++r;
+        while(lines < CLOUD_SPRITE_H) {
+            j = 0;
+            while(j < CLOUD_SPRITE_W) {
+                j += r->bg_len;
+                _fmemset(p + j, CLOUD_COL, r->fg_len);
+                j += r->fg_len;
+
+                ++r;
+            }
+
+            p += SCREEN_WIDTH;
+            ++lines;
         }
-
-        p += SCREEN_WIDTH;
-        ++lines;
     }
 }
 
@@ -82,10 +87,11 @@ static void clouds_update(void *_)
 {
     int i;
     for(i = 0; i < MAX_CLOUDS; ++i) {
-        ++clouds[i].y;
+        clouds_undo_rects[i] = clouds[i];
+        --clouds[i].x;
     }
-
     clouds_pending = true;
+    //event_add(&clouds_update, NULL, CLOUDS_FRAME_SKIP);
 }
 
 static void clouds_init(void)
@@ -94,14 +100,14 @@ static void clouds_init(void)
     srand((unsigned int)clouds);
 
     for(i = 0; i < MAX_CLOUDS; ++i) {
-        //clouds[i].x = 50 + rand() % 200;
-        //clouds[i].y = rand() % 200;
-        clouds[i].x = 0;
-        clouds[i].y = 50;
+        clouds[i].x = (rand() % (200 - CLOUD_SPRITE_W)) + 50;
+        clouds[i].y = rand() % (200 - CLOUD_SPRITE_H);
         clouds[i].w = CLOUD_SPRITE_W;
         clouds[i].h = CLOUD_SPRITE_H;
+
+        clouds_undo_rects[i] = clouds[i];
     }
     
-    //event_add(&clouds_update, NULL, CLOUDS_FRAME_SKIP);
+   //event_add(&clouds_update, NULL, CLOUDS_FRAME_SKIP);
     clouds_rle(cloud_image);
 }

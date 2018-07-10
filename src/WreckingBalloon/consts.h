@@ -4,11 +4,11 @@
 #define FIXED_POINT_SHIFT   4
 #define FP /* unit should be fixed point */
 
-#define MAX_CACTOONS        1
+#define MAX_CACTOONS        3
 #define MAX_BALLOONS        4
 #define MAX_CLOUDS          3
 
-#define CLOUDS_FRAME_SKIP   512
+#define CLOUDS_FRAME_SKIP   64
 #define ROPE_LENGTH         1200 FP
 
 #define POINT_BALLOON_SPEED 3
