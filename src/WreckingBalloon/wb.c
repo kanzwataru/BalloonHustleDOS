@@ -10,8 +10,6 @@
 #include "src/wrecki~1/balloon.h"
 #include "src/wrecki~1/resource.h"
 
-#include "src/wrecki~1/clouds.h" /* same compilation unit */
-
 #include <dos.h>
 #include <stdio.h>
 
@@ -21,6 +19,8 @@ static CactusBalloon player;
 static PointBalloon  balloons[MAX_BALLOONS];
 static LineUndoList  cactoon_strings[MAX_CACTOONS];
 static byte dir_input = 0;
+
+#include "src/wrecki~1/clouds.h" /* same compilation unit */
 
 static bool input(void)
 {
@@ -99,8 +99,8 @@ static void render(void)
 
     start_frame(&rd);
 
-    CLOUDS_ERASE_DRAW
-
+    CLOUDS_RENDER
+/*
     for(i = 0; i < MAX_CACTOONS; ++i)
         erase_line(rd.screen, cactoon_strings[0]);
     if(!(player.flags & CT_DEAD)) {
@@ -111,7 +111,7 @@ static void render(void)
         draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
     }
 
-    refresh_sprites(&rd);
+    refresh_sprites(&rd); */
     finish_frame(&rd);
 }
 

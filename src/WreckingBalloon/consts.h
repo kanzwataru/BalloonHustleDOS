@@ -4,7 +4,7 @@
 #define FIXED_POINT_SHIFT   4
 #define FP /* unit should be fixed point */
 
-#define MAX_CACTOONS        4
+#define MAX_CACTOONS        1
 #define MAX_BALLOONS        4
 #define MAX_CLOUDS          3
 
@@ -36,6 +36,7 @@ enum WB_DIR {
 /* Colour palette defines */
 #define STRING_COL          23
 #define SKY_COL             1
+#define CLOUD_COL           3
 /* */
 
 #define MAX_SPRITES (MAX_CACTOONS * 2) + (MAX_BALLOONS) + (MAX_CLOUDS)
