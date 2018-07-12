@@ -12,6 +12,18 @@ static struct RLEBlob far *rle;
 static Rect clouds[MAX_CLOUDS];
 static Rect clouds_undo_rects[MAX_CLOUDS];
 static bool clouds_pending = true;
+static int  clouds_timer = CLOUDS_FRAME_SKIP;
+
+#define CLOUDS_RENDER \
+    if(clouds_pending) { \
+        clouds_render(); \
+    } else {}
+
+#define CLOUDS_UPDATE \
+    if(--clouds_timer == 0) {             \
+        clouds_timer = CLOUDS_FRAME_SKIP; \
+        clouds_update();                  \
+    } else {}
 
 static void clouds_rle(buffer_t *image)
 {
@@ -52,22 +64,40 @@ static void clouds_rle(buffer_t *image)
 static void clouds_render(void)
 {
     uint j;
-    byte i, lines;
+    byte i, lines, lineskip;
     buffer_t *p;
     struct RLEBlob far *r;
 
-    /* erase */
     for(i = 0; i < MAX_CLOUDS; ++i) {
-        draw_rect(rd.screen, &clouds[i], SKY_COL);
+        if(clouds_undo_rects[i].y + CLOUD_SPRITE_H <= 0 || clouds[i].y >= SCREEN_HEIGHT)
+            continue;
+
+        draw_rect_clipped(rd.screen, &clouds_undo_rects[i], SKY_COL);
     }
 
-    /* draw */
     for(i = 0; i < MAX_CLOUDS; ++i) {
-        lines = 0;
+        if(clouds[i].y + CLOUD_SPRITE_H <= 0 || clouds[i].y >= SCREEN_HEIGHT)
+            continue;
+
+        lines = (clouds[i].y + CLOUD_SPRITE_H) > SCREEN_HEIGHT ? SCREEN_HEIGHT - clouds[i].y : CLOUD_SPRITE_H;
+        lineskip = clouds[i].y < 0 ? abs(clouds[i].y) : 0;
+
+        /* draw */
         r = rle;
         p = rd.screen + (((clouds[i].y << 8) + (clouds[i].y << 6)) + clouds[i].x);
 
-        while(lines < CLOUD_SPRITE_H) {
+        while(lineskip != 0) {
+            j = 0;
+            while(j < CLOUD_SPRITE_W) {
+                j += r->bg_len + r->fg_len;
+                ++r;
+            }
+            --lineskip;
+            --lines;
+            p += SCREEN_WIDTH;
+        }
+
+        while(lines != 0) {
             j = 0;
             while(j < CLOUD_SPRITE_W) {
                 j += r->bg_len;
@@ -78,20 +108,25 @@ static void clouds_render(void)
             }
 
             p += SCREEN_WIDTH;
-            ++lines;
+            --lines;
         }
     }
+
+    clouds_pending = false;
 }
 
-static void clouds_update(void *_)
+static void clouds_update(void)
 {
     int i;
     for(i = 0; i < MAX_CLOUDS; ++i) {
         clouds_undo_rects[i] = clouds[i];
-        --clouds[i].x;
+        clouds[i].y -= CLOUDS_SPEED;
+        if(clouds[i].y <= -50) {
+            clouds[i].x = (rand() % (200 - CLOUD_SPRITE_W)) + 50;
+            clouds[i].y = 200 + (rand() % 50);
+        };
     }
     clouds_pending = true;
-    //event_add(&clouds_update, NULL, CLOUDS_FRAME_SKIP);
 }
 
 static void clouds_init(void)
@@ -101,13 +136,12 @@ static void clouds_init(void)
 
     for(i = 0; i < MAX_CLOUDS; ++i) {
         clouds[i].x = (rand() % (200 - CLOUD_SPRITE_W)) + 50;
-        clouds[i].y = rand() % (200 - CLOUD_SPRITE_H);
+        clouds[i].y = rand() % 300;
         clouds[i].w = CLOUD_SPRITE_W;
         clouds[i].h = CLOUD_SPRITE_H;
 
         clouds_undo_rects[i] = clouds[i];
     }
     
-   //event_add(&clouds_update, NULL, CLOUDS_FRAME_SKIP);
     clouds_rle(cloud_image);
 }

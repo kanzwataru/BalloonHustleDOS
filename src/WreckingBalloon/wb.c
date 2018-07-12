@@ -73,7 +73,7 @@ static void update(void)
             balloon_pop(&balloons[i]);
     }
 
-    clouds_update(NULL);
+    CLOUDS_UPDATE;
 }
 
 static void debug_render_hitboxes(void)
@@ -101,10 +101,11 @@ static void render(void)
 
     start_frame(&rd);
 
-    clouds_render();
-/*
     for(i = 0; i < MAX_CACTOONS; ++i)
         erase_line(rd.screen, cactoon_strings[0]);
+
+    CLOUDS_RENDER
+    
     if(!(player.flags & CT_DEAD)) {
         a.x = player.balloon->rect.x + CACTOON_SPRITE_HALF;
         a.y = player.balloon->rect.y + BALLOON_STRING_OFFSET;
@@ -113,7 +114,7 @@ static void render(void)
         draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
     }
 
-    refresh_sprites(&rd); */
+    refresh_sprites(&rd);
     finish_frame(&rd);
 }
 

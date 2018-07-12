@@ -8,8 +8,9 @@
 #define MAX_BALLOONS        4
 #define MAX_CLOUDS          3
 
-#define CLOUDS_FRAME_SKIP   64
-#define ROPE_LENGTH         1200 FP
+#define ROPE_LENGTH         1100 FP
+#define CLOUDS_FRAME_SKIP   32
+#define CLOUDS_SPEED        3
 
 #define POINT_BALLOON_SPEED 3
 #define PROJECTILE_SPEED    200 FP
