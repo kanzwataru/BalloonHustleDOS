@@ -1,5 +1,6 @@
 #include "src/wrecki~1/resource.h"
 #include "src/hustle~1/filesys.h"
+#include "src/hustle~1/rle.h"
 
 #define BALLOON_SIZE        48 * 48
 #define CACTUS_SIZE         48 * 48
@@ -29,6 +30,17 @@ Animation bomb_balloon_pop;
 
 buffer_t *cloud_image;
 
+static void load_spritesheet(Animation *anim, const char *path, int size)
+{
+    buffer_t *raw = load_image(path);
+    RLEImage *image = buffer_to_rle(raw);
+
+    anim->frames = image;
+    anim->frame_size = size;
+
+    destroy_image(raw);
+}
+
 void init_all_resources(void)
 {
     int i = 0;
@@ -36,40 +48,34 @@ void init_all_resources(void)
                             /* ANIMATION */
     /* ****************************************************************** */
     anims[i++] = &player_balloon_idle;
-    player_balloon_idle.frames = load_bmp_image("RES\\BLOOA.BMP");
-    player_balloon_idle.frame_size = BALLOON_SIZE;
+    load_spritesheet(player_balloon_idle, "RES\\BLOOA.BMP", BALLOON_SIZE);
     player_balloon_idle.count = 4;
     player_balloon_idle.skip = 6;
 
     anims[i++] = &player_balloon_pop;
-    player_balloon_pop.frames = load_bmp_image("RES\\BLOOA-PO.BMP");
-    player_balloon_pop.frame_size = BALLOON_SIZE;
+    load_spritesheet(player_balloon_pop, "RES\\BLOOA-PO.BMP", BALLOON_SIZE);
     player_balloon_pop.count = 8;
     player_balloon_pop.skip = 2;
     player_balloon_pop.playback_type = ANIM_DISAPPEAR;
 
     anims[i++] = &point_balloon_idle;
-    point_balloon_idle.frames = load_bmp_image("RES\\BLOOE.BMP");
-    point_balloon_idle.frame_size = BALLOON_SIZE;
+    load_spritesheet(point_balloon_idle, "RES\\BLOOE.BMP", BALLOON_SIZE);
     point_balloon_idle.count = player_balloon_idle.count;
     point_balloon_idle.skip = player_balloon_idle.skip;
 
     anims[i++] = &point_balloon_pop;
-    point_balloon_pop.frames = load_bmp_image("RES\\BLOOE-PO.BMP");
-    point_balloon_pop.frame_size = BALLOON_SIZE;
+    load_spritesheet(point_balloon_pop, "RES\\BLOOE-PO.BMP", BALLOON_SIZE);
     point_balloon_pop.count = player_balloon_pop.count;
     point_balloon_pop.skip = player_balloon_pop.skip;
     point_balloon_pop.playback_type = ANIM_DISAPPEAR;
 
     anims[i++] = &player_cactus_idle;
-    player_cactus_idle.frames = load_bmp_image("RES\\CACP.BMP");
-    player_cactus_idle.frame_size = CACTUS_SIZE;
+    load_spritesheet(player_cactus_idle, "RES\\CACO.BMP", CACTUS_SIZE);
     player_cactus_idle.count = 6;
     player_cactus_idle.skip = 6;
 
     anims[i++] = &player_cactus_fall;
-    player_cactus_fall.frames = load_bmp_image("RES\\CACP-FA.BMP");
-    player_cactus_fall.frame_size = CACTUS_SIZE;
+    load_spritesheet(player_cactus_fall, "RES\\CACP-FA.BMP", CACTUS_SIZE);
     player_cactus_fall.count = 11;
     player_cactus_fall.skip = 4;
     /* ****************************************************************** */

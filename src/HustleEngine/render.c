@@ -240,7 +240,7 @@ void draw_rect_clipped(buffer_t *buf, const Rect *rect, byte colour)
 {
     Rect c;
     Rect screen_clip = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
-    Point _;
+    Point _ = {0,0};
 
     clip_rect(&c, &_, rect, &screen_clip);
     draw_rect(buf, &c, colour);

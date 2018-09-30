@@ -49,7 +49,7 @@ enum ANIMTYPE {
 typedef void far* LineUndoList;
 
 typedef struct {
-    buffer_t    *frames;      /* sprite sheet, not owned */
+    RLEImage    *frames;      /* sprite sheet, not owned */
     size_t       frame_size;
     byte         count;
     byte         skip;
@@ -65,7 +65,7 @@ typedef struct {
 
 typedef struct {
     union {
-        buffer_t    *image;   /* not freed, reference only */
+        RLEImage    *image;   /* not freed, reference only */
         byte         colour;
     } vis;
     Rect         rect;
