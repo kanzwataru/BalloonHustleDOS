@@ -22,6 +22,7 @@ clean:
 	rm -f *.LK1
 	rm -f *.SWP
 	rm -f defines.h
+	find . -type f -name '._*' -delete
 
 defines.h:
 	touch defines.h

@@ -14,3 +14,4 @@ defines.h
 *.map
 *.lk1
 *.swp
+._*
