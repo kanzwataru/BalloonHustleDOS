@@ -9,7 +9,7 @@ Original graphics by Nick Ladd, DOS graphics by me
 
 Original code by Nathan Ladd and myself
 
-![screenshot](https://imgur.com/a/9Oyz4aT)
+![screenshot](https://i.imgur.com/jOATCKm.png)
 
 ### What is this!
 Just a fun project to create a game from scratch for early 90s era
