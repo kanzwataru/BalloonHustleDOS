@@ -2,10 +2,14 @@
 ###### Currently very much a work in progress
 
 MS-DOS port/remake of gamejam game Wrecking Balloon
+
 https://nickladd.itch.io/wrecking-balloon
 
 Original graphics by Nick Ladd, DOS graphics by me
+
 Original code by Nathan Ladd and myself
+
+![screenshot](https://imgur.com/a/9Oyz4aT)
 
 ### What is this!
 Just a fun project to create a game from scratch for early 90s era
@@ -50,6 +54,7 @@ Well check out these tutorials then, they're what I used to get started. And of 
 you can take a look at the code in the HustleEngine directory and see how stuff works.
 
 [256-Color VGA Programming in C](http://www.brackeen.com/vga/)
+
 [Alex Russel's DOS Game Programming Tutorial](http://www3.telus.net/alexander_russell/course/introduction.htm)
 
 
