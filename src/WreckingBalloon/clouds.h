@@ -15,15 +15,19 @@ static bool clouds_pending = true;
 static int  clouds_timer = CLOUDS_FRAME_SKIP;
 
 #define CLOUDS_RENDER \
-    if(clouds_pending) { \
+    clouds_render();
+/*    if(clouds_pending) { \
         clouds_render(); \
     } else {}
+*/
 
 #define CLOUDS_UPDATE \
-    if(--clouds_timer == 0) {             \
+    clouds_update();
+/*    if(--clouds_timer == 0) {             \
         clouds_timer = CLOUDS_FRAME_SKIP; \
         clouds_update();                  \
     } else {}
+*/
 
 static void clouds_rle(buffer_t *image)
 {
@@ -102,6 +106,11 @@ static void clouds_render(void)
             while(j < CLOUD_SPRITE_W) {
                 j += r->bg_len;
                 _fmemset(p + j, CLOUD_COL, r->fg_len);
+                /* checking bounds */
+
+                if(j + (r->fg_len - 1) >= 64000U)
+                    while(1) printf("BOUNDS! j: %d r->fg_len: %d\n", j, r->fg_len);
+                /* end debug */
                 j += r->fg_len;
 
                 ++r;
