@@ -69,4 +69,6 @@
     #define assert(expr) 
 #endif
 
+    #define NOT_IMPLEMENTED \
+        while(1) printf("Not implemented (%s, %d\n)", __FILE__, __LINE__);
 #endif /* PLATFORM_H */
