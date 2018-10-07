@@ -96,6 +96,50 @@ static void free_all_sprites(Sprite **sprites, uint *count)
     *count = 0;
 }
 
+void draw_monochrome_transparent_rleimage(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour) 
+{
+    uint pcount;
+    byte i, lines, lineskip;
+
+    dest += CALC_OFFSET(rect->x, rect->y);
+
+    if(rect->y + rect->h <= 0 || rect->y >= SCREEN_HEIGHT ||
+       rect->x + rect->w <= 0 || rect->x >= SCREEN_WIDTH)
+    {
+        return; /* completely offscreen, no need to draw */
+    }
+
+    /* lineskip vertical clipping */
+    lines = (rect->y + rect->h) > SCREEN_HEIGHT ? SCREEN_HEIGHT - rect->y : rect->h;
+    lineskip = rect->y < 0 ? abs(rect->y) : 0;
+
+    /* draw */
+    while(lineskip != 0) {
+        pcount = 0;
+        while(pcount < rect->w) {
+            pcount += rle->bglen + rle->fglen;
+            ++rle;
+        }
+        --lineskip;
+        --lines;
+        pcount += SCREEN_WIDTH;
+    }
+
+    while(lines != 0) {
+        pcount = 0;
+        while(pcount < rect->w) {
+            pcount += rle->bglen;
+            _fmemset(dest + pcount, colour, rle->fglen);
+            
+            pcount += rle->fglen;            
+            ++rle;
+        }
+
+        dest += SCREEN_WIDTH;
+        --lines;
+    }
+}
+
 static bool clip_rect(Rect *clipped, Point *offset, const Rect *orig, const Rect *clip)
 {
     register int o_xmax = orig->x + orig->w;
@@ -399,6 +443,9 @@ void refresh_sprites(RenderData *rd)
     size_t i;
     Sprite *sprite;
     struct SimpleSprite *d_tile;
+
+    return;
+    
     for(i = 0; i < rd->sprite_count; ++i) {
         sprite = rd->sprites + i;
         d_tile = dirty_tiles + i;

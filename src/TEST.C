@@ -205,6 +205,8 @@ void test_start(bool do_benchmark, int benchmark_times)
     buffer_t *balloon_img;
     buffer_t *pal;
 
+    NOT_IMPLEMENTED /* this test will no longer work properly with fully RLE sprites */
+       /* 
     cd.update_callback = &update;
     cd.render_callback = &render;
     cd.input_handler = &input;
@@ -275,4 +277,5 @@ void test_start(bool do_benchmark, int benchmark_times)
         engine_benchmark(cd, benchmark_times);
     else
         engine_start(cd);
+*/
 }

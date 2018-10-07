@@ -28,6 +28,6 @@ extern Animation point_balloon_pop;
 extern Animation bomb_balloon_idle;
 extern Animation bomb_balloon_pop;
 
-extern buffer_t *cloud_image;
+extern RLEImageMono *cloud_image;
 
 #endif

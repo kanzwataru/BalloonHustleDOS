@@ -63,7 +63,7 @@ static void update(void)
     int i;
     Rect cactus_hbox;
 
-    cactoon_update(&player, dir_input);    
+/*    cactoon_update(&player, dir_input);    
 
     cactus_hbox = calc_hitbox(&player.cactus->hitbox, &player.cactus->rect);
     for(i = 0; i < MAX_BALLOONS; ++i) {
@@ -73,6 +73,8 @@ static void update(void)
             balloon_pop(&balloons[i]);
     }
 
+*/
+    printf("update");
     CLOUDS_UPDATE;
 }
 
@@ -100,12 +102,13 @@ static void render(void)
     Point a, b;
 
     start_frame(&rd);
-
+    printf("render");
+    /*
     for(i = 0; i < MAX_CACTOONS; ++i)
         erase_line(rd.screen, cactoon_strings[0]);
-
+*/
     CLOUDS_RENDER
-    
+  /*  
     if(!(player.flags & CT_DEAD)) {
         a.x = player.balloon->rect.x + CACTOON_SPRITE_HALF;
         a.y = player.balloon->rect.y + BALLOON_STRING_OFFSET;
@@ -113,8 +116,8 @@ static void render(void)
         b.y = player.cactus->rect.y + CACTUS_STRING_OFFSET;
         draw_line(rd.screen, cactoon_strings[0], &a, &b, STRING_COL);
     }
-
-    refresh_sprites(&rd);
+*/
+    //refresh_sprites(&rd);
     finish_frame(&rd);
 }
 

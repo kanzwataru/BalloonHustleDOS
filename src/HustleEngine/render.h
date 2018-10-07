@@ -7,6 +7,7 @@
 
 #include "src/hustle~1/platform.h"
 #include "src/hustle~1/prim.h"
+#include "src/hustle~1/rle.h"
 
 #define SCREEN_WIDTH 320   /* Mode 13h uses 320 x 200 res */
 #define SCREEN_HEIGHT 200
@@ -72,7 +73,7 @@ typedef struct {
     Rect         hitbox;
     Rect        *parent;      /* NULL by default, reference only */
     byte         flags;
-    AnimInstance anim;        /* NULL by default, reference only */
+    AnimInstance anim;        /* blank by default */
 } Sprite;
 
 typedef struct {
@@ -113,4 +114,6 @@ Rect draw_sprite_explicit(buffer_t *buf, buffer_t * const image, const Rect rect
 void draw_line(buffer_t *buf, LineUndoList undo, const Point *p1, const Point *p2, const byte colour);
 void erase_line(buffer_t *buf, LineUndoList undo);
 
+void draw_monochrome_rleimage(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte fgcol, const byte bgcol);
+void draw_monochrome_transparent_rleimage(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour);
 #endif /* RENDER_H */
