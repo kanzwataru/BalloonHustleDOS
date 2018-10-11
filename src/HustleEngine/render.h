@@ -114,6 +114,9 @@ Rect draw_sprite_explicit(buffer_t *buf, buffer_t * const image, const Rect rect
 void draw_line(buffer_t *buf, LineUndoList undo, const Point *p1, const Point *p2, const byte colour);
 void erase_line(buffer_t *buf, LineUndoList undo);
 
-void draw_monochrome_rleimage(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte fgcol, const byte bgcol);
-void draw_monochrome_transparent_rleimage(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour);
+void draw_mono_rle(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte fgcol, const byte bgcol);
+void draw_mono_masked_rle(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour);
+void draw_mono_masked_rle_clipy(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour);
+void draw_mono_masked_rle_clipx(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour);
+void draw_mono_masked_rle_clipall(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour);
 #endif /* RENDER_H */

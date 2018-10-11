@@ -27,6 +27,15 @@ static buffer_t *vga;
 static struct SimpleSprite *dirty_tiles;
 static const Rect EMPTY_RECT = {0,0,0,0};
 
+
+/*
+ * Macro that determines if a rect is off screen
+ *
+*/
+#define OFFSCREEN(r) \
+    ((r).y + (r).h <= 0 || (r).y >= SCREEN_HEIGHT || \
+     (r).x + (r).w <= 0 || (r).x >= SCREEN_WIDTH)
+
 /*
  * Calculates the offset into the buffer (y * SCREEN_WIDTH + x)
  * Using bit shifting instead of mults for a bit of optimization
@@ -96,49 +105,90 @@ static void free_all_sprites(Sprite **sprites, uint *count)
     *count = 0;
 }
 
-void draw_monochrome_transparent_rleimage(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour) 
-{
-    uint pcount;
-    byte i, lines, lineskip;
+/*
+ * Warning: Herein be dragons!
+ *
+ * Because of a lack of inlining in C89 and DOS compilers
+ * things are manually inlined with macros to prevent code duplication
+*/
+/* */
+#define MONO_MASKED_RLE_PREAMBLE        \
+    uint pcount;                            \
+    byte lines;                             \
+                                            \
+    dest += CALC_OFFSET(rect->x, rect->y);  \
+/* */
 
-    dest += CALC_OFFSET(rect->x, rect->y);
-
-    if(rect->y + rect->h <= 0 || rect->y >= SCREEN_HEIGHT ||
-       rect->x + rect->w <= 0 || rect->x >= SCREEN_WIDTH)
-    {
-        return; /* completely offscreen, no need to draw */
-    }
-
-    /* lineskip vertical clipping */
-    lines = (rect->y + rect->h) > SCREEN_HEIGHT ? SCREEN_HEIGHT - rect->y : rect->h;
-    lineskip = rect->y < 0 ? abs(rect->y) : 0;
-
-    /* draw */
-    while(lineskip != 0) {
-        pcount = 0;
-        while(pcount < rect->w) {
-            pcount += rle->bglen + rle->fglen;
-            ++rle;
-        }
-        --lineskip;
-        --lines;
-        pcount += SCREEN_WIDTH;
-    }
-
-    while(lines != 0) {
-        pcount = 0;
-        while(pcount < rect->w) {
-            pcount += rle->bglen;
-            _fmemset(dest + pcount, colour, rle->fglen);
-            
-            pcount += rle->fglen;            
-            ++rle;
-        }
-
-        dest += SCREEN_WIDTH;
-        --lines;
-    }
+/* lineskip vertical clipping (requires byte lineskip) */
+#define MONO_MASKED_RLE_CLIPY_LOGIC \
+lines = (rect->y + rect->h) > SCREEN_HEIGHT ? SCREEN_HEIGHT - rect->y : rect->h; \
+lineskip = rect->y < 0 ? abs(rect->y) : 0;                                       \
+                                                                                 \
+while(lineskip != 0) {                                                           \
+    pcount = 0;                                                                  \
+    while(pcount < rect->w) {                                                    \
+        pcount += rle->bglen + rle->fglen;                                       \
+        ++rle;                                                                   \
+    }                                                                            \
+    --lineskip;                                                                  \
+    --lines;                                                                     \
+    dest += SCREEN_WIDTH;                                                        \
 }
+
+/* horizontal clipping logic */
+#define MONO_MASKED_RLE_CLIPX_LOGIC /* not yet */
+
+/* ** actual drawing logic ** */
+#define MONO_MASKED_RLE_DRAW_LOGIC \
+    while(lines != 0) {                                  \
+        pcount = 0;                                      \
+        while(pcount < rect->w) {                        \
+            pcount += rle->bglen;                        \
+            _fmemset(dest + pcount, colour, rle->fglen); \
+                                                         \
+            pcount += rle->fglen;                        \
+            ++rle;                                       \
+        }                                                \
+                                                         \
+        dest += SCREEN_WIDTH;                            \
+        --lines;                                         \
+    }
+/* ** end of macro extraction ** */
+
+/* actual function definitions */
+void draw_mono_masked_rle(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour) 
+{
+    MONO_MASKED_RLE_PREAMBLE
+    lines = rect->h;
+    MONO_MASKED_RLE_DRAW_LOGIC
+}
+
+void draw_mono_masked_rle_clipx(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour)
+{
+    NOT_IMPLEMENTED;
+}
+
+void draw_mono_masked_rle_clipy(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour) 
+{
+    byte lineskip;
+    MONO_MASKED_RLE_PREAMBLE
+    
+    if(OFFSCREEN(*rect)) return;
+    
+    MONO_MASKED_RLE_CLIPY_LOGIC
+    MONO_MASKED_RLE_DRAW_LOGIC
+}
+
+void draw_mono_masked_rle_clipall(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour) 
+{
+    NOT_IMPLEMENTED;
+}
+/* limit scope of ugly hack */
+#undef MONO_MAKSED_RLE_PREAMBLE
+#undef MONO_MAKSED_RLE_CLIPX_LOGIC
+#undef MONO_MAKSED_RLE_CLIPY_LOGIC
+#undef MONO_MASKED_RLE_DRAW_LOGIC
+/* *** */
 
 static bool clip_rect(Rect *clipped, Point *offset, const Rect *orig, const Rect *clip)
 {
@@ -285,6 +335,8 @@ void draw_rect_clipped(buffer_t *buf, const Rect *rect, byte colour)
     Rect c;
     Rect screen_clip = {0,0,SCREEN_WIDTH, SCREEN_HEIGHT};
     Point _ = {0,0};
+
+    if(OFFSCREEN(*rect)) { return; }
 
     clip_rect(&c, &_, rect, &screen_clip);
     draw_rect(buf, &c, colour);

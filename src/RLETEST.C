@@ -28,20 +28,28 @@ static void update(void)
     prev_cloud_rect = cloud_rect;
 
     cloud_rect.y += 1;
-    if(cloud_rect.y + cloud_rect.h >= SCREEN_HEIGHT)
-        cloud_rect.y = 0;
+    if(cloud_rect.y + cloud_rect.h >= SCREEN_HEIGHT + (cloud_rect.h * 3))
+        cloud_rect.y = -cloud_rect.h * 3;
+
+    //printf("%d\n", cloud_rect.y);
 }
 
 static void render(void)
 {
+    Rect clipped;
+
     start_frame(&rd);
 
-    draw_rect(rd.screen, &prev_cloud_rect, SKY_COL);
+    draw_rect_clipped(rd.screen, &prev_cloud_rect, SKY_COL);
     //draw_rect(rd.screen, &cloud_rect, CLOUD_COL);
-
-    draw_monochrome_transparent_rleimage(rd.screen, cloud, &cloud_rect, CLOUD_COL);
+    //_fmemset(rd.screen, SKY_COL, SCREEN_SIZE);
+    draw_mono_masked_rle_clipy(rd.screen, cloud, &cloud_rect, CLOUD_COL);
     //rd.screen[cloud_rect.y] = CLOUD_COL;
     finish_frame(&rd);
+
+    //getch();
+    //printf("%d\n", cloud_rect.y);
+    //getch();
 }
 
 static bool input(void)
