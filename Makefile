@@ -1,17 +1,17 @@
-all: defines.h
-	dosbox -c "cd C:\DEV\BALLOON" -c "tc balloon.prj /m"
+all:
+	dosbox -c "cd C:\DEV\BALLOON" -c "make -f MKTURBOC"
 
 run:
 	dosbox -c "cd C:\DEV\BALLOON" -c "balloon.exe"
 
-buildnrun: defines.h
-	dosbox -c "cd C:\DEV\BALLOON" -c "tc balloon.prj /m" -c "balloon.exe"
+buildnrun:
+	dosbox -c "cd C:\DEV\BALLOON" -c "make -f MKTURBOC" -c "balloon.exe"
 
-watcom: defines.h
-	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f balloon.mk"
+watcom:
+	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f MKDOSWC"
 
-buildnrun_watcom: defines.h
-	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f balloon.mk" -c "balloon.exe"
+buildnrun_watcom:
+	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f MKDOSWC" -c "balloon.exe"
 
 clean:
 	rm -f *.EXE
@@ -21,14 +21,5 @@ clean:
 	rm -f *.MAP
 	rm -f *.LK1
 	rm -f *.SWP
-	rm -f defines.h
+	rm -f *.CFG
 	find . -type f -name '._*' -delete
-
-defines.h:
-	touch defines.h
-
-set-debug:
-	echo "#define DEBUG" > defines.h
-
-set-no-debug:
-	echo "" > defines.h

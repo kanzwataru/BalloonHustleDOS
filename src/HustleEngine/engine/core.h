@@ -1,7 +1,7 @@
 #ifndef ENGINE_CORE_H
 #define ENGINE_CORE_H
 
-#include "src/hustle~1/platform.h"
+#include "common/platform.h"
 
 typedef struct {
     void (*update_callback)(void);

@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "src/hustle~1/render.h"
-#include "src/hustle~1/core.h"
-#include "src/hustle~1/filesys.h"
-#include "src/hustle~1/platform.h"
-#include "src/hustle~1/kb.h"
-#include "src/hustle~1/event.h"
+#include "engine/render.h"
+#include "engine/core.h"
+#include "engine/event.h"
+#include "platform/filesys.h"
+#include "common/platform.h"
+#include "platform/kb.h"
 
 #define SPRITE_COUNT   8
 #define BG_BRICK_SIZE 10

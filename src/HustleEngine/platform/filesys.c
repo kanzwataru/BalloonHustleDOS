@@ -1,5 +1,5 @@
-#include "src/hustle~1/filesys.h"
-#include "src/hustle~1/platform.h"
+#include "platform/filesys.h"
+#include "common/platform.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <dos.h>

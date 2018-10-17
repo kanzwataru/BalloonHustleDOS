@@ -1,5 +1,5 @@
-#include "src/wrecki~1/resource.h"
-#include "src/hustle~1/filesys.h"
+#include "resource.h"
+#include "platform/filesys.h"
 
 #define BALLOON_SIZE        48 * 48
 #define CACTUS_SIZE         48 * 48

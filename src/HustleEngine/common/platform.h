@@ -3,7 +3,6 @@
 
 #include <malloc.h>
 #include <stdio.h>
-#include "defines.h" /* Work around Borland's buggy compiler defines */
 
 /***                      ***
  ***    COMPILER CHECK    ***

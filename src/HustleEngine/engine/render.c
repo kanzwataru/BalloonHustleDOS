@@ -1,7 +1,7 @@
-#include "src/hustle~1/render.h"
-#include "src/hustle~1/vga.h"
-#include "src/hustle~1/platform.h"
-#include "src/hustle~1/math.h"
+#include "engine/render.h"
+#include "platform/vga.h"
+#include "common/platform.h"
+#include "common/math.h"
 #include <dos.h>
 #include <stdio.h>
 #include <limits.h>

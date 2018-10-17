@@ -1,7 +1,7 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
-#include "src/hustle~1/render.h"
+#include "engine/render.h"
 
 void init_all_resources(void);
 void free_all_resources(void);

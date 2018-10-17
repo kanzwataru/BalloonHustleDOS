@@ -1,7 +1,7 @@
-#include "src/wrecki~1/balloon.h"
-#include "src/wrecki~1/resource.h"
-#include "src/hustle~1/event.h"
-#include "src/wrecki~1/consts.h"
+#include "balloon.h"
+#include "resource.h"
+#include "engine/event.h"
+#include "consts.h"
 
 #include <stdlib.h>
 

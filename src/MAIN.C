@@ -1,5 +1,5 @@
-#include "src/TEST.H"
-#include "src/wrecki~1/wb.h"
+#include "TEST.H"
+#include "wb.h"
 
 int main(int argc, char **argv)
 {

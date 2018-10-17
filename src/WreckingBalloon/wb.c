@@ -1,14 +1,14 @@
-#include "src/wrecki~1/wb.h"
-#include "src/hustle~1/core.h"
-#include "src/hustle~1/render.h"
-#include "src/hustle~1/kb.h"
-#include "src/hustle~1/filesys.h"
-#include "src/hustle~1/platform.h"
+#include "wb.h"
+#include "engine/core.h"
+#include "engine/render.h"
+#include "platform/kb.h"
+#include "platform/filesys.h"
+#include "common/platform.h"
 
-#include "src/wrecki~1/consts.h"
-#include "src/wrecki~1/cactoon.h"
-#include "src/wrecki~1/balloon.h"
-#include "src/wrecki~1/resource.h"
+#include "consts.h"
+#include "cactoon.h"
+#include "balloon.h"
+#include "resource.h"
 
 #include <dos.h>
 #include <stdio.h>
@@ -20,7 +20,7 @@ static PointBalloon  balloons[MAX_BALLOONS];
 static LineUndoList  cactoon_strings[MAX_CACTOONS];
 static byte dir_input = 0;
 
-#include "src/wrecki~1/clouds.h" /* same compilation unit */
+#include "clouds.h" /* same compilation unit */
 
 static bool input(void)
 {

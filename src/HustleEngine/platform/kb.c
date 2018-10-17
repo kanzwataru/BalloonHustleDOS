@@ -1,4 +1,4 @@
-#include "src/hustle~1/kb.h"
+#include "platform/kb.h"
 
 byte keyboard_read(void)
 {

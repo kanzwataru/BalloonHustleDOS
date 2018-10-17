@@ -1,6 +1,6 @@
-#include "src/hustle~1/core.h"
-#include "src/hustle~1/platform.h"
-#include "src/hustle~1/event.h"
+#include "engine/core.h"
+#include "common/platform.h"
+#include "engine/event.h"
 #include <dos.h>
 
 #define INPUT_STATUS_0 0x3da  /* Used for querying Vblank */

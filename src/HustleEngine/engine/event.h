@@ -1,7 +1,7 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include "src/hustle~1/platform.h"
+#include "common/platform.h"
 
 #define MAX_EVENTS 64
 typedef unsigned char EventID;

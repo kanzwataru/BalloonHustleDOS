@@ -1,6 +1,6 @@
-#include "src/wrecki~1/cactoon.h"
-#include "src/wrecki~1/resource.h"
-#include "src/hustle~1/math.h"
+#include "cactoon.h"
+#include "resource.h"
+#include "common/math.h"
 
 #include <stdio.h>
 #include <dos.h>

@@ -1,1 +1,1 @@
-#include "src/wrecki~1/ai.h"
+#include "ai.h"

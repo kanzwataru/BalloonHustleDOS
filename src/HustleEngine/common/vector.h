@@ -1,7 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include "src/hustle~1/prim.h"
+#include "common/prim.h"
 #include <math.h>
 
 static inline Point paddp(Point a, Point b) {

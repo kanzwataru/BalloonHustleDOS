@@ -5,8 +5,8 @@
  *
 */
 
-#include "src/hustle~1/platform.h"
-#include "src/hustle~1/prim.h"
+#include "common/platform.h"
+#include "common/prim.h"
 
 #define SCREEN_WIDTH 320   /* Mode 13h uses 320 x 200 res */
 #define SCREEN_HEIGHT 200
