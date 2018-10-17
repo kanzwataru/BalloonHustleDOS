@@ -106,39 +106,78 @@ static void free_all_sprites(Sprite **sprites, uint *count)
 }
 
 /*
- * Warning: Herein be dragons!
+ * Warning: Here be dragons!
  *
  * Because of a lack of inlining in C89 and DOS compilers
  * things are manually inlined with macros to prevent code duplication
 */
 /* */
 #define MONO_MASKED_RLE_PREAMBLE        \
-    uint pcount;                            \
+    int pcount;                            \
     byte lines;                             \
                                             \
     dest += CALC_OFFSET(rect->x, rect->y);  \
+
+#define MONO_MASKED_RLE_CLIPY_PREAMBLE  \
+    byte lineskip;
+
+#define MONO_MASKED_RLE_CLIPX_PREAMBLE  \
+    int horizskip;
+    int maxpcount;
 /* */
+
 
 /* lineskip vertical clipping (requires byte lineskip) */
 #define MONO_MASKED_RLE_CLIPY_LOGIC \
-lines = (rect->y + rect->h) > SCREEN_HEIGHT ? SCREEN_HEIGHT - rect->y : rect->h; \
-lineskip = rect->y < 0 ? abs(rect->y) : 0;                                       \
-                                                                                 \
-while(lineskip != 0) {                                                           \
-    pcount = 0;                                                                  \
-    while(pcount < rect->w) {                                                    \
-        pcount += rle->bglen + rle->fglen;                                       \
-        ++rle;                                                                   \
-    }                                                                            \
-    --lineskip;                                                                  \
-    --lines;                                                                     \
-    dest += SCREEN_WIDTH;                                                        \
-}
+    lines = (rect->y + rect->h) > SCREEN_HEIGHT ? SCREEN_HEIGHT - rect->y : rect->h; \
+    lineskip = rect->y < 0 ? abs(rect->y) : 0;                                       \
+                                                                                     \
+    while(lineskip != 0) {                                                           \
+        pcount = 0;                                                                  \
+        while(pcount < rect->w) {                                                    \
+            pcount += rle->bglen + rle->fglen;                                       \
+            ++rle;                                                                   \
+        }                                                                            \
+        --lineskip;                                                                  \
+        --lines;                                                                     \
+        dest += SCREEN_WIDTH;                                                        \
+    }
 
-/* horizontal clipping logic */
-#define MONO_MASKED_RLE_CLIPX_LOGIC /* not yet */
-
-/* ** actual drawing logic ** */
+/* drawing logic with horizontal clip */
+/*
+#define MONO_MASKED_RLE_CLIPX_DRAW_LOGIC \
+    maxpcount = (rect->x + rect->w) > SCREEN_WIDTH ? SCREEN_WIDTH - rect->x : rect->w; \
+    horizskip = rect->x < 0 ? rect->x : 0;                                             \
+                                                                                       \
+    while(lines != 0) {                                                                \
+        pcount = 0;                                                                    \
+        while(horizskip < 0) {                                                         \
+            horizskip += rle->bglen + rle->fglen;                                      \
+            ++rle;                                                                     \
+        }                                                                              \
+                                                                                       \
+        if(horizskip > 0) {                                                            \
+            --rle;                                                                     \
+            if(horizskip - rle->fglen < 0)                                             \
+                _fmemset(dest, colour, horizskip);                                     \
+            else                                                                       \
+                _fmemset(dest + horizskip, colour, rle->fglen);                        \
+            ++rle;                                                                     \
+        }                                                                              \
+                                                                                       \
+        while(pcount < maxpcount) {                                                    \
+            pcount += rle->bglen;                                                      \
+            if(pcount > maxpcount) {                                                   \
+                ++rle;                                                                 \
+                break;                                                                 \
+            }                                                                          \
+                                                                                       \
+            _fmemset(dest + pcount, colour,                                            \
+                (pcount + rle->fglen > maxpcount) ? SCREEN_WIDTH - pcount : rle->fglen);\
+        }                                                                              \
+    }
+*/
+/* drawing logic with no horizontal clip */
 #define MONO_MASKED_RLE_DRAW_LOGIC \
     while(lines != 0) {                                  \
         pcount = 0;                                      \
@@ -165,12 +204,48 @@ void draw_mono_masked_rle(buffer_t *dest, const RLEImageMono *rle, const Rect * 
 
 void draw_mono_masked_rle_clipx(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour)
 {
-    NOT_IMPLEMENTED;
+    MONO_MASKED_RLE_CLIPX_PREAMBLE
+    MONO_MASKED_RLE_PREAMBLE;
+    
+    if(OFFSCREEN(*rect)) return;
+    
+    maxpcount = (rect->x + rect->w) > SCREEN_WIDTH ? SCREEN_WIDTH - rect->x : rect->w; \
+    horizskip = rect->x < 0 ? rect->x : 0;                                             \
+                                                                                       \
+    while(lines != 0) {                                                                \
+        pcount = horizskip;                                                                    \
+        while(pcount < 0) {                                                         \
+            pcount += rle->bglen + rle->fglen;                                      \
+            ++rle;                                                                     \
+        }                                                                              \
+                                                                                       \
+        if(pcount > 0) {                                                            \
+            --rle;                                                                     \
+            if((pcount - rle->fglen) < 0) {                                             \
+                _fmemset(dest, colour, pcount);                                     \
+            }                                                                       \
+            else {                                                                       \
+                _fmemset(dest + pcount, colour, rle->fglen);                        \
+            }                                                                           \
+            ++rle;                                                                     \
+        }                                                                              \
+                                                                                       \
+        while(pcount < maxpcount) {                                                    \
+            pcount += rle->bglen;                                                      \
+            if(pcount > maxpcount) {                                                   \
+                ++rle;                                                                 \
+                break;                                                                 \
+            }                                                                          \
+                                                                                       \
+            _fmemset(dest + pcount, colour,                                            \
+                (pcount + rle->fglen > maxpcount) ? SCREEN_WIDTH - pcount : rle->fglen);\
+        }                                                                              \
+    }
 }
 
 void draw_mono_masked_rle_clipy(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour) 
 {
-    byte lineskip;
+    MONO_MASKED_RLE_CLIPY_PREAMBLE
     MONO_MASKED_RLE_PREAMBLE
     
     if(OFFSCREEN(*rect)) return;
@@ -181,12 +256,50 @@ void draw_mono_masked_rle_clipy(buffer_t *dest, const RLEImageMono *rle, const R
 
 void draw_mono_masked_rle_clipall(buffer_t *dest, const RLEImageMono *rle, const Rect * const rect, const byte colour) 
 {
-    NOT_IMPLEMENTED;
+    MONO_MASKED_RLE_CLIPY_PREAMBLE
+    MONO_MASKED_RLE_CLIPX_PREAMBLE
+    MONO_MASKED_RLE_PREAMBLE;
+    
+    if(OFFSCREEN(*rect)) return;
+    
+    MONO_MASKED_RLE_CLIPY_LOGIC
+    maxpcount = (rect->x + rect->w) > SCREEN_WIDTH ? SCREEN_WIDTH - rect->x : rect->w; \
+    horizskip = rect->x < 0 ? rect->x : 0;                                             \
+                                                                                       \
+    while(lines != 0) {                                                                \
+        pcount = 0;                                                                    \
+        while(horizskip < 0) {                                                         \
+            horizskip += rle->bglen + rle->fglen;                                      \
+            ++rle;                                                                     \
+        }                                                                              \
+                                                                                       \
+        if(horizskip > 0) {                                                            \
+            --rle;                                                                     \
+            if(horizskip - rle->fglen < 0)                                             \
+                _fmemset(dest, colour, horizskip);                                     \
+            else                                                                       \
+                _fmemset(dest + horizskip, colour, rle->fglen);                        \
+            ++rle;                                                                     \
+        }                                                                              \
+                                                                                       \
+        while(pcount < maxpcount) {                                                    \
+            pcount += rle->bglen;                                                      \
+            if(pcount > maxpcount) {                                                   \
+                ++rle;                                                                 \
+                break;                                                                 \
+            }                                                                          \
+                                                                                       \
+            _fmemset(dest + pcount, colour,                                            \
+                (pcount + rle->fglen > maxpcount) ? SCREEN_WIDTH - pcount : rle->fglen);\
+        }                                                                              \
+    }
 }
 /* limit scope of ugly hack */
-#undef MONO_MAKSED_RLE_PREAMBLE
-#undef MONO_MAKSED_RLE_CLIPX_LOGIC
-#undef MONO_MAKSED_RLE_CLIPY_LOGIC
+#undef MONO_MASKED_RLE_PREAMBLE
+#undef MONO_MASKED_RLE_CLIPY_PREAMBLE
+#undef MONO_MASKED_RLE_CLIPX_PREAMBLE
+#undef MONO_MASKED_RLE_CLIPX_DRAW_LOGIC
+#undef MONO_MASKED_RLE_CLIPY_LOGIC
 #undef MONO_MASKED_RLE_DRAW_LOGIC
 /* *** */
 
