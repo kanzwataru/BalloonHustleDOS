@@ -80,7 +80,7 @@ void video_exit(void)
 */
 void video_wait_vsync(void)
 {
-    
+    SDL_Delay(12); /* fake vsync for now */
 }
 
 /*
@@ -90,11 +90,22 @@ void video_wait_vsync(void)
 */
 void video_flip(buffer_t *backbuf)
 {
+    //printf("Video flip called\n");
     /* we ONLY support Mode 13h for now!! */
     if(video_mode != VIDEO_MODE_LOW256)
         NOT_IMPLEMENTED;
     
+    if(SDL_MUSTLOCK(framebuffer))
+        SDL_LockSurface(framebuffer);
+        
+    memcpy(framebuffer->pixels, backbuf, fbrect.w * fbrect.h);
+    //*((buffer_t *)framebuffer->pixels) = 4;
     
+    if(SDL_MUSTLOCK(framebuffer))
+        SDL_UnlockSurface(framebuffer);
+    
+    SDL_BlitSurface(framebuffer, NULL, screen, NULL);
+    SDL_UpdateRect(screen, 0, 0, 0, 0);
 }
 
 /*
@@ -104,21 +115,26 @@ void video_flip(buffer_t *backbuf)
 */
 void video_set_palette(buffer_t *palette)
 {
+    printf("palette set\n");
     assert(video_mode != 0);
     switch(video_mode) {
         case VIDEO_MODE_LOW256:
             for(int i = 0; i < 256; ++i) {
-                fbpalette[i].r = *palette++;
-                fbpalette[i].g = *palette++;
-                fbpalette[i].b = *palette++;
+                /* left-shift to convert the VGA-compatible
+                 * 6-bit colours back to 8-bit colours */
+                fbpalette[i].r = *palette++ << 2;
+                fbpalette[i].g = *palette++ << 2;
+                fbpalette[i].b = *palette++ << 2;
             }
             break;
         case VIDEO_MODE_HIGH16:
         case VIDEO_MODE_HIGH16HALF:
             for(int i = 0; i < 16; ++i) {
-                fbpalette[i].r = *palette++;
-                fbpalette[i].g = *palette++;
-                fbpalette[i].b = *palette++;
+                /* left-shift to convert the VGA-compatible
+                 * 6-bit colours back to 8-bit colours */
+                fbpalette[i].r = *palette++ << 2;
+                fbpalette[i].g = *palette++ << 2;
+                fbpalette[i].b = *palette++ << 2;
             }
             break;
         default:

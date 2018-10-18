@@ -226,11 +226,11 @@ static void blit_offset_masked(buffer_t *dest, const buffer_t *src, const Rect *
 void draw_rect(buffer_t *buf, const Rect *rect, byte colour)
 {
     register int y = rect->h;
-    register buffer_t *buf_o = buf + CALC_OFFSET(rect->x,rect->y);
+    buf += CALC_OFFSET(rect->x,rect->y);
     
     for(; y > 0; --y) {
-        _fmemset(buf_o, colour, rect->w);
-        buf_o += SCREEN_WIDTH;
+        _fmemset(buf, colour, rect->w);
+        buf += SCREEN_WIDTH;
     }
 }
 
@@ -454,7 +454,7 @@ int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
     rd->screen = make_framebuffer();
     rd->sprite_count = sprite_count;
 
-    if(rd->bg_layer) {
+    if(rd->bg_layer && rd->screen) {
         video_init_mode(VIDEO_MODE_LOW256, 1);
         _fmemset(rd->bg_layer, 0, SCREEN_SIZE);
         init_all_sprites(&rd->sprites, sprite_count);

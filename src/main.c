@@ -1,5 +1,6 @@
 #include "test.h"
 #include "wb.h"
+#include "simpletest.h"
 
 #include <stdlib.h>
 
@@ -10,6 +11,8 @@ int main(int argc, char **argv)
             test_start(0, 0);
         if(0 == strcmp(argv[1], "test-keyboard"))
             test_keyboard();
+        if(0 == strcmp(argv[1], "simpletest"))
+            simpletest_start();
     }
     else if(argc == 3) {
         if(0 == strcmp(argv[1], "benchmark"))
