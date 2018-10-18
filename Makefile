@@ -14,6 +14,7 @@ $(error Unsupported platform or TARGET_PLATFORM not specified)
 endif
 
 clean:
+	rm $(COMMON_OBJS)
 	rm -f *.EXE
 	rm -f *.OBJ
 	rm -f *.DSK
