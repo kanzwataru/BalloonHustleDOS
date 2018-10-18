@@ -93,5 +93,5 @@ void free_all_resources(void)
         destroy_image(&anims[i]->frames);
 
     for(i = 0; i < TOTAL_STILL_SPRITES; ++i)
-        destroy_image(images + i);
+        destroy_image(images[i]);
 }

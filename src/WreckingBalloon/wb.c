@@ -10,7 +10,6 @@
 #include "balloon.h"
 #include "resource.h"
 
-#include <dos.h>
 #include <stdio.h>
 
 static RenderData    rd;
@@ -24,6 +23,7 @@ static byte dir_input = 0;
 
 static bool input(void)
 {
+    /*
     byte key = keyboard_read();
 
     switch(key) {
@@ -56,6 +56,7 @@ static bool input(void)
     }
 
     return true;
+    */
 }
 
 static void update(void)
