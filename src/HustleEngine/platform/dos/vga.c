@@ -13,6 +13,15 @@ enum VGA_VIDEO_MODES {
     VGA_TEXT80COL = 0x03  /* 80 column text mode, 80x25 */
 };
 
+#define VGA_CHUNKY256_SIZE      320 * 200
+#define VGA_PLANAR16_SIZE       640 * 480
+#define VGA_PLANAR16HALF_SIZE   640 * 200
+
+static buffer_t *vga_mem = MK_FP(0xa000, 0); /* VGA DMA memory */
+
+static byte current_mode = 0;
+static uint screen_size = 0;
+
 /*
  * Switch VGA display mode
  * 
@@ -28,6 +37,21 @@ static void vga_modeset(byte mode)
 }
 
 /*
+ * Video API flip buffer
+*/
+void video_flip(buffer_t *backbuf)
+{
+    assert(current_mode != 0);
+    assert(screen_size != 0);
+    
+    /* we ONLY support Mode 13h for now!! */
+    if(current_mode != VGA_CHUNKY256)
+        NOT_IMPLEMENTED;
+    
+    _fmemcpy(vga_mem, backbuf, screen_size);
+}
+
+/*
  * Video API init
 */
 void video_init_mode(byte mode, int scaling)
@@ -36,6 +60,8 @@ void video_init_mode(byte mode, int scaling)
     if(mode != VIDEO_MODE_LOW256)
         NOT_IMPLEMENTED;
     
+    current_mode = VGA_CHUNKY256;
+    screen_size  = VGA_CHUNKY256_SIZE;
     vga_modeset(VGA_CHUNKY256);
 }
 

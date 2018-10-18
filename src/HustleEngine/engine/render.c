@@ -23,7 +23,6 @@ struct LineUndo {
     struct Pixel segs[MAX_LINE_LENGTH];
 };
 
-static buffer_t *vga;
 static struct SimpleSprite *dirty_tiles;
 static const Rect EMPTY_RECT = {0,0,0,0};
 
@@ -447,7 +446,7 @@ void refresh_sprites(RenderData *rd)
 
 void finish_frame(RenderData *rd)
 {
-    _fmemcpy(vga, rd->screen, SCREEN_SIZE);
+    video_flip(rd->screen);
 }
 
 int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
@@ -457,8 +456,6 @@ int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
     rd->sprite_count = sprite_count;
 
     if(rd->bg_layer) {
-        vga = MK_FP(0xa000, 0);   /* this gets the screen framebuffer */
-
         video_init_mode(VIDEO_MODE_LOW256, 0);
         _fmemset(rd->bg_layer, 0, SCREEN_SIZE);
         init_all_sprites(&rd->sprites, sprite_count);
@@ -466,7 +463,7 @@ int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
         rd->screen_clipping.x = 0;
         rd->screen_clipping.y = 0;
         rd->screen_clipping.w = SCREEN_WIDTH;
-        rd->screen_clipping.h = SCREEN_HEIGHT;   
+        rd->screen_clipping.h = SCREEN_HEIGHT;
 
         if(palette)
             video_set_palette(palette);
