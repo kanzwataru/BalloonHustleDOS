@@ -1,4 +1,4 @@
-#include "TEST.H"
+#include "test.h"
 #include "wb.h"
 
 int main(int argc, char **argv)

@@ -1,9 +1,10 @@
+COMMON_HEADERS     = src/HustleEngine src/WreckingBalloon src
 COMMON_GAME_OBJS   = balloon.o cactoon.o resource.o wb.o
-COMMON_ENGINE_OBJS = engine/core.o engine/event.o engine/render.o platform/filesys.o platform/sdl/kb.o platform/sdl/video.o
+COMMON_ENGINE_OBJS = engine/core.o engine/event.o engine/render.o platform/filesys.o
 
 COMMON_OBJS 	   = $(addprefix src/HustleEngine/,$(COMMON_ENGINE_OBJS))
 COMMON_OBJS       += $(addprefix src/WreckingBalloon/,$(COMMON_GAME_OBJS))
-COMMON_HEADERS     = src/HustleEngine src/WreckingBalloon
+COMMON_OBJS       += src/main.o src/test.o
 
 ifeq ($(TARGET_PLATFORM), unix)
 include unix-makefile
@@ -14,7 +15,7 @@ $(error Unsupported platform or TARGET_PLATFORM not specified)
 endif
 
 clean:
-	rm $(COMMON_OBJS)
+	rm -f $(COMMON_OBJS)
 	rm -f *.EXE
 	rm -f *.OBJ
 	rm -f *.DSK

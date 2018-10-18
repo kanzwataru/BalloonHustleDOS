@@ -1,4 +1,4 @@
-#include "src/TEST.H"
+#include "test.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -164,7 +164,7 @@ static void quit(void) {
 }
 
 void test_keyboard(void)
-{
+{/*
     byte key;
     while(1) {
         key = keyboard_read();
@@ -172,11 +172,11 @@ void test_keyboard(void)
         if(RELEASED(key))
             printf(" (released)\n");
         else
-            printf("\n");
+            printf("\n"); */
 /*
         if(key == 0x01)
             exit(1);*/
-    }
+    //}
 }
 
 void unpause_callback(void *self)
