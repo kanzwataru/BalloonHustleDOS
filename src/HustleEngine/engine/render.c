@@ -1,5 +1,5 @@
 #include "engine/render.h"
-#include "platform/vga.h"
+#include "platform/video.h"
 #include "common/platform.h"
 #include "common/math.h"
 #include <dos.h>
@@ -459,7 +459,7 @@ int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
     if(rd->bg_layer) {
         vga = MK_FP(0xa000, 0);   /* this gets the screen framebuffer */
 
-        enter_m13h();
+        video_init_mode(VIDEO_MODE_LOW256, 0);
         _fmemset(rd->bg_layer, 0, SCREEN_SIZE);
         init_all_sprites(&rd->sprites, sprite_count);
 
@@ -469,12 +469,12 @@ int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
         rd->screen_clipping.h = SCREEN_HEIGHT;   
 
         if(palette)
-            set_palette(palette);
+            video_set_palette(palette);
 
         return 1;
     }
     else {
-        leave_m13h();
+        video_exit();
         printf("out of mem\n");
         return 0;
     }
@@ -484,5 +484,5 @@ void quit_renderer(RenderData *rd)
 {
     free_all_sprites(&rd->sprites, &rd->sprite_count);
     farfree(rd->bg_layer);
-    leave_m13h();
+    video_exit();
 }

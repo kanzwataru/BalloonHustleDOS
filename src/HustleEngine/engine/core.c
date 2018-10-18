@@ -1,9 +1,8 @@
 #include "engine/core.h"
 #include "common/platform.h"
 #include "engine/event.h"
-#include <dos.h>
+#include "platform/video.h"
 
-#define INPUT_STATUS_0 0x3da  /* Used for querying Vblank */
 static int skip_counter = 0;
 static int frame_skip;
 
@@ -19,8 +18,7 @@ void engine_start(CoreData cd)
         event_update();
 
         VSync:
-        while(inportb(INPUT_STATUS_0) & 8) {;}
-        while(!(inportb(INPUT_STATUS_0) & 8)) {;}
+        video_wait_vsync();
 
         if(--skip_counter> 0)
             goto VSync;

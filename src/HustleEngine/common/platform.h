@@ -41,12 +41,16 @@
     typedef uint8_t byte;
     typedef uint16_t uint;
     typedef uint32_t ulong;
+
+    #define PANIC(f) do { f; exit(1); } while(0);
 #else           
     /* 16-bit DOS
      *
      * This is for both Borland and Watcom
      */
     #define PLATFORM_DOS
+    #include <mem.h>
+    #include <dos.h>
     #define inline /* no inline on C89 */
     typedef int bool;
     #define true 1
@@ -56,18 +60,23 @@
     typedef unsigned char byte;
     typedef unsigned int uint;
     typedef unsigned long ulong;
+    
+    #define PANIC(msg) while(1) { printf("!! %s (%d %d)\n", (msg), __FILE__, __LINE__); }
 #endif /* platform */
 /******************************************************/
-
 #ifdef DEBUG
     static void assertion_failed(const char *file, int line) {
         while(1) printf("Assert fail %s, %d\n", file, line);
     }
+    
+    #define NOT_IMPLEMENTED \
+        PANIC("Not implemented");    
 
     #define assert(expr) \
         if(expr) {} else assertion_failed(__FILE__, __LINE__)
-#else
-    #define assert(expr) 
+#else /* if not debug */
+    #define NOT_IMPLEMENTED /* disabled */
+    #define assert(expr)    /* disabled */
 #endif
 
 #endif /* PLATFORM_H */
