@@ -13,7 +13,7 @@ static void reset_pos(void *self)
     (*(PointBalloon *)self).popped = false;
 }
 
-void balloon_init(PointBalloon *pb, Sprite *sprite, uint points) 
+void balloon_init(PointBalloon *pb, Sprite *sprite, uint16 points) 
 {
     Rect hitbox = BALLOON_HITBOX;
     pb->sprite = sprite;

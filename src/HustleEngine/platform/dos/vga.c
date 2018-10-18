@@ -20,7 +20,7 @@ enum VGA_VIDEO_MODES {
 static buffer_t *vga_mem = MK_FP(0xa000, 0); /* VGA DMA memory */
 
 static byte current_mode = 0;
-static uint screen_size = 0;
+static uint16 screen_size = 0;
 
 /*
  * Switch VGA display mode

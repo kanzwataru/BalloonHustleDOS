@@ -80,13 +80,13 @@ typedef struct {
     buffer_t    *screen;
     buffer_t    *bg_layer;
     Sprite      *sprites;
-    uint         sprite_count;
+    uint16         sprite_count;
     byte         flags;
 } RenderData;
 
 /**** Renderer functions ****/
 
-buffer_t *create_image(uint w, uint h);
+buffer_t *create_image(uint16 w, uint16 h);
 void destroy_image(buffer_t **image);
 LineUndoList create_line_undo_list();
 void destroy_line_undo_list(LineUndoList *lul);

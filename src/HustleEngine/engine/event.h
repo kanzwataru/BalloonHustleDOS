@@ -8,7 +8,7 @@ typedef unsigned char EventID;
 typedef void (*EventCallback)(void *);
 
 void event_update(void);
-EventID event_add(EventCallback callback, void *arg, uint time_amount);
+EventID event_add(EventCallback callback, void *arg, uint16 time_amount);
 void event_remove(EventID id);
 
 #endif

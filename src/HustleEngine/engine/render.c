@@ -2,7 +2,6 @@
 #include "platform/video.h"
 #include "common/platform.h"
 #include "common/math.h"
-#include <dos.h>
 #include <stdio.h>
 #include <limits.h>
 #include <math.h>
@@ -19,7 +18,7 @@ struct Pixel {
 };
 
 struct LineUndo {
-    uint         count;
+    uint16         count;
     struct Pixel segs[MAX_LINE_LENGTH];
 };
 
@@ -41,7 +40,7 @@ static buffer_t *make_framebuffer() {
     return farmalloc(SCREEN_SIZE);
 }
 
-buffer_t *create_image(uint w, uint h) {
+buffer_t *create_image(uint16 w, uint16 h) {
     return farmalloc(w * h);
 }
 
@@ -59,7 +58,7 @@ void destroy_line_undo_list(LineUndoList *lul) {
     *lul = NULL;
 }
 
-static void init_all_sprites(Sprite **sprites, const uint count) 
+static void init_all_sprites(Sprite **sprites, const uint16 count) 
 {
     int i;
 
@@ -81,7 +80,7 @@ static void init_all_sprites(Sprite **sprites, const uint count)
     }
 }
 
-static void free_all_sprites(Sprite **sprites, uint *count)
+static void free_all_sprites(Sprite **sprites, uint16 *count)
 {
     int i;
     if(*sprites) {
@@ -330,7 +329,7 @@ Rect draw_sprite_explicit(buffer_t *buf, buffer_t * const image, const Rect rect
 
 void erase_line(buffer_t *buf, LineUndoList undo)
 {
-    uint count = (*(struct LineUndo *)undo).count;
+    uint16 count = (*(struct LineUndo *)undo).count;
     struct Pixel *p = (*(struct LineUndo *)undo).segs;
 
     if(!count)

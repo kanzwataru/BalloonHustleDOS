@@ -33,14 +33,23 @@
      * to not be DOS, but DJGPP is not supported anyway
      */
     #define PLATFORM_SDL
+    #include <string.h> /* memset is here on modern compilers */
     #include <stdint.h>
     #include <stdbool.h>
+    
     #define far /* no more far pointers */
+    #define farmalloc(a)        malloc(a)
+    #define farcalloc(a, b)     calloc(a, b)
+    #define farfree(a)          free(a)
+    #define _fmemset(a, b, c)   memset(a, b, c)
+    #define _fmemcpy(a, b, c)   memcpy(a, b, c)
 
-    typedef uint8_t buffer_t;
-    typedef uint8_t byte;
-    typedef uint16_t uint;
-    typedef uint32_t ulong;
+    typedef uint8_t  buffer_t;
+    typedef uint8_t  byte;
+    typedef uint16_t uint16;
+    typedef uint32_t uint32;
+    typedef int16_t  int16;
+    typedef int32_t  int32;
 
     #define PANIC(f) do { f; exit(1); } while(0);
 #else           
@@ -58,8 +67,10 @@
 
     typedef unsigned char far buffer_t;
     typedef unsigned char byte;
-    typedef unsigned int uint;
-    typedef unsigned long ulong;
+    typedef unsigned int  uint16;
+    typedef unsigned long uint32;
+    typedef int           int16;
+    typedef long          int32;
     
     #define PANIC(msg) while(1) { printf("!! %s (%d %d)\n", (msg), __FILE__, __LINE__); }
 #endif /* platform */

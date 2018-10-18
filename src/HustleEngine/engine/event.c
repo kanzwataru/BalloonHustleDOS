@@ -4,14 +4,14 @@
 struct Event {
     EventCallback  callback;
     void          *arg;
-    uint           timer;
+    uint16           timer;
 };
 
 static struct Event event_stack[MAX_EVENTS];
 static EventID top;
 static EventID last_freed;
 
-EventID event_add(EventCallback callback, void *arg, uint time_amount)
+EventID event_add(EventCallback callback, void *arg, uint16 time_amount)
 {
     EventID ret_id;
     struct Event e;

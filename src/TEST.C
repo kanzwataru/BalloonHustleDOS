@@ -199,7 +199,7 @@ void should_not_fire(void *self)
 
 void test_start(bool do_benchmark, int benchmark_times)
 {
-    uint i;
+    uint16 i;
     CoreData cd;
     EventID e;
     buffer_t *balloon_img;

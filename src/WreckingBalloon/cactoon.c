@@ -3,7 +3,6 @@
 #include "common/math.h"
 
 #include <stdio.h>
-#include <dos.h>
 
 #define TRAILING_SIDE_OFFSET_X      800
 #define TRAILING_SIDE_OFFSET_Y      300

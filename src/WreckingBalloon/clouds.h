@@ -4,8 +4,8 @@
 #include <stdlib.h>
 
 struct RLEBlob {
-    uint bg_len;
-    uint fg_len;
+    uint16 bg_len;
+    uint16 fg_len;
 };
 
 static struct RLEBlob far *rle;
@@ -27,7 +27,7 @@ static int  clouds_timer = CLOUDS_FRAME_SKIP;
 
 static void clouds_rle(buffer_t *image)
 {
-    uint offset = 0, line = 0;
+    uint16 offset = 0, line = 0;
     struct RLEBlob far *p;
 
     rle = farcalloc((CLOUD_SPRITE_W * CLOUD_SPRITE_H) * 2, sizeof(struct RLEBlob));
@@ -63,7 +63,7 @@ static void clouds_rle(buffer_t *image)
 
 static void clouds_render(void)
 {
-    uint j;
+    uint16 j;
     byte i, lines, lineskip;
     buffer_t *p;
     struct RLEBlob far *r;

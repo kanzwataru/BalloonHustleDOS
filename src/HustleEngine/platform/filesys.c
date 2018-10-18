@@ -5,7 +5,7 @@
 
 struct FileLoadData {
     FILE *fp;
-    uint col_num, width, height;
+    uint16 col_num, width, height;
 };
 
 static void fskip(FILE *fp, int num_bytes)
@@ -27,11 +27,11 @@ static struct FileLoadData open_bmp_file(const char *file)
     /* read in the width and height of the image, and the
     number of colors used; ignore the rest */
     fskip(d.fp,18);
-    fread(&d.width, sizeof(uint), 1, d.fp);
+    fread(&d.width, sizeof(uint16), 1, d.fp);
     fskip(d.fp,2);
-    fread(&d.height,sizeof(uint), 1, d.fp);
+    fread(&d.height,sizeof(uint16), 1, d.fp);
     fskip(d.fp,22);
-    fread(&d.col_num,sizeof(uint), 1, d.fp);
+    fread(&d.col_num,sizeof(uint16), 1, d.fp);
     fskip(d.fp,6);
 
     /* assume we are working with an 8-bit file */
