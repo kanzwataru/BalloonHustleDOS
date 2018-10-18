@@ -1,6 +1,8 @@
 #include "platform/kb.h"
 
-byte keyboard_read(void)
+#define RELEASED(x) ((x) | 0x80)
+
+static byte keyboard_read(void)
 {
     byte key;
     _asm {
@@ -19,3 +21,12 @@ byte keyboard_read(void)
 
     return key;
 }
+
+void keyboard_per_frame_update(void) {}
+
+bool keyboard_os_quit_event(void)
+{
+    return false; /* DOS doesn't have an OS-level way of quitting */
+}
+
+bool keyboard_poll_keypress(Keypress *kp) {}

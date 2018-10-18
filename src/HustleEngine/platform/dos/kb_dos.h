@@ -1,10 +1,8 @@
-#ifndef KB_H
-#define KB_H
+#ifndef KB_DOS_H
+#define KB_DOS_H
 
 #include "common/platform.h"
-
-#define RELEASED(x) ((x) | 0x80)
-byte keyboard_read(void);
+typedef byte Key;
 
 /* Keycodes (lifted from libdgl) */
 #define KEY_ESC          0x01

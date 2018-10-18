@@ -23,6 +23,11 @@ static byte dir_input = 0;
 
 static bool input(void)
 {
+    keyboard_per_frame_update();
+    if(keyboard_os_quit_event())
+        return false;
+    
+    return true;
     /*
     byte key = keyboard_read();
 
