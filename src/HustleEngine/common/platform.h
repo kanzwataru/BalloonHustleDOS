@@ -51,7 +51,7 @@
     typedef int16_t  int16;
     typedef int32_t  int32;
 
-    #define PANIC(msg) do{ printf("!! %s (%d %d)\n", (msg), __FILE__, __LINE__); } while(0);
+    #define PANIC(msg) do{ printf("!! %s (%d %s)\n", (msg), __FILE__, __LINE__); } while(0);
 #else           
     /* 16-bit DOS
      *
@@ -72,7 +72,7 @@
     typedef int           int16;
     typedef long          int32;
     
-    #define PANIC(msg) while(1) { printf("!! %s (%d %d)\n", (msg), __FILE__, __LINE__); }
+    #define PANIC(msg) while(1) { printf("!! %s (%d %s)\n", (msg), __FILE__, __LINE__); }
 #endif /* platform */
 /******************************************************/
 #ifdef DEBUG
