@@ -16,3 +16,5 @@ defines.h
 *.lk1
 *.swp
 ._*
+*.o
+balloon
