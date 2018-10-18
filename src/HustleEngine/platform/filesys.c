@@ -70,7 +70,7 @@ buffer_t *load_bmp_palette(const char *file)
     int i;
     struct FileLoadData d = open_bmp_file(file);
 
-    buffer_t *palette = farcalloc(256 * 3, sizeof(byte));
+    buffer_t *palette = farcalloc(256 * 3, sizeof(buffer_t));
     if(!palette)
         while(1) printf("Out of mem: load_bmp_palette %s\n", file);
 
@@ -79,6 +79,8 @@ buffer_t *load_bmp_palette(const char *file)
         palette[i + 1] = fgetc(d.fp) >> 2;
         palette[i + 0] = fgetc(d.fp) >> 2;
         fgetc(d.fp);
+    
+        //printf("%s [%d] (%d %d %d)\n", file, i, palette[i + 0], palette[i + 1], palette[i + 2]);
     }
 
     fclose(d.fp);

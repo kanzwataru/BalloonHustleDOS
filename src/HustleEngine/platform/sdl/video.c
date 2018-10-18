@@ -20,6 +20,7 @@ static SDL_Rect     fbrect = {0, 0, 0, 0};
 static int scale;
 static byte video_mode;
 
+SDL_Color fbpalette[256];
 /*
  * Video API init
 */
@@ -48,13 +49,20 @@ void video_init_mode(byte mode, byte scaling)
     
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         fprintf(stderr, "SDL Initialization Failed \n\n%s\n", SDL_GetError());
-        return 1;
+        exit(1);
     }
     
-    screen = SDL_SetVideoMode(fbrect.w * scale, fbrect.h * scale, 8, SDL_SWSURFACE | SDL_ANYFORMAT);
+    screen = SDL_SetVideoMode(fbrect.w * scale, fbrect.h * scale, 24, SDL_SWSURFACE | SDL_ANYFORMAT);
     if(!screen) {
         fprintf(stderr, "Failed to set video mode (%d x %d)\n%s\n", fbrect.w * scale, fbrect.h * scale, SDL_GetError());
-        return 1;
+        exit(1);
+    }
+    
+    /* framebuffer is 8-bit indexed (256 col) just like VGA mode 13h */
+    framebuffer = SDL_CreateRGBSurface(SDL_SWSURFACE, fbrect.w, fbrect.h, 8, 0,0,0,0);
+    if(!framebuffer) {
+        fprintf(stderr, "Failed to create framebuffer (%d x %d)\n%s\n", fbrect.w, fbrect.h, SDL_GetError());
+        exit(1);
     }
 }
 
@@ -82,14 +90,49 @@ void video_wait_vsync(void)
 */
 void video_flip(buffer_t *backbuf)
 {
+    /* we ONLY support Mode 13h for now!! */
+    if(video_mode != VIDEO_MODE_LOW256)
+        NOT_IMPLEMENTED;
+    
     
 }
 
 /*
- * Sets mode 13h
- * 256 colour palette
+ * Sets colour palette
+ *
+ * Depending on the video mode it may be 16 or 256 colours
 */
 void video_set_palette(buffer_t *palette)
 {
+    assert(video_mode != 0);
+    switch(video_mode) {
+        case VIDEO_MODE_LOW256:
+            for(int i = 0; i < 256; ++i) {
+                fbpalette[i].r = *palette++;
+                fbpalette[i].g = *palette++;
+                fbpalette[i].b = *palette++;
+            }
+            break;
+        case VIDEO_MODE_HIGH16:
+        case VIDEO_MODE_HIGH16HALF:
+            for(int i = 0; i < 16; ++i) {
+                fbpalette[i].r = *palette++;
+                fbpalette[i].g = *palette++;
+                fbpalette[i].b = *palette++;
+            }
+            break;
+        default:
+            PANIC("Invalid video mode");
+            break;
+    }
+
+    if(0 == SDL_SetPalette(framebuffer, SDL_LOGPAL | SDL_PHYSPAL, fbpalette, 0, 256)) {
+        printf("%s\n", SDL_GetError());
+        PANIC("Set palette failed");
+    }
     
+/*
+    for(int i = 0; i < 256 * 3; i+= 3) {
+        printf("[%d] (%d %d %d)\n", i, palette[i + 0], palette[i + 1], palette[i + 2]);
+    } */
 }

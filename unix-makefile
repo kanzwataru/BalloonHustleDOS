@@ -4,7 +4,12 @@ HEADERS     = $(COMMON_HEADERS)
 LIBS        = -lSDL -lm
 TARGET      = balloon
 
-CFLAGS      = -O2 -Wall $(addprefix -I,$(HEADERS))
+ifeq ($DEBUG_BUILD, 1)
+CFLAGS      = -g3 -fvar-tracking -fvar-tracking-assignments 
+else
+CFLAGS      = -O2 -Wall
+endif
+CFLAGS     += $(addprefix -I,$(HEADERS))
 CXXFLAGS    = $(CFLAGS) -fno-exceptions -fno-rtti
 LDFLAGS     = -o $(TARGET)
 
