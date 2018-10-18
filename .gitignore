@@ -1,5 +1,6 @@
 defines.h
 *.DS_Store
+*.CFG
 *.EXE
 *.DSK
 *.OBJ

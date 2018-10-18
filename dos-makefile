@@ -1,0 +1,15 @@
+ifeq ($(DOSCC), doswatcom)
+all:
+	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f MKDOSWC"
+
+buildnrun:
+	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f MKDOSWC" -c "balloon.exe"
+else
+all:
+	dosbox -c "cd C:\DEV\BALLOON" -c "make -f MKTURBOC"
+buildnrun:
+	dosbox -c "cd C:\DEV\BALLOON" -c "make -f MKTURBOC" -c "balloon.exe"
+endif
+
+run:
+	dosbox -c "cd C:\DEV\BALLOON" -c "balloon.exe"

@@ -70,8 +70,8 @@ resource.obj: balloon.cfg src\wrecki~1\resource.c
 cactoon.obj: balloon.cfg src\wrecki~1\cactoon.c 
 	$(CC) -c src\wrecki~1\cactoon.c
 
-vga.obj: balloon.cfg src\hustle~1\platform\vga.c 
-	$(CC) -c src\hustle~1\platform\vga.c
+vga.obj: balloon.cfg src\hustle~1\platform\dos\vga.c 
+	$(CC) -c src\hustle~1\platform\dos\vga.c
 
 filesys.obj: balloon.cfg src\hustle~1\platform\filesys.c 
 	$(CC) -c src\hustle~1\platform\filesys.c
@@ -91,8 +91,8 @@ test.obj: balloon.cfg src\test.c
 wb.obj: balloon.cfg src\wrecki~1\wb.c 
 	$(CC) -c src\wrecki~1\wb.c
 
-kb.obj: balloon.cfg src\hustle~1\platform\kb.c 
-	$(CC) -c src\hustle~1\platform\kb.c
+kb.obj: balloon.cfg src\hustle~1\platform\dos\kb.c 
+	$(CC) -c src\hustle~1\platform\dos\kb.c
 
 #		*Compiler Configuration File*
 balloon.cfg: MKTURBOC

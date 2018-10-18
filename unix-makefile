@@ -1,0 +1,18 @@
+OBJS        = $(COMMON_OBJS) src/HustleEngine/platform/sdl/video.o src/HustleEngine/platform/sdl/kb.o
+SRCS        = $(OBJS:.o=.c)
+HEADERS     = $(COMMON_HEADERS)
+LIBS        = -lSDL -lm
+TARGET      = balloon
+
+CFLAGS      = -O2 -Wall $(addprefix -I,$(HEADERS))
+CXXFLAGS    = $(CFLAGS) -fno-exceptions -fno-rtti
+LDFLAGS     = -o $(TARGET)
+
+CC			= gcc
+CXX			= g++
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $*.c -o $@
+
+$(TARGET): $(OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) $(LIBS)

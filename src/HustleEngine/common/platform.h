@@ -32,6 +32,7 @@
      * DJGPP may also define this, so not guaranteed
      * to not be DOS, but DJGPP is not supported anyway
      */
+    #define PLATFORM_SDL
     #include <stdint.h>
     #include <stdbool.h>
     #define far /* no more far pointers */
@@ -45,6 +46,7 @@
      *
      * This is for both Borland and Watcom
      */
+    #define PLATFORM_DOS
     #define inline /* no inline on C89 */
     typedef int bool;
     #define true 1

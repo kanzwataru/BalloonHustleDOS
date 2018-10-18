@@ -1,17 +1,17 @@
-all:
-	dosbox -c "cd C:\DEV\BALLOON" -c "make -f MKTURBOC"
+COMMON_GAME_OBJS   = balloon.o cactoon.o resource.o wb.o
+COMMON_ENGINE_OBJS = engine/core.o engine/event.o engine/render.o platform/filesys.o platform/kb.o platform/vga.o
 
-run:
-	dosbox -c "cd C:\DEV\BALLOON" -c "balloon.exe"
+COMMON_OBJS 	   = $(addprefix src/HustleEngine/,$(COMMON_ENGINE_OBJS))
+COMMON_OBJS       += $(addprefix src/WreckingBalloon/,$(COMMON_GAME_OBJS))
+COMMON_HEADERS     = src/HustleEngine src/WreckingBalloon
 
-buildnrun:
-	dosbox -c "cd C:\DEV\BALLOON" -c "make -f MKTURBOC" -c "balloon.exe"
-
-watcom:
-	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f MKDOSWC"
-
-buildnrun_watcom:
-	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f MKDOSWC" -c "balloon.exe"
+ifeq ($(TARGET_PLATFORM), unix)
+include unix-makefile
+else ifeq ($(TARGET_PLATFORM), dos)
+include dos-makefile
+else
+$(error Unsupported platform or TARGET_PLATFORM not specified)
+endif
 
 clean:
 	rm -f *.EXE
@@ -23,3 +23,4 @@ clean:
 	rm -f *.SWP
 	rm -f *.CFG
 	find . -type f -name '._*' -delete
+
