@@ -145,7 +145,7 @@ void wrecking_balloon_start(void)
     cd.exit_handler = &quit;
     cd.frame_skip = 0;
 
-    pal = load_bmp_palette("RES\\CACP.BMP");
+    pal = load_bmp_palette("RES/CACP.BMP");
 
     init_renderer(&rd, MAX_SPRITES, pal);
     destroy_image(&pal);

@@ -36,39 +36,39 @@ void init_all_resources(void)
                             /* ANIMATION */
     /* ****************************************************************** */
     anims[i++] = &player_balloon_idle;
-    player_balloon_idle.frames = load_bmp_image("RES\\BLOOA.BMP");
+    player_balloon_idle.frames = load_bmp_image("RES/BLOOA.BMP");
     player_balloon_idle.frame_size = BALLOON_SIZE;
     player_balloon_idle.count = 4;
     player_balloon_idle.skip = 6;
 
     anims[i++] = &player_balloon_pop;
-    player_balloon_pop.frames = load_bmp_image("RES\\BLOOA-PO.BMP");
+    player_balloon_pop.frames = load_bmp_image("RES/BLOOA-PO.BMP");
     player_balloon_pop.frame_size = BALLOON_SIZE;
     player_balloon_pop.count = 8;
     player_balloon_pop.skip = 2;
     player_balloon_pop.playback_type = ANIM_DISAPPEAR;
 
     anims[i++] = &point_balloon_idle;
-    point_balloon_idle.frames = load_bmp_image("RES\\BLOOE.BMP");
+    point_balloon_idle.frames = load_bmp_image("RES/BLOOE.BMP");
     point_balloon_idle.frame_size = BALLOON_SIZE;
     point_balloon_idle.count = player_balloon_idle.count;
     point_balloon_idle.skip = player_balloon_idle.skip;
 
     anims[i++] = &point_balloon_pop;
-    point_balloon_pop.frames = load_bmp_image("RES\\BLOOE-PO.BMP");
+    point_balloon_pop.frames = load_bmp_image("RES/BLOOE-PO.BMP");
     point_balloon_pop.frame_size = BALLOON_SIZE;
     point_balloon_pop.count = player_balloon_pop.count;
     point_balloon_pop.skip = player_balloon_pop.skip;
     point_balloon_pop.playback_type = ANIM_DISAPPEAR;
 
     anims[i++] = &player_cactus_idle;
-    player_cactus_idle.frames = load_bmp_image("RES\\CACP.BMP");
+    player_cactus_idle.frames = load_bmp_image("RES/CACP.BMP");
     player_cactus_idle.frame_size = CACTUS_SIZE;
     player_cactus_idle.count = 6;
     player_cactus_idle.skip = 6;
 
     anims[i++] = &player_cactus_fall;
-    player_cactus_fall.frames = load_bmp_image("RES\\CACP-FA.BMP");
+    player_cactus_fall.frames = load_bmp_image("RES/CACP-FA.BMP");
     player_cactus_fall.frame_size = CACTUS_SIZE;
     player_cactus_fall.count = 11;
     player_cactus_fall.skip = 4;
@@ -80,7 +80,7 @@ void init_all_resources(void)
     /* ****************************************************************** */
     i = 0;
 
-    cloud_image = load_bmp_image("RES\\CLOUD.BMP");
+    cloud_image = load_bmp_image("RES/CLOUD.BMP");
     images[i++] = &cloud_image;
     /* ****************************************************************** */
     /* ****************************************************************** */

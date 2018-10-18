@@ -211,8 +211,8 @@ void test_start(bool do_benchmark, int benchmark_times)
     cd.exit_handler = &quit;
     cd.frame_skip = 0;
 
-    balloon_img = load_bmp_image("RES\\BALLOON.BMP");
-    pal = load_bmp_palette("RES\\BALLOON.BMP");
+    balloon_img = load_bmp_image("RES/BALLOON.BMP");
+    pal = load_bmp_palette("RES/BALLOON.BMP");
 
     rd.flags |= RENDER_DOUBLE_BUFFER;
 
