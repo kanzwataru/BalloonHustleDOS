@@ -17,14 +17,15 @@
 static SDL_Surface *screen;   /* screen surface (scaled) */
 static SDL_Surface *framebuffer; /* based on render.c buffer, at original resolution*/
 static SDL_Rect     fbrect = {0, 0, 0, 0};
-static byte scale;
+static int scale;
 static byte video_mode;
 
 /*
  * Video API init
 */
-void video_init_mode(byte mode, int scaling)
+void video_init_mode(byte mode, byte scaling)
 {
+    assert(scaling > 0);
     scale = scaling;
     video_mode = mode;
     switch(mode) {
@@ -50,9 +51,9 @@ void video_init_mode(byte mode, int scaling)
         return 1;
     }
     
-    screen = SDL_SetVideoMode(fbrect.w, fbrect.h, 8, SDL_SWSURFACE | SDL_ANYFORMAT);
+    screen = SDL_SetVideoMode(fbrect.w * scale, fbrect.h * scale, 8, SDL_SWSURFACE | SDL_ANYFORMAT);
     if(!screen) {
-        fprintf(stderr, "Failed to set video mode (%d x %d)\n%s\n", fbrect.w, fbrect.h, SDL_GetError());
+        fprintf(stderr, "Failed to set video mode (%d x %d)\n%s\n", fbrect.w * scale, fbrect.h * scale, SDL_GetError());
         return 1;
     }
 }

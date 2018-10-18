@@ -54,7 +54,7 @@ void video_flip(buffer_t *backbuf)
 /*
  * Video API init
 */
-void video_init_mode(byte mode, int scaling)
+void video_init_mode(byte mode, byte scaling)
 {
     /* we ONLY support Mode 13h for now!! */
     if(mode != VIDEO_MODE_LOW256)

@@ -455,7 +455,7 @@ int init_renderer(RenderData *rd, int sprite_count, buffer_t *palette)
     rd->sprite_count = sprite_count;
 
     if(rd->bg_layer) {
-        video_init_mode(VIDEO_MODE_LOW256, 0);
+        video_init_mode(VIDEO_MODE_LOW256, 1);
         _fmemset(rd->bg_layer, 0, SCREEN_SIZE);
         init_all_sprites(&rd->sprites, sprite_count);
 
