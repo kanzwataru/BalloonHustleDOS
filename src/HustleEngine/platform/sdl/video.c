@@ -113,7 +113,7 @@ void video_init_mode(byte mode, byte scaling)
     logical_screen    = fit_rect(native_resolution, original_resolution, &scale);
     
     /* use the native resolution and then we can handle the scaling ourselves */
-    screen = SDL_SetVideoMode(native_resolution.w, native_resolution.h, 24, SDL_SWSURFACE | SDL_ANYFORMAT);
+    screen = SDL_SetVideoMode(native_resolution.w, native_resolution.h, 24, SDL_SWSURFACE | SDL_ANYFORMAT | SDL_FULLSCREEN | SDL_DOUBLEBUF);
     if(!screen) {
         fprintf(stderr, "Failed to set video mode (%d x %d)\n%s\n", original_resolution.w * scale, original_resolution.h * scale, SDL_GetError());
         exit(1);
@@ -141,7 +141,7 @@ void video_exit(void)
 */
 void video_wait_vsync(void)
 {
-    SDL_Delay(12); /* fake vsync for now */
+    //SDL_Delay(12); /* fake vsync for now */
 }
 
 /*
@@ -191,7 +191,7 @@ void video_flip(buffer_t *backbuf)
         SDL_UnlockSurface(framebuffer);
     
     SDL_BlitSurface(framebuffer, NULL, screen, &logical_screen);
-    SDL_UpdateRect(screen, 0, 0, 0, 0);
+    SDL_Flip(screen);
 }
 
 /*
@@ -232,9 +232,4 @@ void video_set_palette(buffer_t *palette)
         printf("%s\n", SDL_GetError());
         PANIC("Set palette failed");
     }
-    
-/*
-    for(int i = 0; i < 256 * 3; i+= 3) {
-        printf("[%d] (%d %d %d)\n", i, palette[i + 0], palette[i + 1], palette[i + 2]);
-    } */
 }
