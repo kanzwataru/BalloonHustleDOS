@@ -36,7 +36,7 @@ EXE_dependencies =  \
 
 #		*Explicit Rules*
 balloon.exe: balloon.cfg $(EXE_dependencies)
-  $(TLINK) /v/x/c $(LLIBS) @&&|
+  $(TLINK) /v/m/s/c $(LLIBS) @&&|
 c0l.obj+
 balloon.obj+
 event.obj+
@@ -52,7 +52,7 @@ simplet.obj+
 wb.obj+
 kb.obj
 balloon
-		# no map file
+bln.map
 emu.lib+
 mathl.lib+
 cl.lib
