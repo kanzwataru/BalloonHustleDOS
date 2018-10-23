@@ -6,6 +6,7 @@
 typedef struct {
     void (*update_callback)(void);
     void (*render_callback)(void);
+    void (*flip_callback)(void);
     bool (*input_handler)(void);
     void (*exit_handler)(void);
     int frame_skip;

@@ -33,13 +33,16 @@ static void render(void)
     for(i = 0; i < 320 * 200; ++i) {
         rd.screen[i] = rand();
     }
-    
-    finish_frame(&rd);
 }
 
 static void quit(void)
 {
     quit_renderer(&rd);
+}
+
+static void render_flip(void)
+{
+    finish_frame(&rd);
 }
 
 void simpletest_start(void)
@@ -49,6 +52,7 @@ void simpletest_start(void)
     CoreData cd;
     cd.update_callback = update;
     cd.render_callback = render;
+    cd.flip_callback   = render_flip;
     cd.input_handler   = input;
     cd.exit_handler    = quit;
     cd.frame_skip      = 0;

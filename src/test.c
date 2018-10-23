@@ -149,7 +149,6 @@ static void render(void) {
     if(!paused) {
         start_frame(&rd);
         refresh_sprites(&rd);
-        finish_frame(&rd);
     }
 }
 
@@ -165,6 +164,11 @@ static void quit(void) {
     quit_renderer(&rd);
 
     exit(1);
+}
+
+static void render_flip(void)
+{
+    finish_frame(&rd);
 }
 
 void test_keyboard(void)
@@ -211,6 +215,7 @@ void test_start(bool do_benchmark, int benchmark_times)
 
     cd.update_callback = &update;
     cd.render_callback = &render;
+    cd.flip_callback = &render_flip;
     cd.input_handler = &input;
     cd.exit_handler = &quit;
     cd.frame_skip = 0;

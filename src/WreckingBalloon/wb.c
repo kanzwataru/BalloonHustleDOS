@@ -121,6 +121,10 @@ static void render(void)
     }
 
     refresh_sprites(&rd);
+}
+
+static void render_flip(void)
+{
     finish_frame(&rd);
 }
 
@@ -146,6 +150,7 @@ void wrecking_balloon_start(void)
 
     cd.update_callback = &update;
     cd.render_callback = &render;
+    cd.flip_callback = &render_flip;
     cd.input_handler = &input;
     cd.exit_handler = &quit;
     cd.frame_skip = 0;
