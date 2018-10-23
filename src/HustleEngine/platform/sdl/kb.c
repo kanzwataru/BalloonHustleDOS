@@ -12,6 +12,11 @@ void keyboard_per_frame_update(void)
             case SDL_QUIT:
                 should_quit = true;
                 break;
+            case SDL_KEYDOWN:
+                if(event.key.keysym.sym == KEY_F4 && event.key.keysym.mod & KMOD_LALT)
+                    should_quit = true;
+                
+                break;
         }
     }
 }
