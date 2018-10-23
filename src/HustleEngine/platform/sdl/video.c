@@ -141,7 +141,10 @@ void video_exit(void)
 */
 void video_wait_vsync(void)
 {
-    //SDL_Delay(12); /* fake vsync for now */
+    /* vsync should be provided by SDL
+     * in SDL_Flip and we should be able to do the
+     * framebuffer transfer during Vblank easily on modern hardware
+     */
 }
 
 /*
@@ -160,10 +163,10 @@ void video_flip(buffer_t *backbuf)
     if(video_mode != VIDEO_MODE_LOW256)
         NOT_IMPLEMENTED;
     
-    if(SDL_MUSTLOCK(framebuffer))
-        SDL_LockSurface(framebuffer);
+    if(SDL_MUSTLOCK(framebuffer)) SDL_LockSurface(framebuffer);
+    
+    /* copy original to scaled framebuffer, doubling up lines where necessary */
     while(lines < logical_screen.h) {
-        /* copy original to scaled framebuffer, doubling up lines where necessary */
         pixels = 0;
         doubling = scale;
         while(pixels < logical_screen.w) {
@@ -187,8 +190,7 @@ void video_flip(buffer_t *backbuf)
         
         linehead += logical_screen.w;
     }
-    if(SDL_MUSTLOCK(framebuffer))
-        SDL_UnlockSurface(framebuffer);
+    if(SDL_MUSTLOCK(framebuffer)) SDL_UnlockSurface(framebuffer);
     
     SDL_BlitSurface(framebuffer, NULL, screen, &logical_screen);
     SDL_Flip(screen);
