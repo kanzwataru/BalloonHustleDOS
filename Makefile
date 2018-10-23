@@ -4,7 +4,7 @@ COMMON_ENGINE_OBJS = engine/core.o engine/event.o engine/render.o platform/files
 
 COMMON_OBJS 	   = $(addprefix src/HustleEngine/,$(COMMON_ENGINE_OBJS))
 COMMON_OBJS       += $(addprefix src/WreckingBalloon/,$(COMMON_GAME_OBJS))
-COMMON_OBJS       += src/main.o src/test.o src/simpletest.o
+COMMON_OBJS       += src/main.o src/test.o src/simplet.o
 
 ifeq ($(TARGET_PLATFORM), unix)
 include unix-makefile

@@ -1,7 +1,8 @@
 #include "test.h"
 #include "wb.h"
-#include "simpletest.h"
+#include "simplet.h"
 
+#include <string.h>
 #include <stdlib.h>
 
 int main(int argc, char **argv)

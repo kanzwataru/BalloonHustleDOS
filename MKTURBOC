@@ -30,6 +30,7 @@ EXE_dependencies =  \
  render.obj \
  main.obj \
  test.obj \
+ simplet.obj \
  wb.obj \
  kb.obj
 
@@ -47,6 +48,7 @@ core.obj+
 render.obj+
 main.obj+
 test.obj+
+simplet.obj+
 wb.obj+
 kb.obj
 balloon
@@ -87,6 +89,9 @@ main.obj: balloon.cfg src\main.c
 
 test.obj: balloon.cfg src\test.c 
 	$(CC) -c src\test.c
+
+simplet.obj: balloon.cfg src\simplet.c 
+	$(CC) -c src\simplet.c
 
 wb.obj: balloon.cfg src\wrecki~1\wb.c 
 	$(CC) -c src\wrecki~1\wb.c

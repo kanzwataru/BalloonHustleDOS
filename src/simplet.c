@@ -1,4 +1,4 @@
-#include "simpletest.h"
+#include "simplet.h"
 #include "common/platform.h"
 #include "engine/render.h"
 #include "engine/core.h"

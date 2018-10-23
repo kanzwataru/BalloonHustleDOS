@@ -25,6 +25,15 @@ static byte video_mode;
 
 SDL_Color fbpalette[256];
 
+static int to_prev_pow2(int n) {
+    /* convert to previous power of two */
+    int p2 = 1;
+    while(p2 <= n)
+        p2 <<= 1;
+
+    return p2 >> 1;
+}
+
 static SDL_Rect get_native_resolution(void)
 {
     SDL_Rect **modes;
@@ -49,10 +58,24 @@ static SDL_Rect get_native_resolution(void)
 static SDL_Rect fit_rect(SDL_Rect large, SDL_Rect small, int *scale_out)
 {
     float scale = MIN(large.w / small.w, large.h / small.h);
+    int proper_scale = to_prev_pow2((int)scale);
     
-    SDL_Rect out = {0, 0, small.w * (int)scale, small.h * (int)scale};
+    SDL_Rect out = {0, 0, small.w * proper_scale, small.h * proper_scale};    
+    *scale_out = proper_scale;
     
-    *scale_out = (int)scale;
+    if((float)large.w / (float)large.h >= 2) {
+        /* if the screen is super wide we probably have dual monitors
+         * so just make sure to be on the right-most one (dirty hack)
+        */
+        out.x = large.w - out.w;
+        out.y = (large.h - out.h) / 2;
+    }
+    else {
+        /* center on screen */
+        out.x = (large.w - out.w) / 2;
+        out.y = (large.h - out.h) / 2;
+    }
+    
     return out;
 }
 
@@ -90,7 +113,7 @@ void video_init_mode(byte mode, byte scaling)
     logical_screen    = fit_rect(native_resolution, original_resolution, &scale);
     
     /* use the native resolution and then we can handle the scaling ourselves */
-    screen = SDL_SetVideoMode(native_resolution.w, native_resolution.h, 24, SDL_SWSURFACE | SDL_ANYFORMAT | SDL_FULLSCREEN);
+    screen = SDL_SetVideoMode(native_resolution.w, native_resolution.h, 24, SDL_SWSURFACE | SDL_ANYFORMAT);
     if(!screen) {
         fprintf(stderr, "Failed to set video mode (%d x %d)\n%s\n", original_resolution.w * scale, original_resolution.h * scale, SDL_GetError());
         exit(1);
@@ -128,22 +151,46 @@ void video_wait_vsync(void)
 */
 void video_flip(buffer_t *backbuf)
 {
-    //printf("Video flip called\n");
+    int doubling = 0, lines = 0, pixels = 0;
+    
+    byte *linehead = framebuffer->pixels;
+    byte *src = backbuf;
+    
     /* we ONLY support Mode 13h for now!! */
     if(video_mode != VIDEO_MODE_LOW256)
         NOT_IMPLEMENTED;
     
     if(SDL_MUSTLOCK(framebuffer))
         SDL_LockSurface(framebuffer);
-    
-    memset(framebuffer->pixels, 3, logical_screen.w * logical_screen.h);
-    //memcpy(framebuffer->pixels, backbuf, original_resolution.w * original_resolution.h);
-    //*((buffer_t *)framebuffer->pixels) = 4;
-    
+    while(lines < logical_screen.h) {
+        /* copy original to scaled framebuffer, doubling up lines where necessary */
+        pixels = 0;
+        doubling = scale;
+        while(pixels < logical_screen.w) {
+            while(doubling --> 0) {
+                *(linehead + pixels) = *src;
+                ++pixels;
+            }
+            
+            doubling = scale;
+            ++src;
+        }
+        
+        ++lines;
+        
+        doubling = scale - 1;
+        while(doubling --> 0) {
+            memcpy(linehead + logical_screen.w, linehead, logical_screen.w);
+            linehead += logical_screen.w;
+            ++lines;
+        }
+        
+        linehead += logical_screen.w;
+    }
     if(SDL_MUSTLOCK(framebuffer))
         SDL_UnlockSurface(framebuffer);
     
-    SDL_BlitSurface(framebuffer, NULL, screen, NULL);
+    SDL_BlitSurface(framebuffer, NULL, screen, &logical_screen);
     SDL_UpdateRect(screen, 0, 0, 0, 0);
 }
 
