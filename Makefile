@@ -1,3 +1,5 @@
+.PHONY: preclean
+
 COMMON_HEADERS     = src/HustleEngine src/WreckingBalloon src
 COMMON_GAME_OBJS   = balloon.o cactoon.o resource.o wb.o
 COMMON_ENGINE_OBJS = engine/core.o engine/event.o engine/render.o platform/filesys.o
@@ -16,18 +18,6 @@ else
 $(error Unsupported platform or TARGET_PLATFORM not specified)
 endif
 
-clean:
+preclean:
 	rm -f $(COMMON_OBJS)
-	rm -f *.o
-	rm -f *.obj
-	rm -f *.err
-	rm -f *.EXE
-	rm -f *.OBJ
-	rm -f *.DSK
-	rm -f *.ERR
-	rm -f *.MAP
-	rm -f *.LK1
-	rm -f *.SWP
-	rm -f *.CFG
 	find . -type f -name '._*' -delete
-

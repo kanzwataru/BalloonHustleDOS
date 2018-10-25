@@ -1,8 +1,11 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-#include <malloc.h>
 #include <stdio.h>
+
+typedef unsigned char bool;
+#define true 1
+#define false 0
 
 /***                      ***
  ***    COMPILER CHECK    ***
@@ -29,7 +32,7 @@
 /***                      ***
  ***    PLATFORM CHECK    ***
  ***                      ***/
-#ifdef __GNUC__ 
+#ifdef __GNUC__
     /* Modern 32-bit OS support (future) 
      *
      * DJGPP may also define this, so not guaranteed
@@ -38,7 +41,7 @@
     #define PLATFORM_SDL
     #include <string.h> /* memset is here on modern compilers */
     #include <stdint.h>
-    #include <stdbool.h>
+    #include <stdlib.h>
     
     #define far /* no more far pointers */
     #define farmalloc(a)        malloc(a)
@@ -54,19 +57,18 @@
     typedef int16_t  int16;
     typedef int32_t  int32;
 
-    #define PANIC(msg) do{ fprintf(stderr, "!! %s (%s %d)\n", (msg), __FILE__, __LINE__); exit(1); } while(0);
+    #define PANIC_DO(x)     do { x; exit(1); break; } while(0);
+    #define PANIC(msg)      PANIC_DO(fprintf(stderr, "!! %s (%s %d)\n", (msg), __FILE__, __LINE__));
 #else           
     /* 16-bit DOS
      *
      * This is for both Borland and Watcom
      */
     #define PLATFORM_DOS
+    #include <malloc.h>
     #include <mem.h>
     #include <dos.h>
     #define inline /* no inline on C89 */
-    typedef unsigned char bool;
-    #define true 1
-    #define false 0
 
     typedef unsigned char far buffer_t;
     typedef unsigned char byte;
@@ -75,19 +77,16 @@
     typedef int           int16;
     typedef long          int32;
     
-    #define PANIC(msg) while(1) { printf("!! %s (%s %d)\n", (msg), __FILE__, __LINE__); }
+    #define PANIC_DO(x)     while(1) { x; }
+    #define PANIC(msg)      PANIC_DO(printf("!! %s (%s %d)\n", (msg), __FILE__, __LINE__));
 #endif /* platform */
 /******************************************************/
 #ifdef DEBUG
-    static inline void assertion_failed(const char *file, int line) {
-        while(1) printf("Assert fail %s, %d\n", file, line);
-    }
-    
     #define NOT_IMPLEMENTED \
         PANIC("Not implemented");    
 
     #define assert(expr) \
-        if(expr) {} else assertion_failed(__FILE__, __LINE__)
+        if(expr) {} else PANIC_DO(printf("Assert fail %s, %d\n", __FILE__, __LINE__))
 #else /* if not debug */
     #define NOT_IMPLEMENTED /* disabled */
     #define assert(expr)    /* disabled */

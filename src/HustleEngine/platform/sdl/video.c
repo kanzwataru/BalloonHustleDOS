@@ -204,7 +204,6 @@ void video_flip(buffer_t *backbuf)
 void video_set_palette(buffer_t *palette)
 {
     printf("palette set\n");
-    assert(video_mode != 0);
     switch(video_mode) {
         case VIDEO_MODE_LOW256:
             for(int i = 0; i < 256; ++i) {

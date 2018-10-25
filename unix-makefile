@@ -5,7 +5,7 @@ LIBS        = -lSDL -lm
 TARGET      = balloon
 
 ifeq ($(DEBUG_BUILD), 1)
-CFLAGS      = -g3 -fvar-tracking -fvar-tracking-assignments -DDEBUG -Wpedantic -Wall -Werror
+CFLAGS      = -g3 -DDEBUG -Wpedantic -Wall -Werror
 else
 CFLAGS      = -O2 -Wall
 endif
@@ -21,3 +21,6 @@ CXX			= g++
 
 $(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) $(LIBS)
+
+clean: preclean
+	rm -f $(OBJS) $(TARGET)

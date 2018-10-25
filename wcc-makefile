@@ -31,4 +31,8 @@ buildnrun: $(TARGET)
 	dosbox -c "cd C:\DEV\BALLOON" -c "balloon.exe"
 
 run:
-	dosbox -c "cd C:\DEV\BALLOON" -c "balloon.exe"	
+	dosbox -c "cd C:\DEV\BALLOON" -c "balloon.exe"
+
+clean: preclean
+	rm -f $(OBJS) $(TARGET)
+	rm -f *.obj *.err
