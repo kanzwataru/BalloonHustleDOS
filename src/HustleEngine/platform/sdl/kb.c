@@ -1,5 +1,5 @@
 #include "platform/kb.h"
-#include "sdl_shim.h"
+#include "internal/sdl_shim.h"
 
 static bool should_quit = false;
 
@@ -10,7 +10,7 @@ const bool *keyboard_keys; /* this will point to SDL's internal key array */
 void keyboard_per_frame_update(void) 
 {
     SDL_Event event;
-    
+
     while(SDL_PollEvent(&event)) {
         switch(event.type) {
             case SDL_QUIT:
@@ -23,12 +23,14 @@ void keyboard_per_frame_update(void)
                 break;
         }
     }
+    
+    keyboard_keys = SDL_GetKeyState(NULL);
 }
 
 void keyboard_init(void)
 {
     /* get a pointer to SDL's internal key state array */
-    keyboard_keys = SDL_SHIM_GET_KEYARRAY();
+    keyboard_keys = SDL_GetKeyState(NULL);
 }
 
 void keyboard_quit(void)

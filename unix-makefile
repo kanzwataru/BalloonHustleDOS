@@ -7,10 +7,10 @@ TARGET      = balloon
 
 ifeq ($(SDL_VER), 2)
 DEFINES    += -DSDL2
-OBJS       += src/HustleEngine/platform/sdl/video_sdl2.o
+OBJS       += src/HustleEngine/platform/sdl/sdl2/video.o
 LIBS       += -lSDL2
 else
-OBJS	   += src/HustleEngine/platform/sdl/video_sdl12.o
+OBJS	   += src/HustleEngine/platform/sdl/sdl1.2/video.o
 LIBS       += -lSDL
 endif
 

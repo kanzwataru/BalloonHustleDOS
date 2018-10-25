@@ -3,8 +3,6 @@
 
 #include "common/platform.h"
 
-#define KEYCODES_MAX     255
-
 /* IBM PC Keyboard Controller Keycodes (lifted from libdgl) */
 #define KEY_ESC          0x01
 #define KEY_1            0x02

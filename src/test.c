@@ -173,10 +173,12 @@ static void render_flip(void)
 
 void test_keyboard(void)
 {
+/*
     int i;
     
     keyboard_init();
     
+
     while(!(keyboard_os_quit_event() || keyboard_keys[KEY_ESC])) {
     for(i = 0; i < KEYCODES_MAX; ++i) {
             if(keyboard_keys[i])
@@ -184,9 +186,9 @@ void test_keyboard(void)
         }
         
         printf("\n");
-    }
+    } */
     
-    keyboard_quit();
+//    keyboard_quit();
 }
 
 void unpause_callback(void *self)

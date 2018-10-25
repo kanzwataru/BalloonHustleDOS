@@ -1,6 +1,7 @@
 #include "platform/kb.h"
 
 #define KEYBOARD_ISR        9   /* keyboard interrupt service number */
+#define KEYCODES_MAX        255
 
 #define TO_RELEASED(x)      ((x) | 0x80)  /* keys are OR'd with 0x80 if they are release codes */
 #define FROM_RELEASED(x)    ((x) & ~0x80) /* get original (non-released) keycode */

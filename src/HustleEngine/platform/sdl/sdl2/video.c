@@ -1,7 +1,7 @@
 /*
  * SDL2 backend Video module
 */
-#include "video_common.h"
+#include "../internal/video_common.h"
 
 static SDL_Window   *window;
 static SDL_Renderer *renderer;

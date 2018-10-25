@@ -1,7 +1,7 @@
 /*
  * SDL1.2 backend Video module
 */
-#include "video_common.h"
+#include "../internal/video_common.h"
 
 #include "common/math.h"
 
