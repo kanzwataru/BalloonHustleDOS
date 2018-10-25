@@ -4,8 +4,8 @@ HEADERS     = $(COMMON_HEADERS)
 LIBS        = -lSDL -lm
 TARGET      = balloon
 
-ifeq ($DEBUG_BUILD, 1)
-CFLAGS      = -g3 -fvar-tracking -fvar-tracking-assignments 
+ifeq ($(DEBUG_BUILD), 1)
+CFLAGS      = -g3 -fvar-tracking -fvar-tracking-assignments -DDEBUG -Wpedantic -Wall -Werror
 else
 CFLAGS      = -O2 -Wall
 endif
