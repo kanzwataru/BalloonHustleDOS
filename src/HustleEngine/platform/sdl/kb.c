@@ -3,6 +3,10 @@
 
 static bool should_quit = false;
 
+/* GLOBALS */
+bool *keyboard_keys; /* this will point to SDL's internal key array */
+/* ******* */
+
 void keyboard_per_frame_update(void) 
 {
     SDL_Event event;
@@ -21,12 +25,18 @@ void keyboard_per_frame_update(void)
     }
 }
 
+void keyboard_init(void)
+{
+    /* get a pointer to SDL's internal key state array */
+    keyboard_keys = SDL_GetKeyState(NULL);
+}
+
+void keyboard_quit(void)
+{
+    /* no need to clean anything up */
+}
+
 bool keyboard_os_quit_event(void)
 {
     return should_quit;
-}
-
-bool keyboard_poll_keypress(Keypress *kp)
-{
-    return false;
 }

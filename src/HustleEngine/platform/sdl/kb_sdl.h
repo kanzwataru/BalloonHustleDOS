@@ -2,8 +2,10 @@
 #define KB_SDL_H
 
 #include <SDL/SDL_keysym.h>
-typedef SDLKey Key;
 
+#define KEYCODES_MAX     340 /* from SDL1.2's SDL_keysym.h */
+
+/* map to SDL keycode names */
 #define KEY_ESC          SDLK_ESCAPE
 #define KEY_1            SDLK_1
 #define KEY_2            SDLK_2
