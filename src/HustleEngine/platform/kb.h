@@ -15,7 +15,7 @@
  *
  * Can index into this with keycodes, true if key down
 */
-extern bool *keyboard_keys;
+extern const bool *keyboard_keys;
 
 /*
  * Must call this to initialize the keyboard system

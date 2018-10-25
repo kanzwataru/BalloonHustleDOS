@@ -1,10 +1,10 @@
 #include "platform/kb.h"
-#include <SDL/SDL.h>
+#include "sdl_shim.h"
 
 static bool should_quit = false;
 
 /* GLOBALS */
-bool *keyboard_keys; /* this will point to SDL's internal key array */
+const bool *keyboard_keys; /* this will point to SDL's internal key array */
 /* ******* */
 
 void keyboard_per_frame_update(void) 
@@ -28,7 +28,7 @@ void keyboard_per_frame_update(void)
 void keyboard_init(void)
 {
     /* get a pointer to SDL's internal key state array */
-    keyboard_keys = SDL_GetKeyState(NULL);
+    keyboard_keys = SDL_SHIM_GET_KEYARRAY();
 }
 
 void keyboard_quit(void)

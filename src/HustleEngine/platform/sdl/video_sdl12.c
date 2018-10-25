@@ -1,19 +1,9 @@
 /*
  * SDL1.2 backend Video module
 */
-#include "platform/video.h"
+#include "video_common.h"
+
 #include "common/math.h"
-#include <SDL/SDL.h>
-#include <stdio.h>
-
-#define LOW256_WIDTH        320
-#define LOW256_HEIGHT       200
-
-#define HIGH16_WIDTH        640
-#define HIGH16_HEIGHT       480
-
-#define HIGH16HALF_WIDTH    640
-#define HIGH16HALF_HEIGHT   200
 
 static SDL_Surface *screen;   /* screen surface (scaled) */
 static SDL_Surface *framebuffer; /* based on render.c buffer, at original resolution*/
@@ -21,9 +11,6 @@ static SDL_Rect     native_resolution;
 static SDL_Rect     original_resolution;
 static SDL_Rect     logical_screen;
 static int scale;
-static byte video_mode;
-
-SDL_Color fbpalette[256];
 
 static int to_prev_pow2(int n) {
     /* convert to previous power of two */
@@ -203,31 +190,7 @@ void video_flip(buffer_t *backbuf)
 */
 void video_set_palette(buffer_t *palette)
 {
-    printf("palette set\n");
-    switch(video_mode) {
-        case VIDEO_MODE_LOW256:
-            for(int i = 0; i < 256; ++i) {
-                /* left-shift to convert the VGA-compatible
-                 * 6-bit colours back to 8-bit colours */
-                fbpalette[i].r = *palette++ << 2;
-                fbpalette[i].g = *palette++ << 2;
-                fbpalette[i].b = *palette++ << 2;
-            }
-            break;
-        case VIDEO_MODE_HIGH16:
-        case VIDEO_MODE_HIGH16HALF:
-            for(int i = 0; i < 16; ++i) {
-                /* left-shift to convert the VGA-compatible
-                 * 6-bit colours back to 8-bit colours */
-                fbpalette[i].r = *palette++ << 2;
-                fbpalette[i].g = *palette++ << 2;
-                fbpalette[i].b = *palette++ << 2;
-            }
-            break;
-        default:
-            PANIC("Invalid video mode");
-            break;
-    }
+    internal_set_palette(palette);
 
     if(0 == SDL_SetPalette(framebuffer, SDL_LOGPAL | SDL_PHYSPAL, fbpalette, 0, 256)) {
         printf("%s\n", SDL_GetError());

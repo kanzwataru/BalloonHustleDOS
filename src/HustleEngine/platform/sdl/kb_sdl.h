@@ -1,7 +1,7 @@
 #ifndef KB_SDL_H
 #define KB_SDL_H
 
-#include <SDL/SDL_keysym.h>
+#include "sdl_shim.h"
 
 #define KEYCODES_MAX     340 /* from SDL1.2's SDL_keysym.h */
 

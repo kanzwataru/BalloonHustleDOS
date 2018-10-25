@@ -11,7 +11,7 @@ static void interrupt (*old_key_vect)(void); /* the original keyboard interrupt 
 static bool key_array[KEYCODES_MAX];
 
 /* GLOBALS */
-bool *keyboard_keys = key_array; /* global key array */
+bool const *keyboard_keys = key_array; /* global key array */
 /* ******* */
 
 static void interrupt input_service(void)
