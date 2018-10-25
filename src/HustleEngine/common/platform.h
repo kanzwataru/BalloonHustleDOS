@@ -61,7 +61,7 @@
     #include <mem.h>
     #include <dos.h>
     #define inline /* no inline on C89 */
-    typedef int bool;
+    typedef unsigned char bool;
     #define true 1
     #define false 0
 
