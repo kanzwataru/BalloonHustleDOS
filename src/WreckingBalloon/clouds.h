@@ -61,7 +61,7 @@ static void clouds_rle(buffer_t *image)
     }
 }
 
-static void clouds_render(void)
+static inline void clouds_render(void)
 {
     uint16 j;
     byte i, lines, lineskip;
@@ -115,7 +115,7 @@ static void clouds_render(void)
     clouds_pending = false;
 }
 
-static void clouds_update(void)
+static inline void clouds_update(void)
 {
     int i;
     for(i = 0; i < MAX_CLOUDS; ++i) {
@@ -129,10 +129,10 @@ static void clouds_update(void)
     clouds_pending = true;
 }
 
-static void clouds_init(void)
+static inline void clouds_init(void)
 {
     int i;
-    srand((unsigned int)clouds);
+    srand((size_t)clouds);
 
     for(i = 0; i < MAX_CLOUDS; ++i) {
         clouds[i].x = (rand() % (200 - CLOUD_SPRITE_W)) + 50;

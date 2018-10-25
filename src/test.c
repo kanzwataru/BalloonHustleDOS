@@ -16,10 +16,10 @@
 
 static Point bounce_dirs[SPRITE_COUNT];
 static RenderData rd;
-static byte col = 0;
+//static byte col = 0;
 static bool paused = false;
 
-static Animation test_anim;
+//static Animation test_anim;
 
 static void engine_benchmark(CoreData cd, int times)
 {

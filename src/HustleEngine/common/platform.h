@@ -76,7 +76,7 @@
 #endif /* platform */
 /******************************************************/
 #ifdef DEBUG
-    static void assertion_failed(const char *file, int line) {
+    static inline void assertion_failed(const char *file, int line) {
         while(1) printf("Assert fail %s, %d\n", file, line);
     }
     

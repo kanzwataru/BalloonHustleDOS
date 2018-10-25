@@ -68,6 +68,7 @@ static void update(void)
     CLOUDS_UPDATE;
 }
 
+/*
 static void debug_render_hitboxes(void)
 {
     Rect hbox_a, hbox_b;
@@ -85,6 +86,7 @@ static void debug_render_hitboxes(void)
     draw_rect(rd.screen, &hbox_a, 7);
     draw_rect(rd.screen, &hbox_b, 8);
 }
+*/
 
 static void render(void)
 {
@@ -160,7 +162,8 @@ void wrecking_balloon_start(void)
         balloon_init(&balloons[i], &rd.sprites[spr_id++], POINT_BALLOON_POINTS);
     }
 
-    cactoon_init(&player, &rd.sprites[spr_id++], &rd.sprites[spr_id++], 128, 32, 0);
+    cactoon_init(&player, &rd.sprites[spr_id + 1], &rd.sprites[spr_id + 2], 128, 32, 0);
+    spr_id += 2;
     player.flags |= CT_PLAYER;
 
     assert(spr_id <= MAX_SPRITES);

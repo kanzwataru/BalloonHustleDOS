@@ -3,6 +3,7 @@
 #include "common/platform.h"
 #include "common/math.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <limits.h>
 #include <math.h>
 
@@ -82,7 +83,6 @@ static void init_all_sprites(Sprite **sprites, const uint16 count)
 
 static void free_all_sprites(Sprite **sprites, uint16 *count)
 {
-    int i;
     if(*sprites) {
         free(*sprites);
         *sprites = NULL;
@@ -151,6 +151,7 @@ static bool clip_rect(Rect *clipped, Point *offset, const Rect *orig, const Rect
     return true;
 }
 
+/*
 static void blit(buffer_t *dest, const buffer_t *src, const Rect *rect)
 {
     register int y = rect->h;
@@ -162,6 +163,7 @@ static void blit(buffer_t *dest, const buffer_t *src, const Rect *rect)
         offset += SCREEN_WIDTH;
     }
 }
+*/
 
 static void blit_offset(buffer_t *dest, const buffer_t *src, const Rect *rect, int offset, int orig_w)
 {
@@ -387,9 +389,6 @@ static void anim_update(AnimInstance *anim, byte *sprite_flags)
 
 void refresh_sprites(RenderData *rd)
 {
-    register int y;
-    register int offset;
-    int y_max;
     Point image_offset;
     Rect orig;
     Rect r;

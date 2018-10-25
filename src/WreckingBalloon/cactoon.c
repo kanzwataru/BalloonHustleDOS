@@ -85,7 +85,7 @@ static Point simple_physics(Point counters, const byte dir)
 void cactoon_init(CactusBalloon *ct, Sprite *balloon, Sprite *cactus, int x, int y, byte flags)
 {
     Rect hitbox = BALLOON_HITBOX;
-    Rect cactus_hitbox = CACTUS_HITBOX;
+    //Rect cactus_hitbox = CACTUS_HITBOX;
 
     memset(ct, 0, sizeof(CactusBalloon));
     ct->balloon = balloon;

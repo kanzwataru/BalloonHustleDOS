@@ -18,7 +18,7 @@ void balloon_init(PointBalloon *pb, Sprite *sprite, uint16 points)
     Rect hitbox = BALLOON_HITBOX;
     pb->sprite = sprite;
     pb->points = points;
-    srand((unsigned int)pb);
+    srand((size_t)pb);
 
     sprite->rect.x = rand() % 200;
     reset_pos(pb);

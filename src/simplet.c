@@ -49,13 +49,6 @@ void simpletest_start(void)
 {
     int i;
     byte palette[256];
-    CoreData cd;
-    cd.update_callback = update;
-    cd.render_callback = render;
-    cd.flip_callback   = render_flip;
-    cd.input_handler   = input;
-    cd.exit_handler    = quit;
-    cd.frame_skip      = 0;
     
     srand(time(NULL));
     for(i = 0; i < 256; ++i) {
@@ -69,6 +62,8 @@ void simpletest_start(void)
     while(input()) {
         update();
         render();
+        render_flip();
     }
-    //engine_start(cd);
+    
+    quit();
 }
