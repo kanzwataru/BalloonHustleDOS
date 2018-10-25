@@ -2,7 +2,6 @@
 #define KB_DOS_H
 
 #include "common/platform.h"
-typedef byte Key;
 
 #define KEYCODES_MAX     255
 
