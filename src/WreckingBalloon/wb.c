@@ -24,44 +24,30 @@ static byte dir_input = 0;
 static bool input(void)
 {
     keyboard_per_frame_update();
-    if(keyboard_os_quit_event())
+    if(keyboard_os_quit_event() || keyboard_keys[KEY_ESC])
         return false;
     
-    return true;
-    /*
-    byte key = keyboard_read();
-
-    switch(key) {
-    case KEY_W:
+    if(keyboard_keys[KEY_W])
         dir_input |= WB_UP;
-        break;
-    case KEY_S:
-        dir_input |= WB_DOWN;
-        break;
-    case KEY_A:
-        dir_input |= WB_LEFT;
-        break;
-    case KEY_D:
-        dir_input |= WB_RIGHT;
-        break;
-    case RELEASED(KEY_W):
+    else
         dir_input &= ~WB_UP;
-        break;
-    case RELEASED(KEY_S):
+        
+    if(keyboard_keys[KEY_S])
+        dir_input |= WB_DOWN;
+    else
         dir_input &= ~WB_DOWN;
-        break;
-    case RELEASED(KEY_A):
+    
+    if(keyboard_keys[KEY_A])
+        dir_input |= WB_LEFT;
+    else
         dir_input &= ~WB_LEFT;
-        break;
-    case RELEASED(KEY_D):
+        
+    if(keyboard_keys[KEY_D])
+        dir_input |= WB_RIGHT;
+    else
         dir_input &= ~WB_RIGHT;
-        break;
-    case KEY_ESC:
-        return false;
-    }
 
     return true;
-    */
 }
 
 static void update(void)
@@ -110,7 +96,7 @@ static void render(void)
     for(i = 0; i < MAX_CACTOONS; ++i)
         erase_line(rd.screen, cactoon_strings[0]);
 
-    CLOUDS_RENDER
+    //CLOUDS_RENDER
     
     if(!(player.flags & CT_DEAD)) {
         a.x = player.balloon->rect.x + CACTOON_SPRITE_HALF;
@@ -137,6 +123,7 @@ static void quit(void)
 
     free_all_resources();
     quit_renderer(&rd);
+    keyboard_quit();
 }
 
 void wrecking_balloon_start(void) 
@@ -147,6 +134,7 @@ void wrecking_balloon_start(void)
     buffer_t *pal;
 
     init_all_resources();
+    keyboard_init();
 
     cd.update_callback = &update;
     cd.render_callback = &render;

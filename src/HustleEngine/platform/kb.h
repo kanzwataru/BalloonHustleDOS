@@ -10,10 +10,22 @@
 	#include "platform/sdl/kb_sdl.h"
 #endif
 
-typedef struct {
-	Key  key; /* Key type is defined per platform */
-	bool released;
-} Keypress;
+/*
+ * Array of keys currently held down
+ *
+ * Can index into this with keycodes, true if key down
+*/
+extern bool *keyboard_keys;
+
+/*
+ * Must call this to initialize the keyboard system
+*/
+void keyboard_init(void);
+
+/*
+ * Must call this on shutdown, otherwise certain platforms (DOS) may be unresponsive
+*/
+void keyboard_quit(void);
 
 /*
  * Call before checking keys
@@ -26,12 +38,5 @@ void keyboard_per_frame_update(void);
  * (Not used in DOS, mostly for SDL)
 */
 bool keyboard_os_quit_event(void);
-
-/*
- * Get a keyboard press event, poll until there is no more
- *
- * Returns false when there are no more keys to get
-*/
-bool keyboard_poll_keypress(Keypress *kp);
 
 #endif /* KB_H */

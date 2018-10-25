@@ -172,19 +172,21 @@ static void render_flip(void)
 }
 
 void test_keyboard(void)
-{/*
-    byte key;
-    while(1) {
-        key = keyboard_read();
-        printf("%d", key);
-        if(RELEASED(key))
-            printf(" (released)\n");
-        else
-            printf("\n"); */
-/*
-        if(key == 0x01)
-            exit(1);*/
-    //}
+{
+    int i;
+    
+    keyboard_init();
+    
+    while(!(keyboard_os_quit_event() || keyboard_keys[KEY_ESC])) {
+    for(i = 0; i < KEYCODES_MAX; ++i) {
+            if(keyboard_keys[i])
+                printf("Key down: %d\n", i);
+        }
+        
+        printf("\n");
+    }
+    
+    keyboard_quit();
 }
 
 void unpause_callback(void *self)
