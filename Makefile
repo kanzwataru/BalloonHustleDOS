@@ -10,12 +10,17 @@ ifeq ($(TARGET_PLATFORM), unix)
 include unix-makefile
 else ifeq ($(TARGET_PLATFORM), dos)
 include dos-makefile
+else ifeq ($(TARGET_PLATFORM), doswcc)
+include wcc-makefile
 else
 $(error Unsupported platform or TARGET_PLATFORM not specified)
 endif
 
 clean:
 	rm -f $(COMMON_OBJS)
+	rm -f *.o
+	rm -f *.obj
+	rm -f *.err
 	rm -f *.EXE
 	rm -f *.OBJ
 	rm -f *.DSK

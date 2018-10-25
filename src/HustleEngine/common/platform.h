@@ -19,6 +19,9 @@
     #define inportb(a)        inp(a)
     #define outport(a, b)     outpw(a, b)
     #define outportb(a, b)    outp(a, b)
+    #define getvect(a)        _dos_getvect(a)
+    #define setvect(a, b)     _dos_setvect(a, b)
+    //#define interrupt         __interrupt
 #endif /* compiler */
 /******************************************************/
 

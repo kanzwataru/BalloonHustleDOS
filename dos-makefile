@@ -1,3 +1,5 @@
+.PHONY: buildnrun run
+
 ifeq ($(DOSCC), doswatcom)
 all:
 	dosbox -c "cd C:\DEV\BALLOON" -c "wmake -f MKDOSWC"
