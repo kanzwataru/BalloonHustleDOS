@@ -87,9 +87,10 @@ $ make buildnrun
 ```
 ###### (currently the dosbox environment has a hardcoded path! and it assumes certain autoexec settings!)
 
-### I also want to develop MS-DOS games
-Well check out these tutorials then, they're what I used to get started. And of course, 
-you can take a look at the code in the HustleEngine directory and see how stuff works.
+### How do I get started creating DOS games?
+Check out these tutorials, they're what I used to get started. It wouldn't hurt to also
+learn about the IBM PC hardware architecture and the role of MS-DOS (it doesn't actually do all that much!)
+Also feel free to take a look at the code in the HustleEngine directory and see how stuff works.
 
 [256-Color VGA Programming in C](http://www.brackeen.com/vga/)
 
