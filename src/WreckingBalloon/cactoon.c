@@ -5,10 +5,10 @@
 #include <stdio.h>
 
 #define TRAILING_SIDE_OFFSET_X      800
-#define TRAILING_SIDE_OFFSET_Y      300
+#define TRAILING_SIDE_OFFSET_Y      450
 #define TRAILING_VERTICAL_OFFSET    1000 //850
 #define TRAILING_DECAY              15
-#define TRAILING_ACCEL              45
+#define TRAILING_ACCEL              35
 
 #define TOWARDS_ZERO(a, amnt)  (a) = ((a) > (amnt)) ? ((a) - (amnt)) : ((a) < -(amnt)) ? ((a) + (amnt)) : 0
 #define INCREASE(a, max, amnt) (a) = ((a) >= (max)) ? (max) : ((a) + (amnt))
