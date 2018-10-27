@@ -28,6 +28,7 @@ Animation bomb_balloon_idle;
 Animation bomb_balloon_pop;
 
 buffer_t *cloud_image;
+buffer_t *title_image;
 
 void init_all_resources(void)
 {

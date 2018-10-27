@@ -5,6 +5,7 @@
 #include "platform/filesys.h"
 #include "common/platform.h"
 
+#include "title.h"
 #include "consts.h"
 #include "cactoon.h"
 #include "balloon.h"
@@ -137,6 +138,8 @@ void wrecking_balloon_start(void)
 
     init_all_resources();
     keyboard_init();
+    
+    title_start();
 
     cd.update_callback = &update;
     cd.render_callback = &render;
@@ -170,7 +173,7 @@ void wrecking_balloon_start(void)
     /* ****************************************************************** */
 
     FILL_BUFFER(rd.screen, SKY_COL);
-    FILL_BUFFER(rd.bg_layer, SKY_COL);
+    //FILL_BUFFER(rd.bg_layer, SKY_COL);
     refresh_sprites(&rd);
     engine_start(cd);
 }
