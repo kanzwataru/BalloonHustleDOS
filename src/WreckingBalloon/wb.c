@@ -98,7 +98,7 @@ static void render(void)
     for(i = 0; i < MAX_CACTOONS; ++i)
         erase_line(rd.screen, cactoon_strings[0]);
 
-    //CLOUDS_RENDER
+    CLOUDS_RENDER
     
     if(!(player.flags & CT_DEAD)) {
         a.x = player.balloon->rect.x + CACTOON_SPRITE_HALF;
