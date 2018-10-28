@@ -7,10 +7,14 @@
 
 static void reset_pos(void *self)
 {
-    (*(PointBalloon *)self).sprite->rect.x = rand() % 300;
-    (*(PointBalloon *)self).sprite->rect.y = 300 + (rand() % 700);
-    (*(PointBalloon *)self).sprite->anim.animation = &point_balloon_idle;
-    (*(PointBalloon *)self).popped = false;
+    PointBalloon *pb = (PointBalloon *)self;
+    
+    pb->sprite->rect.x = rand() % 300;
+    pb->sprite->rect.y = 300 + (rand() % 700);
+    pb->sprite->anim.animation = &point_balloon_idle;
+    pb->sprite->anim.frame = 0;
+    pb->sprite->anim.frame_skip_counter = 0;    
+    pb->popped = false;
 }
 
 void balloon_init(PointBalloon *pb, Sprite *sprite, uint16 points) 
@@ -36,6 +40,7 @@ void balloon_pop(PointBalloon *pb)
     pb->popped = true;
     pb->sprite->anim.animation = &point_balloon_pop;
     pb->sprite->anim.frame = 0;
+    pb->sprite->anim.frame_skip_counter = 0;
     event_add(&reset_pos, pb, point_balloon_pop.count * point_balloon_pop.skip);
 }
 
