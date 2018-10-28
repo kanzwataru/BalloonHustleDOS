@@ -12,7 +12,6 @@
 
 static RenderData rd;
 static buffer_t  *title_palette;
-static buffer_t  *black_palette;
 static buffer_t  *title_image;
 static float      fade = 0.0;
 
@@ -30,10 +29,11 @@ static bool input(void)
 
 static void update(void)
 {
+    Color black = {0, 0, 0};
     if(fade < 1.0f)
         fade += 0.01f;
     
-    palette_fade(black_palette, title_palette, fade);
+    palette_fade_from_color(black, title_palette, fade);
 }
 
 static void render(void)
@@ -62,9 +62,6 @@ void title_start(void)
     cd.exit_handler = &quit;
     cd.frame_skip = 0;
 
-    black_palette = create_palette();
-    _fmemset(black_palette, 0, PALETTE_SIZE);
-
     title_palette = load_bmp_palette(TITLE_SCREEN);
     init_renderer(&rd, 1, title_palette);
     
@@ -77,6 +74,5 @@ void title_start(void)
     
     destroy_image(&title_palette);
     destroy_image(&title_image);
-    destroy_image(&black_palette);
     destroy_renderdata(&rd);
 }
