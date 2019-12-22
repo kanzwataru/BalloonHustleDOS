@@ -1,13 +1,31 @@
 #include "hustle.h"
 #include "platform/bootstrap.h"
+#include "components.h"
 #include "assets_main.gen.h"
 
 struct GameData {
     struct Game *game;
-    byte pak[52000];
+    byte pak[640000];
+
+    struct Sprite           sprites[2];
+    struct RopeComp         ropes[2];
+    struct TransformComp    transforms[2];
+    struct BalloonComp      balloons[2];
 };
 
 static struct GameData *g;
+
+static void create_player_balloon(entity_id id)
+{
+    g->sprites[id].spritesheet = asset_handle_to(BALLOON_IDLE, Spritesheet, g->pak);
+    g->sprites[id].rect.w = asset_from_handle_of(g->sprites[id].spritesheet, Spritesheet)->width;
+    g->sprites[id].rect.h = asset_from_handle_of(g->sprites[id].spritesheet, Spritesheet)->height;
+    g->sprites[id].rect.x = 320 / 2 - g->sprites[id].rect.w;
+    g->sprites[id].rect.y = 64;
+
+    g->transforms[id].enabled = true;
+    g->transforms[id].pos = *(Point *)(&g->sprites[id].rect);
+}
 
 void init(void)
 {
@@ -15,12 +33,22 @@ void init(void)
 
     pal = asset_get(GAMEPAL, Palette, g->pak);
     renderer_set_palette(pal->data, 0, pal->col_count);
+
+    create_player_balloon(0);
 }
 void input(void) {}
-void update(void) {}
+void update(void)
+{
+    transform_update(g->transforms, 1);
+    balloon_update(g->balloons, 1);
+    rope_update(g->ropes, 1);
+    sprite_update(g->sprites, 1);
+}
+
 void render(void)
 {
     renderer_clear(2);
+    sprite_draw(g->sprites, 1);
     renderer_flip();
 }
 void quit(void) {}
