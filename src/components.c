@@ -30,18 +30,32 @@ void balloon_update(entity_id start, entity_id count)
         if(!c->enabled) continue;
         assert(g->transforms[id].enabled);
 
-        c->vel.x *= BALLOON_DECEL;
-        c->vel.y *= BALLOON_DECEL;
+        switch(c->state) {
+        case BALLOON_STATE_IDLE:
+            c->vel.x *= BALLOON_DECEL;
+            c->vel.y *= BALLOON_DECEL;
 
-        c->vel.x += c->dir.x * BALLOON_ACCEL;
-        c->vel.y += c->dir.y * BALLOON_ACCEL;
+            c->vel.x += c->dir.x * BALLOON_ACCEL;
+            c->vel.y += c->dir.y * BALLOON_ACCEL;
 
-        g->transforms[id].pos.x += c->vel.x;
-        g->transforms[id].pos.y += c->vel.y;
+            g->transforms[id].pos.x += c->vel.x;
+            g->transforms[id].pos.y += c->vel.y;
 
-        if(c->constrain_to_screen) {
-            g->transforms[id].pos.x = CLAMP(g->transforms[id].pos.x, 0, 280);
-            g->transforms[id].pos.y = CLAMP(g->transforms[id].pos.y, 0, 120);
+            if(c->constrain_to_screen) {
+                g->transforms[id].pos.x = CLAMP(g->transforms[id].pos.x, 0, 280);
+                g->transforms[id].pos.y = CLAMP(g->transforms[id].pos.y, 0, 120);
+            }
+            break;
+        case BALLOON_STATE_POP:
+            c->vel.x *= BALLOON_DECEL;
+            c->vel.y *= BALLOON_DECEL;
+            c->vel.y += BALLOON_ACCEL;
+
+            g->transforms[id].pos.x += c->vel.x;
+            g->transforms[id].pos.y += c->vel.y;
+            break; 
+        default:
+            assert(0);
         }
     }
 }

@@ -1,4 +1,3 @@
-#include "assets_main.gen.h"
 #include "hustle.h"
 #include "platform/bootstrap.h"
 #include "components.h"
@@ -21,6 +20,7 @@ static void create_player_balloon(entity_id id, entity_id cactus_id)
 
     g->balloons[id].enabled = true;
     g->balloons[id].constrain_to_screen = true;
+    g->balloons[id].state = BALLOON_STATE_IDLE;
 
     g->ropes[id].enabled = true;
     g->ropes[id].color = 8;
@@ -93,10 +93,10 @@ void update(void)
 void render(void)
 {
     renderer_clear(2);
-    sprite_draw(g->sprites, 2);
     rope_draw(0, 2);
+    sprite_draw(g->sprites, 2);
 
-#define DEBUG_DRAW
+//#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
     for(int i = 0; i < ENTITY_MAX; ++i) {
         if(g->colliders[i].enabled && g->transforms[i].enabled) {

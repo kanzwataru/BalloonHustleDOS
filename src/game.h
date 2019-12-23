@@ -1,6 +1,9 @@
 #ifndef BH_GAME_H
 #define BH_GAME_H
 
+#include "assets_main.gen.h"
+#include "components.h"
+
 #define ENTITY_MAX 2
 
 struct GameData {

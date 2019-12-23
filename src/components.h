@@ -16,6 +16,11 @@ enum EColliderType {
     COLL_CACTUS     = 2
 };
 
+enum EBalloonState {
+    BALLOON_STATE_IDLE = 0,
+    BALLOON_STATE_POP  = 1
+};
+
 struct TransformComp {
     bool      enabled;
     FLPoint   pos;
@@ -27,6 +32,7 @@ struct BalloonComp {
     bool    constrain_to_screen;
     Point   dir;
     FLPoint vel;
+    byte    state;
 };
 
 struct ColliderComp {

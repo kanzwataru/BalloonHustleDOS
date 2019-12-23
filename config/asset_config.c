@@ -13,7 +13,8 @@ begin(Spritesheet)
     .width      = 48,
     .height     = 48,
     .count      = 8,
-    .frameskip  = 3 
+    .frameskip  = 3, 
+    .play_once  = true
 },
 {
     .name       = "enemybl_idle",
