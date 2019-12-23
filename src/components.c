@@ -82,8 +82,6 @@ void collider_update(entity_id start, entity_id count)
         a.y += g->transforms[a_id].pos.y;
 
         for(entity_id b_id = 0; b_id < count; ++b_id) {
-            struct ColliderComp *bc = &g->colliders[b_id];    
-            
             Rect b = g->colliders[b_id].rect;
             b.x += g->transforms[b_id].pos.x;
             b.y += g->transforms[b_id].pos.y;       
