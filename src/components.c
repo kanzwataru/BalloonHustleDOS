@@ -21,6 +21,15 @@ void transform_update(entity_id start, entity_id count)
 
 void balloon_update(entity_id start, entity_id count)
 {
+    entity_id id;
+    for(id = start; id < count; ++id) {
+        struct BalloonComp *c = &g->balloons[id];
+        if(!c->enabled) continue;
+        assert(g->transforms[id].enabled);
+
+        g->transforms[id].pos.x += c->dir.x * BALLOON_SPEED;
+        g->transforms[id].pos.y += c->dir.y * BALLOON_SPEED;
+    }
 }
 
 void rope_init(entity_id start, entity_id count)

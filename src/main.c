@@ -17,6 +17,8 @@ static void create_player_balloon(entity_id id)
     g->transforms[id].enabled = true;
     g->transforms[id].pos = *(Point *)(&g->sprites[id].rect);
 
+    g->balloons[id].enabled = true;
+
     g->ropes[id].enabled = true;
     g->ropes[id].color = 8;
     g->ropes[id].start_transform = id;
@@ -34,11 +36,30 @@ void init(void)
     create_player_balloon(0);
     rope_init(0, 2);
 }
-void input(void) {}
+
+void input(void)
+{
+    struct BalloonComp *balloon = &g->balloons[0];
+    balloon->dir.x = 0;
+    balloon->dir.y = 0;
+    if(keyboard_keys[KEY_RIGHT]) {
+        balloon->dir.x = 1;
+    }
+    else if(keyboard_keys[KEY_LEFT]) {
+        balloon->dir.x = -1;
+    }
+    if(keyboard_keys[KEY_UP]) {
+        balloon->dir.y = -1;
+    }
+    else if(keyboard_keys[KEY_DOWN]) {
+        balloon->dir.y = 1;
+    }
+}
+
 void update(void)
 {
-    transform_update(0, 2);
     balloon_update(0, 2);
+    transform_update(0, 2);
     rope_update(0, 2);
     sprite_update(g->sprites, 1);
 }

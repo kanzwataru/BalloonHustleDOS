@@ -6,6 +6,10 @@
 #define NULL_ENTITY 65535
 typedef uint16_t entity_id;
 
+typedef struct {
+    float x, y;
+} FLPoint;
+
 struct TransformComp {
     bool      enabled;
     Point     pos;
@@ -13,7 +17,8 @@ struct TransformComp {
 };
 
 struct BalloonComp {
-    int _;    
+    bool    enabled;
+    Point   dir;
 };
 
 struct RopePoint {

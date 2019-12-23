@@ -5,5 +5,7 @@
 #define ROPE_LENGTH   48
 #define ROPE_GRAVITY  0.5
 
+#define BALLOON_SPEED 2
+
 #endif
 
