@@ -8,9 +8,7 @@ struct GameData *g;
 static void create_player_balloon(entity_id id, entity_id cactus_id)
 {
     /* balloon */
-    g->sprites[id].spritesheet = asset_handle_to(BALLOON_IDLE, Spritesheet, g->pak);
-    g->sprites[id].rect.w = asset_from_handle_of(g->sprites[id].spritesheet, Spritesheet)->width;
-    g->sprites[id].rect.h = asset_from_handle_of(g->sprites[id].spritesheet, Spritesheet)->height;
+    sprite_set_to(&g->sprites[id], asset_handle_to(BALLOON_IDLE, Spritesheet, g->pak));
     g->sprites[id].rect.x = 320 / 2 - (g->sprites[id].rect.w / 2);
     g->sprites[id].rect.y = 36;
 
