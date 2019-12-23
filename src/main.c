@@ -76,7 +76,9 @@ void init(void)
     struct PaletteAsset *pal;
 
     pal = asset_get(GAMEPAL, Palette, g->pak);
-    renderer_set_palette(pal->data, 0, pal->col_count);
+    assert(pal->col_count <= sizeof(g->palette));
+    memcpy(g->palette, pal, pal->col_count);
+    renderer_set_palette(g->palette, 0, sizeof(g->palette));
 
     create_player_balloon(0, 1);
     rope_init(0, 2);
@@ -106,6 +108,20 @@ void input(void)
 
 void update(void)
 {
+	if(g->game_state == GAME_STATE_BEGIN) {
+		struct PaletteAsset *pal = asset_get(GAMEPAL, Palette, g->pak);
+		g->fade_percent += 0.02f;
+		if(g->fade_percent >= 1.0f) {
+			g->fade_percent = 1.0f;
+			g->game_state = GAME_STATE_PLAYING;
+		}
+
+		for(int i = 0; i < sizeof(g->palette); ++i) {
+			g->palette[i] = LERP(0, pal->data[i], g->fade_percent);
+			renderer_set_palette(g->palette, 0, sizeof(g->palette));
+		}
+	}
+
     balloon_update(0, 2);
     transform_update(0, 2);
     rope_update(0, 2);
