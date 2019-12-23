@@ -113,8 +113,8 @@ void rope_update(entity_id start, entity_id count)
             /* verlet integration */
             float posx = c->points[i].pos[0];
             float posy = c->points[i].pos[1];
-            c->points[i].pos[0] += c->points[i].pos[0] - c->points[i].prev_pos[0];
-            c->points[i].pos[1] += c->points[i].pos[1] - c->points[i].prev_pos[1];
+            c->points[i].pos[0] += 0.95f * (c->points[i].pos[0] - c->points[i].prev_pos[0]);
+            c->points[i].pos[1] += 0.95f * (c->points[i].pos[1] - c->points[i].prev_pos[1]);
             c->points[i].prev_pos[0] = posx;
             c->points[i].prev_pos[1] = posy;
 
@@ -136,7 +136,7 @@ void rope_draw(entity_id start, entity_id count)
         c = &g->ropes[id];
         if(!c->enabled) continue;
 
-        renderer_draw_line(c->color, c->segments, ROPE_SEGMENTS * 2);
+        renderer_draw_line(c->color, c->segments, (ROPE_SEGMENTS * 2) - 1);
     }
 }
 
