@@ -31,9 +31,10 @@ static void create_player_balloon(entity_id id, entity_id cactus_id)
 
     g->colliders[id].enabled = true;
     g->colliders[id].type = COLL_BALLOON;
-    g->colliders[id].rect = (Rect) {
-        16, 8, 16, 22
+    const Rect br = { 
+        16, 8, 16, 22 
     };
+    g->colliders[id].rect = br;
 
     /* cactus */
     g->sprites[cactus_id].spritesheet = asset_handle_to(CAC_IDLE, Spritesheet, g->pak);
@@ -44,10 +45,11 @@ static void create_player_balloon(entity_id id, entity_id cactus_id)
 
     g->colliders[cactus_id].enabled = true;
     g->colliders[cactus_id].type = COLL_CACTUS;    
-    g->colliders[cactus_id].rect = (Rect) {
+    const Rect cr = {
         12, 10, 24, 20
     };
-
+    g->colliders[cactus_id].rect = cr;
+    
     g->cactuses[cactus_id].enabled = true;
 }
 

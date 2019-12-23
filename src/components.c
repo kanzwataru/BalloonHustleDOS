@@ -90,8 +90,14 @@ void collider_update(entity_id start, entity_id count)
                a.x < b.x + b.w && a.x + a.w > b.x &&
                a.y < b.y && a.y + a.h > b.y)
             {
-                struct Collision self = {a_id, g->colliders[a_id].type};
-                struct Collision other = {b_id, g->colliders[b_id].type};
+                struct Collision self;
+                self.id = a_id;
+                self.collision_type = g->colliders[a_id].type;
+
+                struct Collision other;
+                other.id = b_id;
+                other.collision_type = g->colliders[b_id].type;
+                
                 event_collide(self, other);
             }
         }
