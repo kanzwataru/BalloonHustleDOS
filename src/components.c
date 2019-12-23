@@ -96,9 +96,11 @@ void rope_update(entity_id start, entity_id count)
         for(i = 1; i < ROPE_SEGMENTS; ++i) {
             /* gravity */
             c->points[i].pos[1] += ROPE_GRAVITY;
-
+        }
+        
+        for(int j = 0; j < ROPE_ITERATIONS; ++j) {
             /* constraints */
-            for(int j = 0; j < 16; ++j) {
+            for(i = 1; i < ROPE_SEGMENTS; ++i) {
                 float dx = c->points[i].pos[0] - c->points[i - 1].pos[0];
                 float dy = c->points[i].pos[1] - c->points[i - 1].pos[1];
                 float dist = sqrt(dx * dx + dy * dy);
@@ -115,12 +117,14 @@ void rope_update(entity_id start, entity_id count)
                     c->points[i].pos[1] += dy * 0.5f * offset;
                 }
             }
+        }
 
+        for(i = 1; i < ROPE_SEGMENTS; ++i) {
             /* verlet integration */
             float posx = c->points[i].pos[0];
             float posy = c->points[i].pos[1];
-            c->points[i].pos[0] += 0.95f * (c->points[i].pos[0] - c->points[i].prev_pos[0]);
-            c->points[i].pos[1] += 0.95f * (c->points[i].pos[1] - c->points[i].prev_pos[1]);
+            c->points[i].pos[0] += ROPE_FRICTION * (c->points[i].pos[0] - c->points[i].prev_pos[0]);
+            c->points[i].pos[1] += ROPE_FRICTION * (c->points[i].pos[1] - c->points[i].prev_pos[1]);
             c->points[i].prev_pos[0] = posx;
             c->points[i].prev_pos[1] = posy;
 
@@ -130,7 +134,13 @@ void rope_update(entity_id start, entity_id count)
 
             c->segments[(i * 2)].x = c->points[i].pos[0];
             c->segments[(i * 2)].y = c->points[i].pos[1];
-        } 
+        }
+
+        if(c->end_transform) {
+            assert(g->transforms[c->end_transform].enabled);
+            g->transforms[c->end_transform].pos.x = c->points[ROPE_SEGMENTS - 1].pos[0] + c->end_offset.x;
+            g->transforms[c->end_transform].pos.y = c->points[ROPE_SEGMENTS - 1].pos[1] + c->end_offset.y;
+        }
     }
 }
 

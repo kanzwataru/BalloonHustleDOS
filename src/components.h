@@ -30,9 +30,12 @@ struct RopePoint {
 struct RopeComp {
     bool enabled;
     byte color;
+    
     struct RopePoint points[ROPE_SEGMENTS];
     Point segments[ROPE_SEGMENTS * 2];    
+    
     Point offset;
+    Point end_offset;
     entity_id start_transform;
     entity_id end_transform;
 };
