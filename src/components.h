@@ -21,6 +21,11 @@ enum EBalloonState {
     BALLOON_STATE_POP  = 1
 };
 
+enum ECactusState {
+    CACTUS_STATE_IDLE = 0,
+    CACTUS_STATE_FALL = 1
+};
+
 struct TransformComp {
     bool      enabled;
     FLPoint   pos;
@@ -32,6 +37,12 @@ struct BalloonComp {
     bool    constrain_to_screen;
     Point   dir;
     FLPoint vel;
+    byte    state;
+};
+
+struct CactusComp {
+    bool    enabled;
+    bool    constrain_to_screen;
     byte    state;
 };
 
@@ -59,14 +70,15 @@ struct RopeComp {
     entity_id end_transform;
 };
 
-void rope_init(entity_id start, entity_id count);
+void rope_init          (entity_id start, entity_id count);
 
-void transform_update(entity_id start, entity_id count);
-void balloon_update(entity_id start, entity_id count);
-void collider_update(entity_id start, entity_id count);
-void rope_update(entity_id start, entity_id count);
+void transform_update   (entity_id start, entity_id count);
+void balloon_update     (entity_id start, entity_id count);
+void cactus_update      (entity_id start, entity_id count);
+void collider_update    (entity_id start, entity_id count);
+void rope_update        (entity_id start, entity_id count);
 
-void rope_draw(entity_id start, entity_id count);
+void rope_draw          (entity_id start, entity_id count);
 
 #endif
 

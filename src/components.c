@@ -60,6 +60,18 @@ void balloon_update(entity_id start, entity_id count)
     }
 }
 
+void cactus_update(entity_id start, entity_id count)
+{
+   /*
+   for(entity_id id = 0; id < count; ++id)
+   {
+        struct CactusComp *c = &g->cactuses[id];
+        if(!c->enabled) continue;
+
+   } 
+   */
+}
+
 void collider_update(entity_id start, entity_id count)
 {
     for(entity_id a_id = 0; a_id < count; ++a_id) {

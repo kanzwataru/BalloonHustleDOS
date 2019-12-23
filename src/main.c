@@ -47,6 +47,8 @@ static void create_player_balloon(entity_id id, entity_id cactus_id)
     g->colliders[cactus_id].rect = (Rect) {
         12, 10, 24, 20
     };
+
+    g->cactuses[cactus_id].enabled = true;
 }
 
 void init(void)
