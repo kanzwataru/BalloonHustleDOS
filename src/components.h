@@ -3,12 +3,12 @@
 #include "hustle.h"
 #include "consts.h"
 
+#define NULL_ENTITY 65535
 typedef uint16_t entity_id;
 
 struct TransformComp {
     bool      enabled;
     Point     pos;
-    Point     dir;
     entity_id parent;
 };
 
@@ -17,20 +17,27 @@ struct BalloonComp {
 };
 
 struct RopePoint {
-    Point pos;
-    Point prev_pos;
+    float pos[2];
+    float prev_pos[2];
 };
 
 struct RopeComp {
     bool enabled;
+    byte color;
     struct RopePoint points[ROPE_SEGMENTS];
     Point segments[ROPE_SEGMENTS * 2];    
-    entity_id end_tranform;
+    Point offset;
+    entity_id start_transform;
+    entity_id end_transform;
 };
 
-void transform_update(struct TransformComp *c, size_t count);
-void balloon_update(struct BalloonComp *c, size_t count);
-void rope_update(struct RopeComp *c, size_t count);
+void rope_init(entity_id start, entity_id count);
+
+void transform_update(entity_id start, entity_id count);
+void balloon_update(entity_id start, entity_id count);
+void rope_update(entity_id start, entity_id count);
+
+void rope_draw(entity_id start, entity_id count);
 
 #endif
 
