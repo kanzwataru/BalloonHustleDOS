@@ -15,7 +15,8 @@ static void create_player_balloon(entity_id id)
     g->sprites[id].rect.y = 64;
 
     g->transforms[id].enabled = true;
-    g->transforms[id].pos = *(Point *)(&g->sprites[id].rect);
+    g->transforms[id].pos.x = g->sprites[id].rect.x;
+    g->transforms[id].pos.y = g->sprites[id].rect.y;
 
     g->balloons[id].enabled = true;
 

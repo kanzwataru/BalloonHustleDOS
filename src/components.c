@@ -29,8 +29,14 @@ void balloon_update(entity_id start, entity_id count)
         if(!c->enabled) continue;
         assert(g->transforms[id].enabled);
 
-        g->transforms[id].pos.x += c->dir.x * BALLOON_SPEED;
-        g->transforms[id].pos.y += c->dir.y * BALLOON_SPEED;
+        c->vel.x *= BALLOON_DECEL;
+        c->vel.y *= BALLOON_DECEL;
+
+        c->vel.x += c->dir.x * BALLOON_ACCEL;
+        c->vel.y += c->dir.y * BALLOON_ACCEL;
+
+        g->transforms[id].pos.x += c->vel.x;
+        g->transforms[id].pos.y += c->vel.y;
     }
 }
 
@@ -43,9 +49,8 @@ void rope_init(entity_id start, entity_id count)
         struct RopeComp *c = &g->ropes[id];
         if(!c->enabled) continue;
         assert(g->transforms[c->start_transform].enabled);
-        pos = g->transforms[c->start_transform].pos;
-        pos.x += c->offset.x;
-        pos.y += c->offset.y;
+        pos.x = g->transforms[c->start_transform].pos.x + c->offset.x;
+        pos.y = g->transforms[c->start_transform].pos.y + c->offset.y;
 
         for(i = 0; i < ROPE_SEGMENTS; ++i) {
             c->points[i].pos[0] = pos.x;
@@ -76,9 +81,8 @@ void rope_update(entity_id start, entity_id count)
         struct RopeComp *c = &g->ropes[id];
         if(!c->enabled) continue;
         assert(g->transforms[c->start_transform].enabled);
-        pos = g->transforms[c->start_transform].pos;
-        pos.x += c->offset.x;
-        pos.y += c->offset.y;
+        pos.x = g->transforms[c->start_transform].pos.x + c->offset.x;
+        pos.y = g->transforms[c->start_transform].pos.y + c->offset.y;
 
         c->points[0].pos[0] = pos.x;
         c->points[0].pos[1] = pos.y;

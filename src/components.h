@@ -12,13 +12,14 @@ typedef struct {
 
 struct TransformComp {
     bool      enabled;
-    Point     pos;
+    FLPoint   pos;
     entity_id parent;
 };
 
 struct BalloonComp {
     bool    enabled;
     Point   dir;
+    FLPoint vel;
 };
 
 struct RopePoint {
