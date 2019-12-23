@@ -2,9 +2,8 @@
 #define BH_GAME_H
 
 #include "assets_main.gen.h"
+#include "consts.h"
 #include "components.h"
-
-#define ENTITY_MAX 2
 
 struct GameData {
     struct Game *game;
@@ -16,6 +15,8 @@ struct GameData {
     struct BalloonComp      balloons[ENTITY_MAX];
     struct CactusComp       cactuses[ENTITY_MAX];
     struct ColliderComp     colliders[ENTITY_MAX];
+    
+    Rect clouds[CLOUD_MAX];
 };
 
 extern struct GameData *g;

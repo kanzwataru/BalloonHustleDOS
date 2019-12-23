@@ -5,6 +5,24 @@
 
 struct GameData *g;
 
+static void place_cloud(Rect *cloud)
+{
+	cloud->x = RANDRANGE(CLOUD_SIDE_MIN, CLOUD_SIDE_MAX);
+	cloud->y = RANDRANGE(CLOUD_HEIGHT_MIN, CLOUD_HEIGHT_MAX);
+	cloud->w = asset_get(CLOUD, Texture, g->pak)->width;
+	cloud->h = asset_get(CLOUD, Texture, g->pak)->height;
+}
+
+static void scroll_clouds(void)
+{
+	for(int i = 0; i < CLOUD_MAX; ++i) {
+		g->clouds[i].y -= CLOUD_SPEED;
+		if(g->clouds[i].y < -100) {
+			place_cloud(&g->clouds[i]);
+		}
+	}
+}
+
 static void create_player_balloon(entity_id id, entity_id cactus_id)
 {
     /* balloon */
@@ -62,6 +80,9 @@ void init(void)
 
     create_player_balloon(0, 1);
     rope_init(0, 2);
+    for(int i = 0; i < CLOUD_MAX; ++i) {
+		 place_cloud(&g->clouds[i]);   	
+     }
 }
 
 void input(void)
@@ -90,11 +111,18 @@ void update(void)
     rope_update(0, 2);
     collider_update(0, 2);
     sprite_update(g->sprites, 2);
+	
+	 scroll_clouds();
 }
 
 void render(void)
 {
-    renderer_clear(2);
+    renderer_clear(1);
+    
+    for(int i = 0; i < CLOUD_MAX; ++i) {
+     	renderer_draw_texture(asset_get(CLOUD, Texture, g->pak), g->clouds[i]);
+     }
+    
     rope_draw(0, 2);
     sprite_draw(g->sprites, 2);
 
@@ -113,6 +141,7 @@ void render(void)
 
     renderer_flip();
 }
+
 void quit(void) {}
 
 void HANDSHAKE_FUNCTION_NAME(struct Game *game, void *memory_chunk) 
