@@ -37,6 +37,11 @@ void balloon_update(entity_id start, entity_id count)
 
         g->transforms[id].pos.x += c->vel.x;
         g->transforms[id].pos.y += c->vel.y;
+
+        if(c->constrain_to_screen) {
+            g->transforms[id].pos.x = CLAMP(g->transforms[id].pos.x, 0, 280);
+            g->transforms[id].pos.y = CLAMP(g->transforms[id].pos.y, 0, 120);
+        }
     }
 }
 

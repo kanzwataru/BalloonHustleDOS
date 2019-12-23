@@ -18,6 +18,7 @@ struct TransformComp {
 
 struct BalloonComp {
     bool    enabled;
+    bool    constrain_to_screen;
     Point   dir;
     FLPoint vel;
 };

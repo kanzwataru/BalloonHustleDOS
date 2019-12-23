@@ -20,6 +20,7 @@ static void create_player_balloon(entity_id id, entity_id cactus_id)
     g->transforms[id].pos.y = g->sprites[id].rect.y;
 
     g->balloons[id].enabled = true;
+    g->balloons[id].constrain_to_screen = true;
 
     g->ropes[id].enabled = true;
     g->ropes[id].color = 8;
