@@ -31,12 +31,24 @@ static void create_player_balloon(entity_id id, entity_id cactus_id)
     g->ropes[id].end_offset.x = -24;
     g->ropes[id].end_offset.y = -7;
 
+    g->colliders[id].enabled = true;
+    g->colliders[id].type = COLL_BALLOON;
+    g->colliders[id].rect = (Rect) {
+        16, 8, 16, 22
+    };
+
     /* cactus */
     g->sprites[cactus_id].spritesheet = asset_handle_to(CAC_IDLE, Spritesheet, g->pak);
     g->sprites[cactus_id].rect.w = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->width;
     g->sprites[cactus_id].rect.h = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->height;
 
     g->transforms[cactus_id].enabled = true;
+
+    g->colliders[cactus_id].enabled = true;
+    g->colliders[cactus_id].type = COLL_CACTUS;    
+    g->colliders[cactus_id].rect = (Rect) {
+        12, 10, 24, 20
+    };
 }
 
 void init(void)
@@ -74,6 +86,7 @@ void update(void)
     balloon_update(0, 2);
     transform_update(0, 2);
     rope_update(0, 2);
+    collider_update(0, 2);
     sprite_update(g->sprites, 2);
 }
 
@@ -82,6 +95,20 @@ void render(void)
     renderer_clear(2);
     sprite_draw(g->sprites, 2);
     rope_draw(0, 2);
+
+#define DEBUG_DRAW
+#ifdef DEBUG_DRAW
+    for(int i = 0; i < ENTITY_MAX; ++i) {
+        if(g->colliders[i].enabled && g->transforms[i].enabled) {
+            Rect r = g->colliders[i].rect;
+            r.x += g->transforms[i].pos.x;
+            r.y += g->transforms[i].pos.y;
+
+            renderer_draw_rect(3, r);
+        }
+    }
+#endif
+
     renderer_flip();
 }
 void quit(void) {}

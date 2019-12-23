@@ -1,5 +1,6 @@
 #include "components.h"
 #include "game.h"
+#include "events.h"
 
 #include <math.h>
 
@@ -41,6 +42,34 @@ void balloon_update(entity_id start, entity_id count)
         if(c->constrain_to_screen) {
             g->transforms[id].pos.x = CLAMP(g->transforms[id].pos.x, 0, 280);
             g->transforms[id].pos.y = CLAMP(g->transforms[id].pos.y, 0, 120);
+        }
+    }
+}
+
+void collider_update(entity_id start, entity_id count)
+{
+    for(entity_id a_id = 0; a_id < count; ++a_id) {
+        if(!g->colliders[a_id].enabled) continue;
+ 
+        Rect a = g->colliders[a_id].rect;
+        a.x += g->transforms[a_id].pos.x;
+        a.y += g->transforms[a_id].pos.y;
+
+        for(entity_id b_id = 0; b_id < count; ++b_id) {
+            struct ColliderComp *bc = &g->colliders[b_id];    
+            
+            Rect b = g->colliders[b_id].rect;
+            b.x += g->transforms[b_id].pos.x;
+            b.y += g->transforms[b_id].pos.y;       
+            
+            if(g->colliders[b_id].enabled &&
+               a.x < b.x + b.w && a.x + a.w > b.x &&
+               a.y < b.y && a.y + a.h > b.y)
+            {
+                struct Collision self = {a_id, g->colliders[a_id].type};
+                struct Collision other = {b_id, g->colliders[b_id].type};
+                event_collide(self, other);
+            }
         }
     }
 }

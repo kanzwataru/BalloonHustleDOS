@@ -10,6 +10,12 @@ typedef struct {
     float x, y;
 } FLPoint;
 
+enum EColliderType {
+    COLL_DEFAULT    = 0,
+    COLL_BALLOON    = 1,
+    COLL_CACTUS     = 2
+};
+
 struct TransformComp {
     bool      enabled;
     FLPoint   pos;
@@ -21,6 +27,12 @@ struct BalloonComp {
     bool    constrain_to_screen;
     Point   dir;
     FLPoint vel;
+};
+
+struct ColliderComp {
+    bool    enabled;
+    Rect    rect;
+    byte    type;
 };
 
 struct RopePoint {
@@ -45,6 +57,7 @@ void rope_init(entity_id start, entity_id count);
 
 void transform_update(entity_id start, entity_id count);
 void balloon_update(entity_id start, entity_id count);
+void collider_update(entity_id start, entity_id count);
 void rope_update(entity_id start, entity_id count);
 
 void rope_draw(entity_id start, entity_id count);

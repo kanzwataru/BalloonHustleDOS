@@ -11,6 +11,7 @@ struct GameData {
     struct RopeComp         ropes[ENTITY_MAX];
     struct TransformComp    transforms[ENTITY_MAX];
     struct BalloonComp      balloons[ENTITY_MAX];
+    struct ColliderComp     colliders[ENTITY_MAX];
 };
 
 extern struct GameData *g;
