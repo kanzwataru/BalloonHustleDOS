@@ -1,6 +1,8 @@
 #include "components.h"
 #include "game.h"
 
+#include <math.h>
+
 void transform_update(entity_id start, entity_id count) 
 {
     entity_id id;
