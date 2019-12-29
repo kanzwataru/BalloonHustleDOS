@@ -83,4 +83,5 @@ end(Package)
 
 none(Tilemap)
 none(Tileset)
+none(Font)
 
