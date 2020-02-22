@@ -10,18 +10,18 @@ typedef struct {
     float x, y;
 } FLPoint;
 
-enum EColliderType {
+enum ColliderType {
     COLL_DEFAULT    = 0,
     COLL_BALLOON    = 1,
     COLL_CACTUS     = 2
 };
 
-enum EBalloonState {
+enum BalloonState {
     BALLOON_STATE_IDLE = 0,
     BALLOON_STATE_POP  = 1
 };
 
-enum ECactusState {
+enum CactusState {
     CACTUS_STATE_IDLE = 0,
     CACTUS_STATE_FALL = 1
 };
@@ -60,10 +60,10 @@ struct RopePoint {
 struct RopeComp {
     bool enabled;
     byte color;
-    
+
     struct RopePoint points[ROPE_SEGMENTS];
-    Point segments[ROPE_SEGMENTS * 2];    
-    
+    Point segments[ROPE_SEGMENTS * 2];
+
     Point offset;
     Point end_offset;
     entity_id start_transform;
@@ -81,4 +81,3 @@ void rope_update        (entity_id start, entity_id count);
 void rope_draw          (entity_id start, entity_id count);
 
 #endif
-
