@@ -1,6 +1,5 @@
 #include "hustle.h"
 #include "platform/bootstrap.h"
-#include "components.h"
 #include "game.h"
 
 struct GameData *g;
@@ -25,12 +24,12 @@ static void scroll_clouds(void)
 
 static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
 {
-    /* balloon */
-    if(is_player)
-        sprite_set_to(&g->sprites[id], asset_handle_to(BALLOON_IDLE, Spritesheet, g->pak));
-    else
-        sprite_set_to(&g->sprites[id], asset_handle_to(ENEMYBL_IDLE, Spritesheet, g->pak));
+    /* anim table pointers */
+    const struct BalloonAnimTable *balloon_anim = is_player ? &s_player_balloon_anim : &s_enemy_balloon_anim;
+    const struct CactusAnimTable  *cactus_anim  = is_player ? &s_player_cactus_anim  : &s_enemy_cactus_anim;
 
+    /* balloon */
+    sprite_set_to(&g->sprites[id], asset_make_handle(balloon_anim->idle_anim, g->pak));
     g->sprites[id].rect.x = 320 / 2 - (g->sprites[id].rect.w / 2);
     g->sprites[id].rect.y = 36;
 
@@ -41,6 +40,7 @@ static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_pla
     g->balloons[id].enabled = true;
     g->balloons[id].constrain_to_screen = true;
     g->balloons[id].state = BALLOON_STATE_IDLE;
+    g->balloons[id].anim_table = balloon_anim;
 
     g->ropes[id].enabled = true;
     g->ropes[id].color = 8;
@@ -59,11 +59,7 @@ static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_pla
     g->colliders[id].rect = br;
 
     /* cactus */
-    if(is_player)
-        g->sprites[cactus_id].spritesheet = asset_handle_to(CAC_IDLE, Spritesheet, g->pak);
-    else
-        g->sprites[cactus_id].spritesheet = asset_handle_to(ENEMYCAC_IDLE, Spritesheet, g->pak);
-
+    sprite_set_to(&g->sprites[cactus_id], asset_make_handle(cactus_anim->idle_anim, g->pak));
     g->sprites[cactus_id].rect.w = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->width;
     g->sprites[cactus_id].rect.h = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->height;
 
@@ -77,6 +73,7 @@ static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_pla
     g->colliders[cactus_id].rect = cr;
 
     g->cactuses[cactus_id].enabled = true;
+    g->cactuses[cactus_id].anim_table = cactus_anim;
 }
 
 void init(void)
@@ -89,10 +86,9 @@ void init(void)
     renderer_set_palette(g->palette, 0, sizeof(g->palette));
 
     create_balloon_cactus(0, 1, true);
-    rope_init(0, 2);
-
     create_balloon_cactus(2, 3, false);
-    //rope_init(1, 2);
+
+    rope_init(0, 4);
 
     for(int i = 0; i < CLOUD_MAX; ++i) {
 		 place_cloud(&g->clouds[i]);

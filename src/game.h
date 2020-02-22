@@ -4,6 +4,7 @@
 #include "assets_main.gen.h"
 #include "consts.h"
 #include "components.h"
+#include "statics.h"
 
 enum EGameState {
 	GAME_STATE_BEGIN  	= 0,
@@ -23,7 +24,7 @@ struct GameData {
     struct BalloonComp      balloons[ENTITY_MAX];
     struct CactusComp       cactuses[ENTITY_MAX];
     struct ColliderComp     colliders[ENTITY_MAX];
-    
+
     Rect clouds[CLOUD_MAX];
     float fade_percent;
 };
@@ -31,4 +32,3 @@ struct GameData {
 extern struct GameData *g;
 
 #endif
-

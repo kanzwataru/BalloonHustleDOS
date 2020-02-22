@@ -12,7 +12,8 @@ GAME_NAME		:= balloon
 GAME_INCLUDE	:= src
 GAME_SRC		:= src/main.c\
 				   src/components.c\
-				   src/events.c
+				   src/events.c\
+				   src/statics.c
 ENGINE_DIR		:= engine
 DEFINES			:=
 

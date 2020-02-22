@@ -38,12 +38,16 @@ struct BalloonComp {
     Point   dir;
     FLPoint vel;
     byte    state;
+
+    const struct BalloonAnimTable *anim_table;
 };
 
 struct CactusComp {
     bool    enabled;
     bool    constrain_to_screen;
     byte    state;
+
+    const struct CactusAnimTable *anim_table;
 };
 
 struct ColliderComp {

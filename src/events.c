@@ -12,7 +12,7 @@ static void balloon_collide(struct Collision self, struct Collision other)
     if(self.collision_type == COLL_BALLOON && other.collision_type == COLL_CACTUS && c->enabled) {
         if(c->state == BALLOON_STATE_IDLE) {
             c->state = BALLOON_STATE_POP;
-            sprite_set_to(&g->sprites[self.id], asset_handle_to(BALLOON_POP, Spritesheet, g->pak));
+            sprite_set_to(&g->sprites[self.id], asset_make_handle(c->anim_table->pop_anim, g->pak));
 
             event_balloon_popped(self.id);
         }
@@ -25,7 +25,7 @@ static void cactus_balloon_popped(entity_id balloon_id)
     assert(g->cactuses[id].enabled);
     if(g->cactuses[id].state == CACTUS_STATE_IDLE) {
         g->cactuses[id].state = CACTUS_STATE_FALL;
-        sprite_set_to(&g->sprites[id], asset_handle_to(CAC_FALL, Spritesheet, g->pak));
+        sprite_set_to(&g->sprites[id], asset_make_handle(g->cactuses[id].anim_table->fall_anim, g->pak));
     }
 }
 
