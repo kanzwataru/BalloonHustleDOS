@@ -48,6 +48,22 @@ begin(Spritesheet)
     .count      = 11,
     .frameskip  = 3
 },
+{
+    .name       = "enemycac_idle",
+    .path       = "data/enemycac_idle.bmp",
+    .width      = 48,
+    .height     = 48,
+    .count      = 8,
+    .frameskip  = 4
+},
+{
+    .name       = "enemycac_fall",
+    .path       = "data/enemycac_fall.bmp",
+    .width      = 48,
+    .height     = 48,
+    .count      = 14,
+    .frameskip  = 3
+},
 end(Spritesheet)
 
 begin(Palette)
@@ -76,6 +92,10 @@ begin(Package)
         "balloon_pop",
         "cac_idle",
         "cac_fall",
+        "enemybl_idle",
+        "enemybl_pop",
+        "enemycac_idle",
+        "enemycac_fall",
         0
     }
 },

@@ -1,7 +1,7 @@
 #ifndef BH_CONSTS_H
 #define BH_CONSTS_H
 
-#define ENTITY_MAX 			 2
+#define ENTITY_MAX 			 4
 
 #define ROPE_SEGMENTS       8
 #define ROPE_LENGTH         32
@@ -21,4 +21,3 @@
 #define CLOUD_SIDE_MAX		 200
 
 #endif
-

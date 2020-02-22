@@ -9,7 +9,7 @@ static void balloon_collide(struct Collision self, struct Collision other)
 {
     assert(self.id < ENTITY_MAX);
     struct BalloonComp *c = &g->balloons[self.id];
-    if(self.collision_type == COLL_BALLOON && c->enabled) {
+    if(self.collision_type == COLL_BALLOON && other.collision_type == COLL_CACTUS && c->enabled) {
         if(c->state == BALLOON_STATE_IDLE) {
             c->state = BALLOON_STATE_POP;
             sprite_set_to(&g->sprites[self.id], asset_handle_to(BALLOON_POP, Spritesheet, g->pak));
@@ -39,4 +39,3 @@ static void event_balloon_popped(entity_id balloon_id)
 {
     cactus_balloon_popped(balloon_id);
 }
-

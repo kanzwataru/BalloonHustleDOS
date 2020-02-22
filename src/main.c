@@ -23,10 +23,14 @@ static void scroll_clouds(void)
 	}
 }
 
-static void create_player_balloon(entity_id id, entity_id cactus_id)
+static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
 {
     /* balloon */
-    sprite_set_to(&g->sprites[id], asset_handle_to(BALLOON_IDLE, Spritesheet, g->pak));
+    if(is_player)
+        sprite_set_to(&g->sprites[id], asset_handle_to(BALLOON_IDLE, Spritesheet, g->pak));
+    else
+        sprite_set_to(&g->sprites[id], asset_handle_to(ENEMYBL_IDLE, Spritesheet, g->pak));
+
     g->sprites[id].rect.x = 320 / 2 - (g->sprites[id].rect.w / 2);
     g->sprites[id].rect.y = 36;
 
@@ -49,25 +53,29 @@ static void create_player_balloon(entity_id id, entity_id cactus_id)
 
     g->colliders[id].enabled = true;
     g->colliders[id].type = COLL_BALLOON;
-    const Rect br = { 
-        16, 8, 16, 22 
+    const Rect br = {
+        16, 8, 16, 22
     };
     g->colliders[id].rect = br;
 
     /* cactus */
-    g->sprites[cactus_id].spritesheet = asset_handle_to(CAC_IDLE, Spritesheet, g->pak);
+    if(is_player)
+        g->sprites[cactus_id].spritesheet = asset_handle_to(CAC_IDLE, Spritesheet, g->pak);
+    else
+        g->sprites[cactus_id].spritesheet = asset_handle_to(ENEMYCAC_IDLE, Spritesheet, g->pak);
+
     g->sprites[cactus_id].rect.w = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->width;
     g->sprites[cactus_id].rect.h = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->height;
 
     g->transforms[cactus_id].enabled = true;
 
     g->colliders[cactus_id].enabled = true;
-    g->colliders[cactus_id].type = COLL_CACTUS;    
+    g->colliders[cactus_id].type = COLL_CACTUS;
     const Rect cr = {
         12, 10, 24, 20
     };
     g->colliders[cactus_id].rect = cr;
-    
+
     g->cactuses[cactus_id].enabled = true;
 }
 
@@ -80,11 +88,15 @@ void init(void)
     memcpy(g->palette, pal, pal->col_count);
     renderer_set_palette(g->palette, 0, sizeof(g->palette));
 
-    create_player_balloon(0, 1);
+    create_balloon_cactus(0, 1, true);
     rope_init(0, 2);
+
+    create_balloon_cactus(2, 3, false);
+    //rope_init(1, 2);
+
     for(int i = 0; i < CLOUD_MAX; ++i) {
-		 place_cloud(&g->clouds[i]);   	
-     }
+		 place_cloud(&g->clouds[i]);
+    }
 }
 
 void input(void)
@@ -122,25 +134,25 @@ void update(void)
 		}
 	}
 
-    balloon_update(0, 2);
-    transform_update(0, 2);
-    rope_update(0, 2);
-    collider_update(0, 2);
-    sprite_update(g->sprites, 2);
-	
+    balloon_update(0, ENTITY_MAX);
+    transform_update(0, ENTITY_MAX);
+    rope_update(0, ENTITY_MAX);
+    collider_update(0, ENTITY_MAX);
+    sprite_update(g->sprites, ENTITY_MAX);
+
 	 scroll_clouds();
 }
 
 void render(void)
 {
     renderer_clear(1);
-    
+
     for(int i = 0; i < CLOUD_MAX; ++i) {
      	renderer_draw_texture(asset_get(CLOUD, Texture, g->pak), g->clouds[i]);
      }
-    
-    rope_draw(0, 2);
-    sprite_draw(g->sprites, 2);
+
+    rope_draw(0, ENTITY_MAX);
+    sprite_draw(g->sprites, ENTITY_MAX);
 
 //#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
@@ -160,7 +172,7 @@ void render(void)
 
 void quit(void) {}
 
-void HANDSHAKE_FUNCTION_NAME(struct Game *game, void *memory_chunk) 
+void HANDSHAKE_FUNCTION_NAME(struct Game *game, void *memory_chunk)
 {
     g = (struct GameData *)memory_chunk;
     g->game = game;
@@ -173,4 +185,3 @@ void HANDSHAKE_FUNCTION_NAME(struct Game *game, void *memory_chunk)
 
     asset_load_pak(g->pak, "main.dat");
 }
-
