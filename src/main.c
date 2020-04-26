@@ -74,6 +74,16 @@ static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_pla
 
     g->cactuses[cactus_id].enabled = true;
     g->cactuses[cactus_id].anim_table = cactus_anim;
+    
+    /* ai */
+    if(!is_player) {
+        g->ai[id].enabled = true;
+        g->ai[id].state = AI_WAITING;
+        g->ai[id].timer = 3 * 60;
+        g->balloons[id].constrain_to_screen = false;
+        g->transforms[id].pos.x = RANDRANGE(400, 700) * (RANDRANGE(0, 1) ? -1 : 1);
+        g->transforms[id].pos.x = RANDRANGE(300, 700) * (RANDRANGE(0, 1) ? -1 : 1);
+    }
 }
 
 void init(void)
@@ -130,6 +140,7 @@ void update(void)
 		}
 	}
 
+	ai_update(0, ENTITY_MAX);
     balloon_update(0, ENTITY_MAX);
     transform_update(0, ENTITY_MAX);
     rope_update(0, ENTITY_MAX);

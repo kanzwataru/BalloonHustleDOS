@@ -9,7 +9,7 @@
 #define ROPE_FRICTION       0.93f
 #define ROPE_GRAVITY        0.5
 
-#define BALLOON_SPEED       4
+#define BALLOON_SPEED       3
 #define BALLOON_ACCEL       0.8
 #define BALLOON_DECEL       0.85
 

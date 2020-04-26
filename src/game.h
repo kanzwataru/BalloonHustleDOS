@@ -15,8 +15,8 @@ struct GameData {
     struct Game *game;
     byte pak[640000];
 
-	 uint16_t game_state;
-	 byte palette[255];
+    uint16_t game_state;
+    byte palette[255];
 
     struct Sprite           sprites[ENTITY_MAX];
     struct RopeComp         ropes[ENTITY_MAX];
@@ -24,6 +24,7 @@ struct GameData {
     struct BalloonComp      balloons[ENTITY_MAX];
     struct CactusComp       cactuses[ENTITY_MAX];
     struct ColliderComp     colliders[ENTITY_MAX];
+    struct AIComp           ai[ENTITY_MAX];
 
     Rect clouds[CLOUD_MAX];
     float fade_percent;

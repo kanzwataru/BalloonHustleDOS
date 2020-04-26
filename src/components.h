@@ -74,6 +74,19 @@ struct RopeComp {
     entity_id end_transform;
 };
 
+enum AIState {
+    AI_WAITING,
+    AI_MOVING,
+    AI_ATTACKING
+};
+
+struct AIComp {
+    bool enabled;
+    enum AIState state;
+    FLPoint  goal;
+    uint32_t timer;
+};
+
 void rope_init          (entity_id start, entity_id count);
 
 void transform_update   (entity_id start, entity_id count);
@@ -81,6 +94,7 @@ void balloon_update     (entity_id start, entity_id count);
 void cactus_update      (entity_id start, entity_id count);
 void collider_update    (entity_id start, entity_id count);
 void rope_update        (entity_id start, entity_id count);
+void ai_update          (entity_id start, entity_id count);
 
 void rope_draw          (entity_id start, entity_id count);
 

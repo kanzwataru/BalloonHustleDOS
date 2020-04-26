@@ -60,6 +60,48 @@ void balloon_update(entity_id start, entity_id count)
     }
 }
 
+void ai_update(entity_id start, entity_id count)
+{
+    for(entity_id id = 0; id < count; ++id) {
+        struct AIComp *c = &g->ai[id];
+        if(!c->enabled) continue;
+        struct TransformComp *xform = &g->transforms[id];
+        struct BalloonComp *balloon = &g->balloons[id];
+        
+        switch(c->state) {
+        case AI_WAITING:
+            if(c->timer-- == 0) {
+                c->goal.x = RANDRANGE(20, 320 - 40);
+                c->goal.y = RANDRANGE(0, 200 - 80);
+                c->state = AI_MOVING;
+                
+                printf("goal %f %f\n", c->goal.x, c->goal.y);
+            }
+            break;
+        case AI_MOVING: {
+            float dx = c->goal.x - xform->pos.x;
+            float dy = c->goal.y - xform->pos.y;
+            if(fabs(dx) > BALLOON_SPEED * 3 || fabs(dy) > BALLOON_SPEED * 3) {
+                balloon->dir.x = SGN(dx);
+                balloon->dir.y = SGN(dy);
+                //printf("pos %f %f target %f %f delta %f %f\n", xform->pos.x, xform->pos.y, c->goal.x, c->goal.y, dx, dy);
+            }
+            else {
+                balloon->dir.x = 0;
+                balloon->dir.y = 0;
+                c->state = AI_ATTACKING;                
+            }
+            
+            break;
+        }
+        case AI_ATTACKING:
+            break;
+        default:
+            assert(0);
+        }
+    }
+}
+
 void cactus_update(entity_id start, entity_id count)
 {
    /*
