@@ -32,4 +32,7 @@ struct GameData {
 
 extern struct GameData *g;
 
+// TODO: better place for this
+void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player);
+
 #endif

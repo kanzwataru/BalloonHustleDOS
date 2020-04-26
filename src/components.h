@@ -77,7 +77,9 @@ struct RopeComp {
 enum AIState {
     AI_WAITING,
     AI_MOVING,
-    AI_ATTACKING
+    AI_ATTACKING,
+    AI_DEAD,
+    AI_DEAD_WAITING
 };
 
 struct AIComp {

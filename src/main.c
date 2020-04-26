@@ -22,26 +22,30 @@ static void scroll_clouds(void)
 	}
 }
 
-static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
+void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
 {
     /* anim table pointers */
     const struct BalloonAnimTable *balloon_anim = is_player ? &s_player_balloon_anim : &s_enemy_balloon_anim;
     const struct CactusAnimTable  *cactus_anim  = is_player ? &s_player_cactus_anim  : &s_enemy_cactus_anim;
 
     /* balloon */
+    memset(&g->sprites[id], 0, sizeof(g->sprites[id]));
     sprite_set_to(&g->sprites[id], asset_make_handle(balloon_anim->idle_anim, g->pak));
     g->sprites[id].rect.x = 320 / 2 - (g->sprites[id].rect.w / 2);
     g->sprites[id].rect.y = 36;
 
+    memset(&g->transforms[id], 0, sizeof(g->transforms[id]));
     g->transforms[id].enabled = true;
     g->transforms[id].pos.x = g->sprites[id].rect.x;
     g->transforms[id].pos.y = g->sprites[id].rect.y;
 
+    memset(&g->balloons[id], 0, sizeof(g->balloons[id]));
     g->balloons[id].enabled = true;
     g->balloons[id].constrain_to_screen = true;
     g->balloons[id].state = BALLOON_STATE_IDLE;
     g->balloons[id].anim_table = balloon_anim;
 
+    memset(&g->ropes[id], 0, sizeof(g->ropes[id]));
     g->ropes[id].enabled = true;
     g->ropes[id].color = 8;
     g->ropes[id].start_transform = id;
@@ -51,6 +55,7 @@ static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_pla
     g->ropes[id].end_offset.x = -24;
     g->ropes[id].end_offset.y = -7;
 
+    memset(&g->colliders[id], 0, sizeof(g->colliders[id]));
     g->colliders[id].enabled = true;
     g->colliders[id].type = COLL_BALLOON;
     const Rect br = {
@@ -59,12 +64,15 @@ static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_pla
     g->colliders[id].rect = br;
 
     /* cactus */
+    memset(&g->sprites[cactus_id], 0, sizeof(g->sprites[cactus_id]));
     sprite_set_to(&g->sprites[cactus_id], asset_make_handle(cactus_anim->idle_anim, g->pak));
     g->sprites[cactus_id].rect.w = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->width;
     g->sprites[cactus_id].rect.h = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->height;
 
+    memset(&g->transforms[cactus_id], 0, sizeof(g->transforms[cactus_id]));
     g->transforms[cactus_id].enabled = true;
 
+    memset(&g->colliders[cactus_id], 0, sizeof(g->colliders[cactus_id]));
     g->colliders[cactus_id].enabled = true;
     g->colliders[cactus_id].type = COLL_CACTUS;
     const Rect cr = {
@@ -72,18 +80,23 @@ static void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_pla
     };
     g->colliders[cactus_id].rect = cr;
 
+    memset(&g->cactuses[cactus_id], 0, sizeof(g->cactuses[cactus_id]));
     g->cactuses[cactus_id].enabled = true;
     g->cactuses[cactus_id].anim_table = cactus_anim;
     
     /* ai */
     if(!is_player) {
+        memset(&g->ai[cactus_id], 0, sizeof(g->ai[cactus_id]));
         g->ai[id].enabled = true;
         g->ai[id].state = AI_WAITING;
         g->ai[id].timer = 3 * 60;
+        
         g->balloons[id].constrain_to_screen = false;
         g->transforms[id].pos.x = RANDRANGE(400, 700) * (RANDRANGE(0, 1) ? -1 : 1);
         g->transforms[id].pos.x = RANDRANGE(300, 700) * (RANDRANGE(0, 1) ? -1 : 1);
     }
+    
+    rope_init(id, 2);
 }
 
 void init(void)
@@ -97,8 +110,6 @@ void init(void)
 
     create_balloon_cactus(0, 1, true);
     create_balloon_cactus(2, 3, false);
-
-    rope_init(0, 4);
 
     for(int i = 0; i < CLOUD_MAX; ++i) {
 		 place_cloud(&g->clouds[i]);
@@ -147,7 +158,7 @@ void update(void)
     collider_update(0, ENTITY_MAX);
     sprite_update(g->sprites, ENTITY_MAX);
 
-	 scroll_clouds();
+    scroll_clouds();
 }
 
 void render(void)

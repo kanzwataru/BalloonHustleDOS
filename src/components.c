@@ -7,7 +7,7 @@
 void transform_update(entity_id start, entity_id count) 
 {
     entity_id id;
-    for(id = start; id < count; ++id) {
+    for(id = start; id < start + count; ++id) {
         struct TransformComp *c = &g->transforms[id];
         if(!c->enabled) continue;
 
@@ -25,7 +25,7 @@ void transform_update(entity_id start, entity_id count)
 void balloon_update(entity_id start, entity_id count)
 {
     entity_id id;
-    for(id = start; id < count; ++id) {
+    for(id = start; id < start + count; ++id) {
         struct BalloonComp *c = &g->balloons[id];
         if(!c->enabled) continue;
         assert(g->transforms[id].enabled);
@@ -62,7 +62,7 @@ void balloon_update(entity_id start, entity_id count)
 
 void ai_update(entity_id start, entity_id count)
 {
-    for(entity_id id = 0; id < count; ++id) {
+    for(entity_id id = 0; id < start + count; ++id) {
         struct AIComp *c = &g->ai[id];
         if(!c->enabled) continue;
         struct TransformComp *xform = &g->transforms[id];
@@ -96,6 +96,15 @@ void ai_update(entity_id start, entity_id count)
         }
         case AI_ATTACKING:
             break;
+        case AI_DEAD:
+            c->timer = AI_DEAD_TIME;
+            c->state = AI_DEAD_WAITING;
+            break;
+        case AI_DEAD_WAITING:
+            if(c->timer-- == 0) {
+                create_balloon_cactus(id, id + 1, false);
+            }
+            break;
         default:
             assert(0);
         }
@@ -116,7 +125,7 @@ void cactus_update(entity_id start, entity_id count)
 
 void collider_update(entity_id start, entity_id count)
 {
-    for(entity_id a_id = 0; a_id < count; ++a_id) {
+    for(entity_id a_id = 0; a_id < start + count; ++a_id) {
         if(!g->colliders[a_id].enabled) continue;
  
         Rect a = g->colliders[a_id].rect;
@@ -151,7 +160,7 @@ void rope_init(entity_id start, entity_id count)
     entity_id id;
     int i;
     Point pos;
-    for(id = start; id < count; ++id) {
+    for(id = start; id < start + count; ++id) {
         struct RopeComp *c = &g->ropes[id];
         if(!c->enabled) continue;
         assert(g->transforms[c->start_transform].enabled);
@@ -174,6 +183,12 @@ void rope_init(entity_id start, entity_id count)
 
             pos.y += ROPE_LENGTH / ROPE_SEGMENTS;
         }
+        
+        if(c->end_transform) {
+            assert(g->transforms[c->end_transform].enabled);
+            g->transforms[c->end_transform].pos.x = c->points[ROPE_SEGMENTS - 1].pos[0] + c->end_offset.x;
+            g->transforms[c->end_transform].pos.y = c->points[ROPE_SEGMENTS - 1].pos[1] + c->end_offset.y;
+        }
     }
 }
 
@@ -183,7 +198,7 @@ void rope_update(entity_id start, entity_id count)
     int i;
     struct Point pos;
 
-    for(id = start; id < count; ++id) {
+    for(id = start; id < start + count; ++id) {
         struct RopeComp *c = &g->ropes[id];
         if(!c->enabled) continue;
         assert(g->transforms[c->start_transform].enabled);
@@ -254,7 +269,7 @@ void rope_draw(entity_id start, entity_id count)
 {
     entity_id id;
     struct RopeComp *c;
-    for(id = start; id < count; ++id) {
+    for(id = start; id < start + count; ++id) {
         c = &g->ropes[id];
         if(!c->enabled) continue;
 

@@ -29,6 +29,13 @@ static void cactus_balloon_popped(entity_id balloon_id)
     }
 }
 
+static void ai_balloon_popped(entity_id balloon_id)
+{
+    if(g->ai[balloon_id].enabled) {
+        g->ai[balloon_id].state = AI_DEAD;
+    }
+}
+
 /* events */
 void event_collide(struct Collision self, struct Collision other)
 {
@@ -38,4 +45,5 @@ void event_collide(struct Collision self, struct Collision other)
 static void event_balloon_popped(entity_id balloon_id)
 {
     cactus_balloon_popped(balloon_id);
+    ai_balloon_popped(balloon_id);
 }
