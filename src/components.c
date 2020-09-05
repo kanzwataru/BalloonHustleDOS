@@ -4,7 +4,7 @@
 
 #include <math.h>
 
-void transform_update(entity_id start, entity_id count) 
+void transform_update(entity_id start, entity_id count)
 {
     entity_id id;
     for(id = start; id < start + count; ++id) {
@@ -53,7 +53,7 @@ void balloon_update(entity_id start, entity_id count)
 
             g->transforms[id].pos.x += c->vel.x;
             g->transforms[id].pos.y += c->vel.y;
-            break; 
+            break;
         default:
             assert(0);
         }
@@ -67,14 +67,14 @@ void ai_update(entity_id start, entity_id count)
         if(!c->enabled) continue;
         struct TransformComp *xform = &g->transforms[id];
         struct BalloonComp *balloon = &g->balloons[id];
-        
+
         switch(c->state) {
         case AI_WAITING:
             if(c->timer-- == 0) {
                 c->goal.x = RANDRANGE(20, 320 - 40);
                 c->goal.y = RANDRANGE(0, 200 - 80);
                 c->state = AI_MOVING;
-                
+
                 printf("goal %f %f\n", c->goal.x, c->goal.y);
             }
             break;
@@ -89,9 +89,9 @@ void ai_update(entity_id start, entity_id count)
             else {
                 balloon->dir.x = 0;
                 balloon->dir.y = 0;
-                c->state = AI_ATTACKING;                
+                c->state = AI_ATTACKING;
             }
-            
+
             break;
         }
         case AI_ATTACKING:
@@ -119,15 +119,38 @@ void cactus_update(entity_id start, entity_id count)
         struct CactusComp *c = &g->cactuses[id];
         if(!c->enabled) continue;
 
-   } 
+   }
    */
+}
+
+void shoot_update(entity_id start, entity_id count)
+{
+
+}
+
+void shoot_draw(entity_id start, entity_id count)
+{
+    for(entity_id id = 0; id < start + count; ++id) {
+        const struct ShootComp *shoot = &g->shoots[id];
+        if(!shoot->enabled) continue;
+
+        const struct Sprite *sprite = &g->sprites[id];
+
+        Rect rect;
+        rect.x = (sprite->rect.x + sprite->rect.w / 2) + (shoot->dir.x * SHOOT_UI_OFFSET);
+        rect.y = (sprite->rect.y + sprite->rect.h / 2) + (shoot->dir.y * SHOOT_UI_OFFSET);
+        rect.w = SHOOT_UI_SIZE;
+        rect.h = SHOOT_UI_SIZE;
+
+        renderer_draw_rect(SHOOT_UI_COL, rect);
+    }
 }
 
 void collider_update(entity_id start, entity_id count)
 {
     for(entity_id a_id = 0; a_id < start + count; ++a_id) {
         if(!g->colliders[a_id].enabled) continue;
- 
+
         Rect a = g->colliders[a_id].rect;
         a.x += g->transforms[a_id].pos.x;
         a.y += g->transforms[a_id].pos.y;
@@ -135,8 +158,8 @@ void collider_update(entity_id start, entity_id count)
         for(entity_id b_id = 0; b_id < count; ++b_id) {
             Rect b = g->colliders[b_id].rect;
             b.x += g->transforms[b_id].pos.x;
-            b.y += g->transforms[b_id].pos.y;       
-            
+            b.y += g->transforms[b_id].pos.y;
+
             if(g->colliders[b_id].enabled &&
                a.x < b.x + b.w && a.x + a.w > b.x &&
                a.y < b.y && a.y + a.h > b.y)
@@ -148,7 +171,7 @@ void collider_update(entity_id start, entity_id count)
                 struct Collision other;
                 other.id = b_id;
                 other.collision_type = g->colliders[b_id].type;
-                
+
                 event_collide(self, other);
             }
         }
@@ -183,7 +206,7 @@ void rope_init(entity_id start, entity_id count)
 
             pos.y += ROPE_LENGTH / ROPE_SEGMENTS;
         }
-        
+
         if(c->end_transform) {
             assert(g->transforms[c->end_transform].enabled);
             g->transforms[c->end_transform].pos.x = c->points[ROPE_SEGMENTS - 1].pos[0] + c->end_offset.x;
@@ -207,7 +230,7 @@ void rope_update(entity_id start, entity_id count)
 
         c->points[0].pos[0] = pos.x;
         c->points[0].pos[1] = pos.y;
-        
+
         /* copy (TODO: don't do this) */
         c->segments[0].x = pos.x;
         c->segments[0].y = pos.y;
@@ -218,7 +241,7 @@ void rope_update(entity_id start, entity_id count)
             /* gravity */
             c->points[i].pos[1] += ROPE_GRAVITY;
         }
-        
+
         for(int j = 0; j < ROPE_ITERATIONS; ++j) {
             /* constraints */
             for(i = 1; i < ROPE_SEGMENTS; ++i) {
@@ -276,4 +299,3 @@ void rope_draw(entity_id start, entity_id count)
         renderer_draw_line(c->color, c->segments, (ROPE_SEGMENTS * 2) - 1);
     }
 }
-

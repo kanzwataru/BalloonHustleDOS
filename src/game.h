@@ -22,6 +22,7 @@ struct GameData {
     struct TransformComp    transforms[ENTITY_MAX];
     struct BalloonComp      balloons[ENTITY_MAX];
     struct CactusComp       cactuses[ENTITY_MAX];
+	struct ShootComp        shoots[ENTITY_MAX];
     struct ColliderComp     colliders[ENTITY_MAX];
     struct AIComp           ai[ENTITY_MAX];
 

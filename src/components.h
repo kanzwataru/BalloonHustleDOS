@@ -11,19 +11,33 @@ typedef struct {
 } FLPoint;
 
 enum ColliderType {
-    COLL_DEFAULT    = 0,
-    COLL_BALLOON    = 1,
-    COLL_CACTUS     = 2
+    COLL_DEFAULT,
+    COLL_BALLOON,
+    COLL_CACTUS
 };
 
 enum BalloonState {
-    BALLOON_STATE_IDLE = 0,
-    BALLOON_STATE_POP  = 1
+    BALLOON_STATE_IDLE,
+    BALLOON_STATE_POP
 };
 
 enum CactusState {
-    CACTUS_STATE_IDLE = 0,
-    CACTUS_STATE_FALL = 1
+    CACTUS_STATE_IDLE,
+    CACTUS_STATE_FALL
+};
+
+enum ShootState {
+    SHOOT_STATE_IDLE,
+    SHOOT_STATE_FIRE,
+    SHOOT_STATE_COOLDOWN
+};
+
+enum AIState {
+    AI_WAITING,
+    AI_MOVING,
+    AI_ATTACKING,
+    AI_DEAD,
+    AI_DEAD_WAITING
 };
 
 struct TransformComp {
@@ -56,6 +70,13 @@ struct ColliderComp {
     byte    type;
 };
 
+struct ShootComp {
+    bool    enabled;
+    float   rotation;
+    FLPoint dir;
+    byte    state;
+};
+
 struct RopePoint {
     float pos[2];
     float prev_pos[2];
@@ -74,14 +95,6 @@ struct RopeComp {
     entity_id end_transform;
 };
 
-enum AIState {
-    AI_WAITING,
-    AI_MOVING,
-    AI_ATTACKING,
-    AI_DEAD,
-    AI_DEAD_WAITING
-};
-
 struct AIComp {
     bool enabled;
     enum AIState state;
@@ -94,10 +107,12 @@ void rope_init          (entity_id start, entity_id count);
 void transform_update   (entity_id start, entity_id count);
 void balloon_update     (entity_id start, entity_id count);
 void cactus_update      (entity_id start, entity_id count);
+void shoot_update       (entity_id start, entity_id count);
 void collider_update    (entity_id start, entity_id count);
 void rope_update        (entity_id start, entity_id count);
 void ai_update          (entity_id start, entity_id count);
 
 void rope_draw          (entity_id start, entity_id count);
+void shoot_draw         (entity_id start, entity_id count);
 
 #endif

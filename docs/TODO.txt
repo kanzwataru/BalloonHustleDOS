@@ -1,0 +1,6 @@
+- refactor (c++?)
+- multiple enemies
+- shooting mechanic
+
+- popping particles
+

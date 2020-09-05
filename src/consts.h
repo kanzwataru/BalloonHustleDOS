@@ -3,7 +3,7 @@
 
 #define FPS                 60
 
-#define ENTITY_MAX 			 4
+#define ENTITY_MAX 			4
 
 #define ROPE_SEGMENTS       8
 #define ROPE_LENGTH         32
@@ -22,6 +22,14 @@
 #define CLOUD_SIDE_MIN		 -120
 #define CLOUD_SIDE_MAX		 200
 
+#define SHOOT_UI_OFFSET      32
+#define SHOOT_UI_SIZE        4
+#define SHOOT_UI_COL         9
+#define SHOOT_INPUT_SPEED    0.1f
+
 #define AI_DEAD_TIME        2 * FPS
+
+/* DEBUG */
+#define DEBUG_DRAW          0
 
 #endif
