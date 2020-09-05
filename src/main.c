@@ -8,8 +8,8 @@ static void place_cloud(Rect *cloud)
 {
 	cloud->x = RANDRANGE(CLOUD_SIDE_MIN, CLOUD_SIDE_MAX);
 	cloud->y = RANDRANGE(CLOUD_HEIGHT_MIN, CLOUD_HEIGHT_MAX);
-	cloud->w = asset_get(CLOUD, Texture, g->pak)->width;
-	cloud->h = asset_get(CLOUD, Texture, g->pak)->height;
+	cloud->w = g->pak.cloud.width;
+	cloud->h = g->pak.cloud.height;
 }
 
 static void scroll_clouds(void)
@@ -30,7 +30,7 @@ void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
 
     /* balloon */
     memset(&g->sprites[id], 0, sizeof(g->sprites[id]));
-    sprite_set_to(&g->sprites[id], asset_make_handle(balloon_anim->idle_anim, g->pak));
+    sprite_set_to(&g->sprites[id], asset_make_handle(balloon_anim->idle_anim, &g->pak));
     g->sprites[id].rect.x = 320 / 2 - (g->sprites[id].rect.w / 2);
     g->sprites[id].rect.y = 36;
 
@@ -65,7 +65,7 @@ void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
 
     /* cactus */
     memset(&g->sprites[cactus_id], 0, sizeof(g->sprites[cactus_id]));
-    sprite_set_to(&g->sprites[cactus_id], asset_make_handle(cactus_anim->idle_anim, g->pak));
+    sprite_set_to(&g->sprites[cactus_id], asset_make_handle(cactus_anim->idle_anim, &g->pak));
     g->sprites[cactus_id].rect.w = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->width;
     g->sprites[cactus_id].rect.h = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->height;
 
@@ -83,27 +83,26 @@ void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
     memset(&g->cactuses[cactus_id], 0, sizeof(g->cactuses[cactus_id]));
     g->cactuses[cactus_id].enabled = true;
     g->cactuses[cactus_id].anim_table = cactus_anim;
-    
+
     /* ai */
     if(!is_player) {
         memset(&g->ai[cactus_id], 0, sizeof(g->ai[cactus_id]));
         g->ai[id].enabled = true;
         g->ai[id].state = AI_WAITING;
         g->ai[id].timer = 3 * 60;
-        
+
         g->balloons[id].constrain_to_screen = false;
         g->transforms[id].pos.x = RANDRANGE(400, 700) * (RANDRANGE(0, 1) ? -1 : 1);
         g->transforms[id].pos.x = RANDRANGE(300, 700) * (RANDRANGE(0, 1) ? -1 : 1);
     }
-    
+
     rope_init(id, 2);
 }
 
 void init(void)
 {
-    struct PaletteAsset *pal;
+    const struct PaletteAsset *pal = &g->pak.gamepal;
 
-    pal = asset_get(GAMEPAL, Palette, g->pak);
     assert(pal->col_count <= sizeof(g->palette));
     memcpy(g->palette, pal, pal->col_count);
     renderer_set_palette(g->palette, 0, sizeof(g->palette));
@@ -138,7 +137,7 @@ void input(void)
 void update(void)
 {
 	if(g->game_state == GAME_STATE_BEGIN) {
-		struct PaletteAsset *pal = asset_get(GAMEPAL, Palette, g->pak);
+		struct PaletteAsset *pal = &g->pak.gamepal;
 		g->fade_percent += 0.02f;
 		if(g->fade_percent >= 1.0f) {
 			g->fade_percent = 1.0f;
@@ -166,7 +165,7 @@ void render(void)
     renderer_clear(1);
 
     for(int i = 0; i < CLOUD_MAX; ++i) {
-     	renderer_draw_texture(asset_get(CLOUD, Texture, g->pak), g->clouds[i]);
+     	renderer_draw_texture(&g->pak.cloud, g->clouds[i]);
      }
 
     rope_draw(0, ENTITY_MAX);
@@ -201,5 +200,5 @@ void HANDSHAKE_FUNCTION_NAME(struct Game *game, void *memory_chunk)
     game->render = render;
     game->quit = quit;
 
-    asset_load_pak(g->pak, "main.dat");
+    asset_load_pak((byte *)&g->pak, sizeof(g->pak), "main.dat");
 }

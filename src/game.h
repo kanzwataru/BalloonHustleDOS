@@ -13,7 +13,6 @@ enum EGameState {
 
 struct GameData {
     struct Game *game;
-    byte pak[640000];
 
     uint16_t game_state;
     byte palette[255];
@@ -28,6 +27,9 @@ struct GameData {
 
     Rect clouds[CLOUD_MAX];
     float fade_percent;
+
+	struct PakMain pak;
+    //byte pak[640000];
 };
 
 extern struct GameData *g;
