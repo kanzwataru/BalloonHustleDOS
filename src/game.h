@@ -6,6 +6,18 @@
 #include "components.h"
 #include "statics.h"
 
+enum EntitySlots {
+	EID_PlayerBalloon = 0,
+	EID_PlayerCactus  = 1,
+	EID_Enemies		  = 2,
+	EID_EnemiesEnd	  = 16,
+	EID_Bullets		  = 17,
+	EID_BulletsEnd	  = 48,
+
+	EID_End
+	#define ENTITY_MAX EID_End
+};
+
 enum EGameState {
 	GAME_STATE_BEGIN  	= 0,
 	GAME_STATE_PLAYING 	= 1
@@ -17,6 +29,7 @@ struct GameData {
     uint16_t game_state;
     byte palette[255];
 
+	byte entity_roster[ENTITY_MAX];
     struct Sprite           sprites[ENTITY_MAX];
     struct RopeComp         ropes[ENTITY_MAX];
     struct TransformComp    transforms[ENTITY_MAX];
@@ -34,7 +47,7 @@ struct GameData {
 
 extern struct GameData *g;
 
-// TODO: better place for this
+// TODO: better place for these
 void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player);
 
 #endif

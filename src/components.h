@@ -2,9 +2,7 @@
 #define BH_COMPONENTS_H
 #include "hustle.h"
 #include "consts.h"
-
-#define NULL_ENTITY 65535
-typedef uint16_t entity_id;
+#include "entity.h"
 
 typedef struct {
     float x, y;

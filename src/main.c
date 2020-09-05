@@ -7,14 +7,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-enum EntitySlots {
-	EID_PlayerBalloon = 0,
-	EID_PlayerCactus  = 1,
-	EID_Enemies		  = 2,
-	EID_EnemiesEnd	  = 16,
-	EID_Bullets		  = 17
-};
-
 struct GameData *g;
 
 static void place_cloud(Rect *cloud)
@@ -44,6 +36,8 @@ void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
     const struct CactusAnimTable  *cactus_anim  = is_player ? &s_player_cactus_anim  : &s_enemy_cactus_anim;
 
     /* balloon */
+	entity_reserve(g->entity_roster, id);
+
     CLEAR(g->sprites[id]);
     sprite_set_to(&g->sprites[id], asset_make_handle(balloon_anim->idle_anim, &g->pak));
     g->sprites[id].rect.x = 320 / 2 - (g->sprites[id].rect.w / 2);
@@ -79,6 +73,8 @@ void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
     g->colliders[id].rect = br;
 
     /* cactus */
+	entity_reserve(g->entity_roster, cactus_id);
+
     CLEAR(g->sprites[cactus_id]);
     sprite_set_to(&g->sprites[cactus_id], asset_make_handle(cactus_anim->idle_anim, &g->pak));
     g->sprites[cactus_id].rect.w = asset_from_handle_of(g->sprites[cactus_id].spritesheet, Spritesheet)->width;

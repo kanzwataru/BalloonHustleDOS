@@ -3,8 +3,6 @@
 
 #define FPS                 60
 
-#define ENTITY_MAX 			4
-
 #define ROPE_SEGMENTS       8
 #define ROPE_LENGTH         32
 #define ROPE_ITERATIONS     2
