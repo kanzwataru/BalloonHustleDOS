@@ -2,7 +2,9 @@
 #include "game.h"
 #include "events.h"
 
+//TODO: maybe these should be somewhere better?
 #include <math.h>
+#include <stdlib.h>
 
 void transform_update(entity_id start, entity_id count)
 {

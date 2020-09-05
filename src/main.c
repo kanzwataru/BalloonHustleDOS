@@ -2,10 +2,17 @@
 #include "platform/bootstrap.h"
 #include "game.h"
 
+//TODO: maybe these should be somewhere better?
+#include <math.h>
+#include <string.h>
+#include <stdlib.h>
+
 enum EntitySlots {
 	EID_PlayerBalloon = 0,
 	EID_PlayerCactus  = 1,
-	EID_Enemies		  = 2
+	EID_Enemies		  = 2,
+	EID_EnemiesEnd	  = 16,
+	EID_Bullets		  = 17
 };
 
 struct GameData *g;

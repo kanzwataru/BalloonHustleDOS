@@ -30,7 +30,6 @@ struct GameData {
     float fade_percent;
 
 	struct PakMain pak;
-    //byte pak[640000];
 };
 
 extern struct GameData *g;

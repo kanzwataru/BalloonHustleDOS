@@ -13,7 +13,8 @@ typedef struct {
 enum ColliderType {
     COLL_DEFAULT,
     COLL_BALLOON,
-    COLL_CACTUS
+    COLL_CACTUS,
+    COLL_BULLET
 };
 
 enum BalloonState {

@@ -1,6 +1,8 @@
-- refactor (c++?)
+^ shooting mechanics
+    * reticle and component
+    - projectiles
 - multiple enemies
-- shooting mechanic
 
+- refactor (c++?)
 - popping particles
 
