@@ -29,14 +29,43 @@ static void scroll_clouds(void)
 
 #define CLEAR(x) memset(&(x), 0, sizeof((x)))
 
-void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
+void create_bullet(entity_id id, const Point *pos, const FLPoint *dir)
+{
+	entity_reserve(g->entity_roster, id);
+
+	CLEAR(g->sprites[id]);
+	sprite_set_to(&g->sprites[id], asset_handle_to(bullet, &g->pak, struct PakMain));
+
+	CLEAR(g->transforms[id]);
+	g->transforms[id].enabled = true;
+	g->transforms[id].pos.x = pos->x;
+	g->transforms[id].pos.y = pos->y;
+
+	CLEAR(g->colliders[id]);
+	g->colliders[id].enabled = true;
+	g->colliders[id].type = COLL_BULLET;
+	const Rect os = {
+		1, 2, 6, 4
+	};
+	g->colliders[id].rect = os;
+
+	CLEAR(g->motors[id]);
+	g->motors[id].speed = BULLET_SPEED;
+	g->motors[id].dir = *dir;
+
+	//CLEAR(g->kills[id]);
+	g->kills[id].enabled = true;
+}
+
+void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player, bool reserve)
 {
     /* anim table pointers */
     const struct BalloonAnimTable *balloon_anim = is_player ? &s_player_balloon_anim : &s_enemy_balloon_anim;
     const struct CactusAnimTable  *cactus_anim  = is_player ? &s_player_cactus_anim  : &s_enemy_cactus_anim;
 
     /* balloon */
-	entity_reserve(g->entity_roster, id);
+	if(reserve)
+		entity_reserve(g->entity_roster, id);
 
     CLEAR(g->sprites[id]);
     sprite_set_to(&g->sprites[id], asset_make_handle(balloon_anim->idle_anim, &g->pak));
@@ -73,7 +102,8 @@ void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player)
     g->colliders[id].rect = br;
 
     /* cactus */
-	entity_reserve(g->entity_roster, cactus_id);
+	if(reserve)
+		entity_reserve(g->entity_roster, cactus_id);
 
     CLEAR(g->sprites[cactus_id]);
     sprite_set_to(&g->sprites[cactus_id], asset_make_handle(cactus_anim->idle_anim, &g->pak));
@@ -123,8 +153,8 @@ void init(void)
     memcpy(g->palette, pal, pal->col_count);
     renderer_set_palette(g->palette, 0, sizeof(g->palette));
 
-    create_balloon_cactus(EID_PlayerBalloon, EID_PlayerCactus, true);
-    create_balloon_cactus(EID_Enemies, EID_Enemies + 1, false);
+    create_balloon_cactus(EID_PlayerBalloon, EID_PlayerCactus, true, true);
+    create_balloon_cactus(EID_Enemies, EID_Enemies + 1, false, true);
 
     for(int i = 0; i < CLOUD_MAX; ++i) {
 		 place_cloud(&g->clouds[i]);
@@ -159,6 +189,7 @@ void input(void)
 
 	shoot->dir.x = sin(shoot->rotation);
 	shoot->dir.y = cos(shoot->rotation);
+	shoot->request_shoot = (byte)keyboard_keys[KEY_SPACE];
 }
 
 void update(void)
@@ -177,8 +208,10 @@ void update(void)
 		}
 	}
 
+	kill_update(0, ENTITY_MAX);
 	ai_update(0, ENTITY_MAX);
     balloon_update(0, ENTITY_MAX);
+	motor_update(0, ENTITY_MAX);
     transform_update(0, ENTITY_MAX);
     rope_update(0, ENTITY_MAX);
 	shoot_update(0, ENTITY_MAX);
@@ -207,7 +240,7 @@ void render(void)
             r.x += g->transforms[i].pos.x;
             r.y += g->transforms[i].pos.y;
 
-            renderer_draw_rect(3, r);
+            renderer_draw_rect(26 + g->colliders[i].type, r);
         }
     }
 #endif

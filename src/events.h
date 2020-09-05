@@ -9,6 +9,7 @@ struct Collision {
 };
 
 void event_collide(struct Collision self, struct Collision other);
+void event_balloon_popped(entity_id balloon_id);
 void event_fire(entity_id self);
 
 #endif

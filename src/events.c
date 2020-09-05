@@ -1,15 +1,16 @@
 #include "events.h"
 #include "game.h"
 
-/* local event prototypes */
-static void event_balloon_popped(entity_id balloon_id);
-
 /* component-specific event implementations */
 static void balloon_collide(struct Collision self, struct Collision other)
 {
-    assert(self.id < ENTITY_MAX);
     struct BalloonComp *c = &g->balloons[self.id];
-    if(self.collision_type == COLL_BALLOON && other.collision_type == COLL_CACTUS && c->enabled) {
+
+    const bool collider_hurts = other.collision_type == COLL_CACTUS ||
+                                other.collision_type == COLL_BULLET;
+
+    if(self.collision_type == COLL_BALLOON && collider_hurts) {
+        assert(c->enabled);
         if(c->state == BALLOON_STATE_IDLE) {
             c->state = BALLOON_STATE_POP;
             sprite_set_to(&g->sprites[self.id], asset_make_handle(c->anim_table->pop_anim, &g->pak));
@@ -42,7 +43,7 @@ void event_collide(struct Collision self, struct Collision other)
     balloon_collide(self, other);
 }
 
-static void event_balloon_popped(entity_id balloon_id)
+void event_balloon_popped(entity_id balloon_id)
 {
     cactus_balloon_popped(balloon_id);
     ai_balloon_popped(balloon_id);

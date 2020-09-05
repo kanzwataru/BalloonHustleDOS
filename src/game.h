@@ -23,6 +23,9 @@ enum EGameState {
 	GAME_STATE_PLAYING 	= 1
 };
 
+#define DEF_COMP_ARRAY(type, name) \
+	struct type name[ENTITY_MAX]
+
 struct GameData {
     struct Game *game;
 
@@ -30,14 +33,7 @@ struct GameData {
     byte palette[255];
 
 	byte entity_roster[ENTITY_MAX];
-    struct Sprite           sprites[ENTITY_MAX];
-    struct RopeComp         ropes[ENTITY_MAX];
-    struct TransformComp    transforms[ENTITY_MAX];
-    struct BalloonComp      balloons[ENTITY_MAX];
-    struct CactusComp       cactuses[ENTITY_MAX];
-	struct ShootComp        shoots[ENTITY_MAX];
-    struct ColliderComp     colliders[ENTITY_MAX];
-    struct AIComp           ai[ENTITY_MAX];
+    X_ALL_COMPS(DEF_COMP_ARRAY);
 
     Rect clouds[CLOUD_MAX];
     float fade_percent;
@@ -48,6 +44,7 @@ struct GameData {
 extern struct GameData *g;
 
 // TODO: better place for these
-void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player);
+void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player, bool reserve);
+void create_bullet(entity_id id, const Point *pos, const FLPoint *dir);
 
 #endif

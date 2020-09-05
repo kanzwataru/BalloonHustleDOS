@@ -1,10 +1,38 @@
 #include "components.h"
 #include "game.h"
 #include "events.h"
+#include "entity.h"
 
 //TODO: maybe these should be somewhere better?
 #include <math.h>
 #include <stdlib.h>
+
+static void clear_comps_for(entity_id entity) {
+    #define CLEAR_COMP(type, name) \
+        memset(&g->name[entity], 0, sizeof(struct type));
+
+    X_ALL_COMPS(CLEAR_COMP);
+
+    #undef CLEAR_COMP
+}
+
+void kill_update(entity_id start, entity_id count)
+{
+    for(entity_id id = start; id < start + count; ++id) {
+        const struct KillComp *kill = &g->kills[id];
+        const Rect *rect = &g->sprites[id].rect;
+
+        if(kill->enabled &&
+           (rect->x > 320 ||
+            rect->y > 200 ||
+            rect->x + rect->w < 0 ||
+            rect->y + rect->h < 0))
+        {
+            clear_comps_for(id);
+            entity_free(&g->entity_roster, id);
+        }
+    }
+}
 
 void transform_update(entity_id start, entity_id count)
 {
@@ -104,7 +132,7 @@ void ai_update(entity_id start, entity_id count)
             break;
         case AI_DEAD_WAITING:
             if(c->timer-- == 0) {
-                create_balloon_cactus(id, id + 1, false);
+                create_balloon_cactus(id, id + 1, false, false);
             }
             break;
         default:
@@ -125,9 +153,54 @@ void cactus_update(entity_id start, entity_id count)
    */
 }
 
+void motor_update(entity_id start, entity_id count)
+{
+    for(entity_id id = 0; id < start + count; ++id) {
+        struct MotorComp *motor = &g->motors[id];
+        struct TransformComp *xform = &g->transforms[id];
+
+        if(motor->speed > 0) {
+            xform->pos.x += motor->dir.x * motor->speed;
+            xform->pos.y += motor->dir.y * motor->speed;
+        }
+    }
+}
+
+static inline void shoot_calc_pos(Point *p, const struct ShootComp *shoot, const struct Sprite *sprite)
+{
+    p->x = (sprite->rect.x + sprite->rect.w / 2) + (shoot->dir.x * SHOOT_UI_OFFSET);
+    p->y = (sprite->rect.y + sprite->rect.h / 2) + (shoot->dir.y * SHOOT_UI_OFFSET);
+}
+
 void shoot_update(entity_id start, entity_id count)
 {
+    for(entity_id id = 0; id < start + count; ++id) {
+        struct ShootComp *shoot = &g->shoots[id];
+        if(!shoot->enabled) continue;
 
+        switch(shoot->state) {
+        case SHOOT_STATE_IDLE:
+            if(shoot->request_shoot) {
+                entity_id bullet_id = entity_find_available(g->entity_roster, EID_Bullets, EID_BulletsEnd);
+                if(bullet_id != NULL_ENTITY) {
+                    const struct Sprite *sprite = &g->sprites[id];
+                    Point pos;
+                    shoot_calc_pos(&pos, shoot, sprite); //NOTE BUG: this may be the prev frame's pos
+
+                    create_bullet(bullet_id, &pos, &shoot->dir);
+
+                    shoot->timer = SHOOT_COOLDOWN;
+                    shoot->state = SHOOT_STATE_COOLDOWN;
+                }
+            }
+            break;
+        case SHOOT_STATE_COOLDOWN:
+            if(--shoot->timer == 0) {
+                shoot->state = SHOOT_STATE_IDLE;
+            }
+            break;
+        }
+    }
 }
 
 void shoot_draw(entity_id start, entity_id count)
@@ -139,8 +212,7 @@ void shoot_draw(entity_id start, entity_id count)
         const struct Sprite *sprite = &g->sprites[id];
 
         Rect rect;
-        rect.x = (sprite->rect.x + sprite->rect.w / 2) + (shoot->dir.x * SHOOT_UI_OFFSET);
-        rect.y = (sprite->rect.y + sprite->rect.h / 2) + (shoot->dir.y * SHOOT_UI_OFFSET);
+        shoot_calc_pos((Point *)&rect, shoot, sprite);
         rect.w = SHOOT_UI_SIZE;
         rect.h = SHOOT_UI_SIZE;
 

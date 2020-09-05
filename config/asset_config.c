@@ -13,7 +13,7 @@ begin(Spritesheet)
     .width      = 48,
     .height     = 48,
     .count      = 8,
-    .frameskip  = 3, 
+    .frameskip  = 3,
     .play_once  = true
 },
 {
@@ -30,7 +30,7 @@ begin(Spritesheet)
     .width      = 48,
     .height     = 48,
     .count      = 8,
-    .frameskip  = 3 
+    .frameskip  = 3
 },
 {
     .name       = "cac_idle",
@@ -64,12 +64,20 @@ begin(Spritesheet)
     .count      = 14,
     .frameskip  = 3
 },
+{
+    .name       = "bullet",
+    .path       = "data/bullet.bmp",
+    .width      = 4,
+    .height     = 4,
+    .count      = 1,
+    .frameskip  = 3
+},
 end(Spritesheet)
 
 begin(Palette)
 {
     .name = "gamepal",
-    .path = "data/cac_idle.bmp" 
+    .path = "data/cac_idle.bmp"
 },
 end(Palette)
 
@@ -96,6 +104,7 @@ begin(Package)
         "enemybl_pop",
         "enemycac_idle",
         "enemycac_fall",
+        "bullet",
         0
     }
 },
@@ -104,4 +113,3 @@ end(Package)
 none(Tilemap)
 none(Tileset)
 none(Font)
-

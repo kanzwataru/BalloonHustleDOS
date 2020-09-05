@@ -27,7 +27,6 @@ enum CactusState {
 
 enum ShootState {
     SHOOT_STATE_IDLE,
-    SHOOT_STATE_FIRE,
     SHOOT_STATE_COOLDOWN
 };
 
@@ -39,10 +38,27 @@ enum AIState {
     AI_DEAD_WAITING
 };
 
+#define X_ALL_COMPS(X) \
+    X(Sprite, sprites); \
+    X(KillComp, kills); \
+    X(RopeComp, ropes); \
+    X(TransformComp, transforms); \
+    X(MotorComp, motors); \
+    X(BalloonComp, balloons); \
+    X(CactusComp, cactuses); \
+    X(ShootComp, shoots); \
+    X(ColliderComp, colliders); \
+    X(AIComp, ai);
+
 struct TransformComp {
     bool      enabled;
     FLPoint   pos;
     entity_id parent;
+};
+
+struct MotorComp {
+    float   speed;
+    FLPoint dir;
 };
 
 struct BalloonComp {
@@ -69,11 +85,17 @@ struct ColliderComp {
     byte    type;
 };
 
+struct KillComp {
+    byte    enabled;
+};
+
 struct ShootComp {
-    bool    enabled;
-    float   rotation;
-    FLPoint dir;
-    byte    state;
+    bool     enabled;
+    float    rotation;
+    FLPoint  dir;
+    byte     state;
+    byte     request_shoot; // 0 or 1
+    uint16_t timer;
 };
 
 struct RopePoint {
@@ -104,6 +126,8 @@ struct AIComp {
 void rope_init          (entity_id start, entity_id count);
 
 void transform_update   (entity_id start, entity_id count);
+void motor_update       (entity_id start, entity_id count);
+void kill_update        (entity_id start, entity_id count);
 void balloon_update     (entity_id start, entity_id count);
 void cactus_update      (entity_id start, entity_id count);
 void shoot_update       (entity_id start, entity_id count);
