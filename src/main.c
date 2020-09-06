@@ -29,6 +29,20 @@ static void scroll_clouds(void)
 
 #define CLEAR(x) memset(&(x), 0, sizeof((x)))
 
+static void add_example_particles(entity_id id)
+{
+	CLEAR(g->particles[id]);
+	struct ParticleSpawner *spawner = &g->particles[id].spawner;
+
+	spawner->flags |= SF_Active;
+	spawner->palette_start = 26;
+	spawner->palette_end = 30;
+
+	spawner->props.follow = 0.5f;
+	spawner->props.rate = 16;
+	spawner->props.decay = 48;
+}
+
 void create_bullet(entity_id id, const Point *pos, const FLPoint *dir)
 {
 	entity_reserve(g->entity_roster, id);
@@ -156,6 +170,8 @@ void init(void)
     create_balloon_cactus(EID_PlayerBalloon, EID_PlayerCactus, true, true);
     create_balloon_cactus(EID_Enemies, EID_Enemies + 1, false, true);
 
+	add_example_particles(EID_PlayerCactus);
+
     for(int i = 0; i < CLOUD_MAX; ++i) {
 		 place_cloud(&g->clouds[i]);
     }
@@ -216,6 +232,7 @@ void update(void)
     rope_update(0, ENTITY_MAX);
 	shoot_update(0, ENTITY_MAX);
     collider_update(0, ENTITY_MAX);
+	particle_update(0, ENTITY_MAX);
     sprite_update(g->sprites, ENTITY_MAX);
 
     scroll_clouds();
@@ -231,6 +248,7 @@ void render(void)
 
     rope_draw(0, ENTITY_MAX);
     sprite_draw(g->sprites, ENTITY_MAX);
+	particle_draw(0, ENTITY_MAX);
 	shoot_draw(EID_PlayerCactus, 1);
 
 #if DEBUG_DRAW

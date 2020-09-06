@@ -6,6 +6,7 @@
 //TODO: maybe these should be somewhere better?
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 static void clear_comps_for(entity_id entity) {
     #define CLEAR_COMP(type, name) \
@@ -372,4 +373,25 @@ void rope_draw(entity_id start, entity_id count)
 
         renderer_draw_line(c->color, c->segments, (ROPE_SEGMENTS * 2) - 1);
     }
+}
+
+void particle_update(entity_id start, entity_id count)
+{
+    // this should maybe be folded into PRT_update???
+    for(entity_id id = start; id < start + count; ++id) {
+        struct ParticleSpawner *spawner = &g->particles[id].spawner;
+        struct Sprite *sprite = &g->sprites[id];
+        if(spawner->flags) {
+            spawner->prev_pos = spawner->pos;
+            spawner->pos.x = sprite->rect.x;
+            spawner->pos.y = sprite->rect.y;
+        }
+    }
+
+    PRT_update((struct ParticleSpawner*)g->particles, ENTITY_MAX, &g->particle_sys);
+}
+
+void particle_draw(entity_id start, entity_id count)
+{
+    PRT_draw((struct ParticleSpawner*)g->particles, ENTITY_MAX, &g->particle_sys);
 }

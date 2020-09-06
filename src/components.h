@@ -3,6 +3,7 @@
 #include "hustle.h"
 #include "consts.h"
 #include "entity.h"
+#include "particles/particles.h"
 
 typedef struct {
     float x, y;
@@ -48,7 +49,8 @@ enum AIState {
     X(CactusComp, cactuses); \
     X(ShootComp, shoots); \
     X(ColliderComp, colliders); \
-    X(AIComp, ai);
+    X(AIComp, ai); \
+    X(ParticleSpawnerComp, particles);
 
 struct TransformComp {
     bool      enabled;
@@ -123,6 +125,10 @@ struct AIComp {
     uint32_t timer;
 };
 
+struct ParticleSpawnerComp {
+    struct ParticleSpawner spawner;
+};
+
 void rope_init          (entity_id start, entity_id count);
 
 void transform_update   (entity_id start, entity_id count);
@@ -134,8 +140,10 @@ void shoot_update       (entity_id start, entity_id count);
 void collider_update    (entity_id start, entity_id count);
 void rope_update        (entity_id start, entity_id count);
 void ai_update          (entity_id start, entity_id count);
+void particle_update    (entity_id start, entity_id count);
 
 void rope_draw          (entity_id start, entity_id count);
 void shoot_draw         (entity_id start, entity_id count);
+void particle_draw      (entity_id start, entity_id count);
 
 #endif

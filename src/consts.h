@@ -23,10 +23,10 @@
 #define SHOOT_UI_OFFSET      32
 #define SHOOT_UI_SIZE        4
 #define SHOOT_UI_COL         9
-#define SHOOT_INPUT_SPEED    0.04f
+#define SHOOT_INPUT_SPEED    0.06f
 #define SHOOT_COOLDOWN       1 * FPS
 
-#define BULLET_SPEED         1.0f
+#define BULLET_SPEED         2.0f
 
 #define AI_DEAD_TIME         2 * FPS
 

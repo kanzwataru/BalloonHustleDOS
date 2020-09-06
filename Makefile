@@ -13,7 +13,8 @@ GAME_INCLUDE	:= src
 GAME_SRC		:= src/main.c\
 				   src/components.c\
 				   src/events.c\
-				   src/statics.c
+				   src/statics.c\
+				   src/particles/particles.cpp
 ENGINE_DIR		:= engine
 DEFINES			:=
 

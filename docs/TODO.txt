@@ -1,8 +1,9 @@
 ^ shooting mechanics
     * reticle and component
-    - projectiles
+    * projectiles
+    - shooting animation
+    - ai shooting
 - multiple enemies
 
-- refactor (c++?)
-- popping particles
+^ popping particles
 

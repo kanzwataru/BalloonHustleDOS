@@ -35,6 +35,8 @@ struct GameData {
 	byte entity_roster[ENTITY_MAX];
     X_ALL_COMPS(DEF_COMP_ARRAY);
 
+	struct ParticleSystem particle_sys;
+
     Rect clouds[CLOUD_MAX];
     float fade_percent;
 
