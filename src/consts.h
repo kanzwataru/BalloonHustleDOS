@@ -26,7 +26,7 @@
 #define SHOOT_INPUT_SPEED    0.06f
 #define SHOOT_COOLDOWN       1 * FPS
 
-#define BULLET_SPEED         2.0f
+#define BULLET_SPEED         2.5f
 
 #define AI_DEAD_TIME         2 * FPS
 

@@ -15,19 +15,21 @@ extern "C" {
 
 /* define settings to customize */
 #ifndef PRT_MAX_PARTICLES
-#define PRT_MAX_PARTICLES 128
+#define PRT_MAX_PARTICLES 254
 #endif
 
 typedef byte particle_id;
 
 enum SpawnerFlags {
-    SF_Active = (1 << 0),
+    SF_Active              = (1 << 0),
+    SF_DieWhenStopped      = (1 << 1),
+    SF_DieIfOffscreen      = (1 << 2)
 };
 
 struct ParticleProps {
-    float    follow;
     uint16_t rate;
-    uint16_t decay;
+    float    follow;
+    float    inertia;
 };
 
 struct ParticleSpawner {

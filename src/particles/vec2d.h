@@ -93,5 +93,33 @@ inline void operator/=(V2 &a, const T &b) { \
     a.y = a.y /= b;
 }
 
+template <typename T>
+inline V2 operator+(const V2 &a, const T &b) { \
+    V2 ret;
+    ret.x = a.x + b;
+    ret.y = a.y + b;
+    return ret;
+}
+
+template <typename T>
+inline void operator+=(V2 &a, const T &b) { \
+    a.x = a.x += b;
+    a.y = a.y += b;
+}
+
+template <typename T>
+inline V2 operator-(const V2 &a, const T &b) { \
+    V2 ret;
+    ret.x = a.x - b;
+    ret.y = a.y - b;
+    return ret;
+}
+
+template <typename T>
+inline void operator-=(V2 &a, const T &b) { \
+    a.x = a.x -= b;
+    a.y = a.y -= b;
+}
+
 #endif /* c++ */
 #endif /* guard */

@@ -34,13 +34,13 @@ static void add_example_particles(entity_id id)
 	CLEAR(g->particles[id]);
 	struct ParticleSpawner *spawner = &g->particles[id].spawner;
 
-	spawner->flags |= SF_Active;
+	spawner->flags = SF_Active | SF_DieWhenStopped | SF_DieIfOffscreen;
 	spawner->palette_start = 26;
 	spawner->palette_end = 30;
 
+	spawner->props.rate = 1;
 	spawner->props.follow = 0.5f;
-	spawner->props.rate = 16;
-	spawner->props.decay = 48;
+	spawner->props.inertia = 0.75f;
 }
 
 void create_bullet(entity_id id, const Point *pos, const FLPoint *dir)
@@ -69,6 +69,8 @@ void create_bullet(entity_id id, const Point *pos, const FLPoint *dir)
 
 	//CLEAR(g->kills[id]);
 	g->kills[id].enabled = true;
+
+	add_example_particles(id);
 }
 
 void create_balloon_cactus(entity_id id, entity_id cactus_id, bool is_player, bool reserve)
@@ -170,7 +172,7 @@ void init(void)
     create_balloon_cactus(EID_PlayerBalloon, EID_PlayerCactus, true, true);
     create_balloon_cactus(EID_Enemies, EID_Enemies + 1, false, true);
 
-	add_example_particles(EID_PlayerCactus);
+	//add_example_particles(EID_PlayerCactus);
 
     for(int i = 0; i < CLOUD_MAX; ++i) {
 		 place_cloud(&g->clouds[i]);
